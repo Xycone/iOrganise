@@ -18,4 +18,4 @@ dataset
     ├── conf_2500_2500_00862025.TextGrid        # Scripts Seperate
     └── conf_2500_2500_00862177.TextGrid        # Scripts Seperate
 
-The best checkpoint that I selected during the training process can be found on my huggingface repo here: https://huggingface.co/Xycone/whisper-small-SGspeech-finetune
+The best checkpoint that I selected during the training process can be found on my huggingface repo here: https://huggingface.co/Xycone/whisper-small-singapore-finetune

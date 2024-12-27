@@ -133,13 +133,16 @@ docker start iorganise-api-gpu
 - [ ] Update the layout, styling, and organization of the transcribe file page to enhance readability and user experience.
 
 ## Acknowledgements 🙏
-This project was developed as part of a Final Year Project (FYP) for Nanyang Polytechnic.
+This application was created as part of a Year 3 project module in our Diploma in Information Technology (DIT) program at Nanyang Polytechnic.
 
-- For audio transcription and diarisation, we utilized [OpenAI's Whisper](https://github.com/openai/whisper) and the speaker verification model from [SpeechBrain](https://github.com/speechbrain/speechbrain), respectively.
+- Utilizing the advanced audio alignment capabilities of [WhisperX](https://github.com/m-bain/whisperX), we deployed our fine-tuned Whisper model after converting it to the required format.
 
-- Additionally, we incorporated the [WhisperX](https://github.com/m-bain/whisperX) repository into our project to showcase a different, more advanced way to perform audio transcription, segmentation and diarisation.
+- Additionally, we also incorporated the (insert library/repository name) 
 
-- Last but not least, we made use of the Mistral 7B model, provided by [TheBloke on Hugging Face](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF) to audit the transcripts based on a criteria checklist.
+- Last but not least, we made use of the following quantised models to perform content summarisation
+  - Mistral 7B Instruct model, provided by [TheBloke on Hugging Face](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF)
+  - Llama 8B Instruct model, provided by [QuantFactory on Hugging Face](https://huggingface.co/QuantFactory/Meta-Llama-3.1-8B-Instruct-GGUF)
+  - Mistral Small Instruct 22B model, provided by [bartowski on Hugging Face](https://huggingface.co/bartowski/Mistral-Small-Instruct-2409-GGUF)
 
 ### Credits for other libraries and dependencies
 - **`llama-cpp-python`**: Python bindings for llama.cpp. [Source](https://github.com/abetlen/llama-cpp-python). Licensed under the MIT License.

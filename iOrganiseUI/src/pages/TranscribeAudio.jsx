@@ -386,9 +386,9 @@ function TranscribeFiles() {
                                                 onBlur={formik.handleBlur}
                                                 error={formik.touched.llm && Boolean(formik.errors.llm)}
                                             >
-                                                <MenuItem value={"mistral_7b"}>Mistral 7B Instruct</MenuItem>
-                                                <MenuItem value={"llama_8b"}>Llama 3.1 8B Instruct</MenuItem>
-                                                <MenuItem value={"mistral_22b"}>Mistral 22B Instruct</MenuItem>
+                                                <MenuItem value={"mistral_7b"}>Mistral 7B</MenuItem>
+                                                <MenuItem value={"llama_8b"}>Llama 3.1 8B</MenuItem>
+                                                <MenuItem value={"mistral_22b"}>Mistral 22B</MenuItem>
                                             </Select>
                                         </Box>
                                     </Grid>

@@ -143,10 +143,10 @@ function SetupDocs() {
 
               <Box>
                 <Typography>
-                  Replace &lt;file_path&gt; with the path to the project directory
+                  Replace &lt;img_name&gt; with a name of your choice and &lt;file_path&gt; with the path to the project directory
                 </Typography>
                 <Typography>
-                  <code>docker build -t iorganise-api-img &lt;file_path&gt;</code>
+                  <code>docker build -t &lt;img_name&gt; &lt;file_path&gt;</code>
                 </Typography>
               </Box>
             </Box>
@@ -168,7 +168,7 @@ function SetupDocs() {
                 </Typography>
                 <Typography>
                   <code>
-                    docker create -p 8000:8000 --name iorganise-api-cpu iorganise-api-img
+                    docker create -p 8000:8000 --name iorganise-api-cpu &lt;img_name&gt;
                   </code>
                 </Typography>
               </Box>
@@ -260,7 +260,7 @@ function SetupDocs() {
                 </Typography>
                 <Typography>
                   <code>
-                    docker create --gpus all -p 8000:8000 --name iorganise-api-gpu iorganise-api-img
+                    docker create --gpus all -p 8000:8000 --name iorganise-api-gpu &lt;img_name&gt;
                   </code>
                 </Typography>
               </Box>

@@ -1,5 +1,5 @@
 # iOrganise
-This application is designed to streamline the process of auditing audio files. It processes audio files through different transcription and diarisation techniques to generate the transcripts.
+This application is designed to help students streamline the process of organising study materials and encourages better study habits.
 
 ## Key Features 🛠️
 - **Audio Processing**: Handles audio files with different methods for audio transcription, segmentation and diarisation:

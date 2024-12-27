@@ -17,12 +17,12 @@ class LlamaCppManager:
             llm_params = {
                 "model_path": LLM_MODELS.get(name),
                 "temperature": 0.4,
-                "max_tokens": 1024,
+                "max_tokens": 512,
                 "n_ctx": 8192
             }
 
             if device == "cuda":
-                llm_params["n_gpu_layers"] = 30
+                llm_params["n_gpu_layers"] = 33
                 llm_params["n_batch"] = 512
             
             self.__llm = LlamaCpp(**llm_params)

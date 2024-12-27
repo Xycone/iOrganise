@@ -1,0 +1,65 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# install dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        build-essential \
+        cmake \
+        ffmpeg \
+        curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# install Github packages
+RUN pip install "git+https://github.com/m-bain/whisperx.git"
+
+# download models
+RUN mkdir -p /app/models
+
+RUN mkdir -p /app/models/mistral_7b && \
+    curl -L -o /app/models/mistral_7b/model.bin "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q6_K.gguf" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /app/models/llama_8b && \
+    curl -L -o /app/models/llama_8b/model.bin "https://huggingface.co/QuantFactory/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /app/models/mistral_22b && \
+    curl -L -o /app/models/mistral_22b/model.bin "https://huggingface.co/bartowski/Mistral-Small-Instruct-2409-GGUF/resolve/main/Mistral-Small-Instruct-2409-Q6_K.gguf" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+    
+
+RUN mkdir -p /app/models/faster-whisper-small && \
+    curl -L -o /app/models/faster-whisper-small/config.json "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/config.json" && \
+    curl -L -o /app/models/faster-whisper-small/model.bin "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/model.bin" && \
+    curl -L -o /app/models/faster-whisper-small/tokenizer.json "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/tokenizer.json" && \
+    curl -L -o /app/models/faster-whisper-small/vocabulary.txt "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/vocabulary.txt" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p /app/models/faster-whisper-medium && \
+    curl -L -o /app/models/faster-whisper-medium/config.json "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/config.json" && \
+    curl -L -o /app/models/faster-whisper-medium/model.bin "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/model.bin" && \
+    curl -L -o /app/models/faster-whisper-medium/tokenizer.json "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/tokenizer.json" && \
+    curl -L -o /app/models/faster-whisper-medium/vocabulary.txt "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/vocabulary.txt" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# install Python dependencies
+RUN pip install llama-cpp-python==0.2.77 --no-cache-dir
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# copy application code to container
+COPY . .
+
+EXPOSE 8000
+
+# run FastAPI Application
+CMD [ "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

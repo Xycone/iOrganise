@@ -1,0 +1,6 @@
+aiofiles==24.1.0
+fastapi==0.111.1
+langchain-community==0.2.2
+pydub==0.25.1
+python-multipart==0.0.9
+uvicorn==0.30.3

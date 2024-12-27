@@ -88,7 +88,7 @@ Follow the instructions to start WhisperUI and WhisperAPI:
 ### Starting WhisperUI frontend:
 1. Make sure NodeJS is properly installed
 2. Open the terminal or command prompt.
-3. Navigate to the WhisperUI directory:
+3. Navigate to the iOrganiseUI directory:
 4. Install the necessary dependencies:
     ```bash
     npm install
@@ -102,7 +102,7 @@ Follow the instructions to start WhisperUI and WhisperAPI:
 2. Open the CLI.
 3. Run the command. Replace `<file_path>` with the path to the project directory with the Dockerfile:
     ```bash
-    docker build -f Dockerfile.cpu -t whisper-api-cpu-img <file_path>
+    docker build -f Dockerfile.cpu -t iorganise-api-cpu-img <file_path>
     ```
 ### Creating the Docker GPU Image
 1. Start Docker Desktop.
@@ -110,25 +110,25 @@ Follow the instructions to start WhisperUI and WhisperAPI:
 3. Ensure that your CUDA version is >= 12.2
 4. Run the command. Replace `<file_path>` with the path to the project directory with the Dockerfile:
     ```bash
-    docker build -f Dockerfile.gpu -t whisper-api-gpu-img <file_path>
+    docker build -f Dockerfile.gpu -t iorganise-api-gpu-img <file_path>
     ```
 ### Starting a regular container
 Open the Windows Terminal and run the following commands:
 ```bash
-docker create -p 8000:8000 --name whisper-api-cpu whisper-api-cpu-img
+docker create -p 8000:8000 --name iorganise-api-cpu iorganise-api-cpu-img
 ```
 
 ```bash
-docker start whisper-api-cpu
+docker start iorganise-api-cpu
 ```
 ### Starting a GPU accelerated container
 Open Ubuntu and run the following commands:
 ```bash
-docker create --gpus all -p 8000:8000 --name whisper-api-gpu whisper-api-gpu-img
+docker create --gpus all -p 8000:8000 --name iorganise-api-gpu iorganise-api-gpu-img
 ```
 
 ```bash
-docker start whisper-api-gpu
+docker start iorganise-api-gpu
 ```
 
 ## TODO 📋

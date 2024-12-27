@@ -27,7 +27,7 @@ For the best experience, ensure that your system meets or exceeds the recommende
 - **CPU:** 8 or more x86 vCPUs (with AVX, Intel "Sandy Bridge" or later / AMD "Bulldozer" or later)
 - **RAM:** 16 GB or more
 - **Storage:** 70 GB of available disk space
-- **GPU:** Dedicated graphics card with at least 12 GB VRAM
+- **GPU:** Dedicated graphics card with at least 16 GB VRAM
 
 ## Docker Setup 🐋
 Make sure hardware virtualisation is enabled in the BIOS

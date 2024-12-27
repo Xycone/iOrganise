@@ -324,7 +324,7 @@ function TranscribeFiles() {
                                         error={formik.touched.asr_model && Boolean(formik.errors.asr_model)}
                                     >
                                         <MenuItem value={"small"}>Whisper Small</MenuItem>
-                                        <MenuItem value={"small_sg"}>Whisper Small (SG-finetune)</MenuItem>
+                                        <MenuItem value={"small_sg"}>Whisper Small (SG)</MenuItem>
                                         <MenuItem value={"medium"}>Whisper Medium</MenuItem>
                                     </Select>
                                 </Box>

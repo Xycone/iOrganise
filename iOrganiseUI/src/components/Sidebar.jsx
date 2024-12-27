@@ -102,7 +102,7 @@ function Sidebar() {
                         </Typography>
                         <Item
                             title="Home"
-                            to="/Dashboard"
+                            to="/dashboard"
                             icon={<HomeOutlinedIcon />}
                             selected={selected}
                         />

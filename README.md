@@ -2,14 +2,10 @@
 This application is designed to help students streamline the process of organising study materials and encourages better study habits.
 
 ## Key Features 🛠️
-- **Audio Processing**: Handles audio files with different methods for audio transcription, segmentation and diarisation:
-  - **Transcription & Segmentation**:
-    - Whisper
-    - WhisperX
-  - **Diarisation**:
-    - Clustering
-    - WhisperX Pipeline (incompatible with the regular Whisper transcription & segmentation method)
-- **Auditing**: Uses Mistral 7B to evaluate the transcript against a checklist.
+- **Audio Processing**: Generate text transcripts for uploaded audio and video files.
+- **Image Processing**: Convert uploaded hand written notes into digital text.
+- **Subject Classification**: Automatic classification of uploaded study material by subject.
+- **Content Summary**: Produce summaries of uploaded study materials using LLMs.
 
 ## Tech Stack 📦
 - **Backend:**

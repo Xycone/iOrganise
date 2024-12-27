@@ -1,4 +1,4 @@
-# Project README Example Template
+# iOrganise
 This application is designed to streamline the process of auditing audio files. It processes audio files through different transcription and diarisation techniques to generate the transcripts.
 
 ## Key Features 🛠️

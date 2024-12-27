@@ -128,8 +128,8 @@ docker start iorganise-api-gpu
 ```
 
 ## TODO 📋
-- [x] Revamp file processing workflow to handle transcription, diarization, and auditing in batches.
-- [x] Add functionality to enable or disable transcript auditing.
+- [x] Revamp file processing workflow to handle transcription content summarisation in batches.
+- [x] Add functionality to enable or disable content summarisation.
 - [ ] Update the layout, styling, and organization of the transcribe file page to enhance readability and user experience.
 
 ## Acknowledgements 🙏

@@ -1,0 +1,37 @@
+html,
+body,
+#root,
+.app,
+.content {
+  height: 100%;
+  width: 100%;
+}
+
+.app {
+  display: flex;
+  overflow-y: hidden;
+}
+
+.content {
+  overflow-y: auto;
+  min-width: fit-content;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #E0E0E0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle On Hover */
+::-webkit-scrollbar-track:hover {
+  background: #555;
+}

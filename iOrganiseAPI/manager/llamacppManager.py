@@ -35,17 +35,10 @@ class LlamaCppManager:
     
     def generate_summary(self, transcript):
         prompt = f"""
-        <s>  
-        [INST]
-        Your task is to review the transcript generated from the uploaded study materials and provide a concise summary.
-        Focus on identifying the key topics, main ideas, and essential information presented in the material. Avoid adding any information that is not explicitly in the transcript.  
-        [/INST]  
-        {transcript}  
-
-        [INST]  
-        Provide a summary of the conversation in a clear and concise manner, highlighting the main topics and any important details discussed. Avoid quoting the transcript directly unless necessary for clarity.  
-        [/INST]  
-        </s>  
+        You are a content summariser used to help summarise the contents of study materials.
+        Your task is to review and provide a clear concise summary of the transcript provided below without adding any information that is not explicitly in the transcript:
+        {transcript}
+        Summary: 
         """
 
         # generate the content summary

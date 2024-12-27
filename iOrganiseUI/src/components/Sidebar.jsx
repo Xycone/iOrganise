@@ -35,8 +35,9 @@ function Sidebar() {
     const { pathname } = location;
     const selected =
         pathname === '/transcribefiles' ? 'Transcribe Files' :
-            pathname === '/setupdocs' ? 'Setup Documentation' :
-                pathname === '/apidocs' ? 'API Documentation' : 'Home';
+            pathname === '/transcribeaudio' ? 'Transcribe Audio' :
+                pathname === '/setupdocs' ? 'Setup Documentation' :
+                    pathname === '/apidocs' ? 'API Documentation' : 'Home';
 
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);

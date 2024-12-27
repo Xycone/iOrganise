@@ -16,7 +16,7 @@ class LlamaCppManager:
 
             llm_params = {
                 "model_path": LLM_MODELS.get(name),
-                "temperature": 0.4,
+                "temperature": 0.2,
                 "max_tokens": 512,
                 "n_ctx": 8192
             }
@@ -35,10 +35,13 @@ class LlamaCppManager:
     
     def generate_summary(self, transcript):
         prompt = f"""
+        Instructions:
         You are a content summariser used to help summarise the main content of study materials in point form.
         Your task is to provide a clear yet short summary of the transcript without adding any information that is not explicitly in there.
+
         Transcript: 
         {transcript}
+        
         Summary: 
         """
 

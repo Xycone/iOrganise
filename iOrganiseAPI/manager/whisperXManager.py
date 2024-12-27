@@ -34,7 +34,7 @@ class WhisperXManager:
 
         try:
             self.__audio = whisperx.load_audio(path)
-            transcript = self.__model.transcribe(self.__audio, batch_size=self.__batch_size)
+            transcript = self.__model.transcribe(self.__audio, batch_size=self.__batch_size, language="en")
 
             # align output
             model_a, metadata = whisperx.load_align_model(language_code=transcript["language"], device=self.__device)

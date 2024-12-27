@@ -49,6 +49,6 @@ class LlamaCppManager:
         """
 
         # generate the content summary
-        result = self.__llm(prompt)
+        result = self.__llm.invoke(prompt)
 
         return result

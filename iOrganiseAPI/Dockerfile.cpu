@@ -32,7 +32,6 @@ RUN mkdir -p /app/models/mistral_22b && \
     curl -L -o /app/models/mistral_22b/model.bin "https://huggingface.co/bartowski/Mistral-Small-Instruct-2409-GGUF/resolve/main/Mistral-Small-Instruct-2409-Q6_K.gguf" && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
 
 RUN mkdir -p /app/models/faster-whisper-small && \
     curl -L -o /app/models/faster-whisper-small/config.json "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/config.json" && \

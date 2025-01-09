@@ -1,9 +1,7 @@
-import torch
-import gc
-
 from manager.whisperXManager import WhisperXManager
 from manager.diarisationPipelineManager import DiarisationPipelineManager
 from manager.llamacppManager import LlamaCppManager
+from utils import *
 
 from enums.deviceTypes import DeviceTypes
 from enums.asrModels import AsrModels
@@ -45,29 +43,20 @@ class ModelLoader():
         
         return self.__loaded_models.get(model_key)
     
-    # helper functions
+    # retrieve model with key
     def get_model(self, model_key):
         return self.__loaded_models.get(model_key)
     
-    def get_all_models(self):
-        return self.__loaded_models
-
+    # delete models with keys
     def del_models(self, *model_keys):
         for key in model_keys:
             if key in self.__loaded_models:
                 del self.__loaded_models[key]
-        self.__free_memory()
+        free_memory()
 
+    # delete all models currently loaded
     def del_all_models(self):
         self.__loaded_models.clear()
-        self.__free_memory()
-
-        return self
-    
-    # hidden functions
-    def __free_memory(self):
-        gc.collect()
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
+        free_memory()
 
         return self

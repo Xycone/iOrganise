@@ -34,7 +34,7 @@ function Sidebar() {
     const location = useLocation();
     const { pathname } = location;
     const selected =
-        pathname === '/transcribefiles' ? 'Transcribe Files' :
+        pathname === '/home' ? 'Home' :
             pathname === '/transcribeaudio' ? 'Transcribe Audio' :
                 pathname === '/setupdocs' ? 'Setup Documentation' :
                     pathname === '/apidocs' ? 'API Documentation' : 'Home';
@@ -102,7 +102,7 @@ function Sidebar() {
                         </Typography>
                         <Item
                             title="Home"
-                            to="/dashboard"
+                            to="/home"
                             icon={<HomeOutlinedIcon />}
                             selected={selected}
                         />

@@ -9,6 +9,7 @@ import Topbar from './components/Topbar.jsx';
 import Sidebar from './components/Sidebar.jsx';
 
 // Pages
+import Home from './pages/Home.jsx';
 import TranscribeAudio from './pages/TranscribeAudio.jsx';
 import SetupDocs from './pages/SetupDocs.jsx';
 import ApiDocs from './pages/ApiDocs.jsx';
@@ -25,6 +26,7 @@ function App() {
           <main className="content">
             <Topbar />
             <Routes>
+              <Route path="/home" element={<Home />} />
               <Route path="/transcribeaudio" element={<TranscribeAudio />} />
               <Route path="/setupdocs" element={<SetupDocs />} />
               <Route path="/apidocs" element={<ApiDocs />} />

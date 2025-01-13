@@ -15,7 +15,7 @@ import {
     DialogContentText,
     IconButton,
     useTheme
-} from '@mui/material'
+} from '@mui/material';
 
 import { tokens } from '../themes/MyTheme';
 

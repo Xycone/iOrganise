@@ -1,6 +1,6 @@
-import React from 'react'
+import React from 'react';
 
-import { Box, Typography, useTheme } from '@mui/material'
+import { Box, Typography, useTheme } from '@mui/material';
 import { tokens } from '../themes/MyTheme';
 
 // React Components
@@ -18,7 +18,7 @@ function ApiDocs() {
       >
         <Header
           title="API Documentation (Work In Progress...)"
-          subtitle="iOrganiseAPI Endpoint Information"
+          subtitle="iOrganiseAPI endpoint information"
         />
 
         <Box m={4} p={5} backgroundColor={colours.primary[400]} borderRadius="10px">

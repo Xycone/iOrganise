@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 import { Box, Typography, useTheme } from '@mui/material';
 import { tokens } from '../themes/MyTheme';
@@ -18,7 +18,7 @@ function SetupDocs() {
       >
         <Header
           title="Setup Documentation"
-          subtitle="iOrganiseAPI Setup Process"
+          subtitle="iOrganiseAPI setup process"
         />
 
         <Box m={4} p={5} backgroundColor={colours.primary[400]} borderRadius="10px">

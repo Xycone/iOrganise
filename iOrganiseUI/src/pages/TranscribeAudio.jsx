@@ -190,7 +190,7 @@ function TranscribeFiles() {
     };
 
     return (
-        <Box p={5}>
+        <Box px={5} pb={5}>
             <Box
                 display="flex"
                 flexDirection="column"
@@ -202,7 +202,7 @@ function TranscribeFiles() {
 
                 <Box
                     component="form"
-                    m={4}
+                    mt={4}
                 >
                     <Box mb={10}>
                         {/* General Information */}

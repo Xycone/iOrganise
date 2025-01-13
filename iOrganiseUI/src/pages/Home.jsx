@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, Grid, useTheme } from '@mui/material';
 import { tokens } from '../themes/MyTheme';
 
 // MUI Icons
@@ -15,7 +15,7 @@ function Home() {
   const colours = tokens(theme.palette.mode);
 
   return (
-    <Box p={5}>
+    <Box px={5} pb={5}>
       <Box
         display="flex"
         flexDirection="column"
@@ -25,49 +25,33 @@ function Home() {
           subtitle="Welcome to your dashboard"
         />
 
-        <Box
-          m={4}
-          display="grid"
-          gridTemplateColumns="repeat(12, 1fr)"
-          gridAutoRows="140px"
-          gap="20px"
-        >
-          {/* Row 1 */}
-          <Box
-            gridColumn="span 3"
-            backgroundColor={colours.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <InfoBox
-              title="24"
-              subtitle="Files Being Processed"
-              icon={
-                <DescriptionIcon
-                  sx={{ color: colours.greenAccent[600], fontSize: '26px' }}
-                />
-              }
-            />
-          </Box>
+        <Box mt={4}>
+          <Grid container spacing={4}>
+            {/* Row 1 */}
+            <Grid item xs={12} lg={8}>
+              <InfoBox
+                title="24"
+                subtitle="Files Being Processed"
+                icon={
+                  <DescriptionIcon
+                    sx={{ color: colours.greenAccent[600], fontSize: '26px' }}
+                  />
+                }
+              />
+            </Grid>
 
-          <Box
-            gridColumn="span 9"
-            backgroundColor={colours.primary[400]}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <InfoBox
-              title="24"
-              subtitle="Files Being Processed"
-              icon={
-                <DescriptionIcon
-                  sx={{ color: colours.greenAccent[600], fontSize: '26px' }}
-                />
-              }
-            />
-          </Box>
+            <Grid item xs={12} md={6} lg={4}>
+              <InfoBox
+                title="24"
+                subtitle="Files Being Processed"
+                icon={
+                  <DescriptionIcon
+                    sx={{ color: colours.greenAccent[600], fontSize: '26px' }}
+                  />
+                }
+              />
+            </Grid>
+          </Grid>
         </Box>
       </Box>
     </Box>

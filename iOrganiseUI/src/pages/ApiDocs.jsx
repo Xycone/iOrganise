@@ -11,7 +11,7 @@ function ApiDocs() {
   const colours = tokens(theme.palette.mode);
 
   return (
-    <Box p={5}>
+    <Box px={5} pb={5}>
       <Box
         display="flex"
         flexDirection="column"
@@ -21,7 +21,7 @@ function ApiDocs() {
           subtitle="iOrganiseAPI endpoint information"
         />
 
-        <Box m={4} p={5} backgroundColor={colours.primary[400]} borderRadius="10px">
+        <Box mt={4} p={5} backgroundColor={colours.primary[400]} borderRadius="5px">
           <Box mb={10}>
             <Box>
               <Box mb={3}>

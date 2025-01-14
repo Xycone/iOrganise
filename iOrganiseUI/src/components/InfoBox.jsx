@@ -13,11 +13,7 @@ const InfoBox = ({ title, subtitle, icon, progress }) => {
             <Box display="flex" justifyContent="space-between">
                 <Box>
                     {icon}
-                    <Typography
-                        variant="h4"
-                        fontWeight="bold"
-                        sx={{ color: colours.grey[100] }}
-                    >
+                    <Typography variant="h3">
                         {title}
                     </Typography>
                 </Box>
@@ -29,7 +25,7 @@ const InfoBox = ({ title, subtitle, icon, progress }) => {
             <Box display="flex" justifyContent="space-between">
                 <Typography
                     variant="h5"
-                    sx={{ color: colours.greenAccent[500] }}
+                    sx={{ color: colours.greenAccent[300] }}
                 >
                     {subtitle}
                 </Typography>

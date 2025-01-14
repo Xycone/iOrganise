@@ -36,8 +36,8 @@ class LlamaCppManager:
     def generate_summary(self, transcript):
         prompt = f"""
         Instructions:
-        You are a content summariser used to help summarise the main content of study materials in point form.
-        Your task is to provide a clear yet short summary of the Transcript without adding any information that is not explicitly in there or repeating any of the Instructions.
+        You are a content summariser used to help summarise the Transcript in bullet point form.
+        Your task is to provide a clear summary of the Transcript as little points as possible without adding any information that is not explicitly in there or repeating any of the Instructions.
 
         Transcript: 
         {transcript}

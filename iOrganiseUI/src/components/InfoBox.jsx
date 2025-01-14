@@ -9,12 +9,7 @@ const InfoBox = ({ title, subtitle, icon, progress }) => {
     const colours = tokens(theme.palette.mode);
 
     return (
-        <Box
-            width="100%"
-            p={5}
-            backgroundColor={colours.primary[400]}
-            borderRadius="5px"
-        >
+        <Box width="100%" p={5}>
             <Box display="flex" justifyContent="space-between">
                 <Box>
                     {icon}

@@ -9,6 +9,7 @@ import { tokens } from '../themes/MyTheme';
 
 // MUI Icons
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import AudioFileOutlinedIcon from '@mui/icons-material/AudioFileOutlined';
 import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
@@ -35,9 +36,10 @@ function Sidebar() {
     const { pathname } = location;
     const selected =
         pathname === '/home' ? 'Home' :
-            pathname === '/transcribeaudio' ? 'Transcribe Audio' :
-                pathname === '/setupdocs' ? 'Setup Documentation' :
-                    pathname === '/apidocs' ? 'API Documentation' : 'Home';
+            pathname === '/dashboard' ? 'Dashboard' :
+                pathname === '/transcribeaudio' ? 'Transcribe Audio' :
+                    pathname === '/setupdocs' ? 'Setup Documentation' :
+                        pathname === '/apidocs' ? 'API Documentation' : 'Home';
 
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
@@ -104,6 +106,12 @@ function Sidebar() {
                             title="Home"
                             to="/home"
                             icon={<HomeOutlinedIcon />}
+                            selected={selected}
+                        />
+                        <Item
+                            title="Dashboard"
+                            to="/dashboard"
+                            icon={<DashboardOutlinedIcon />}
                             selected={selected}
                         />
 

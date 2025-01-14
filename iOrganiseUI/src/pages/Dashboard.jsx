@@ -22,7 +22,7 @@ function Dashboard() {
       >
         <Header
           title="Dashboard"
-          subtitle="File Upload & Processing Insights"
+          subtitle="File Upload Status & Insights"
         />
 
         <Box

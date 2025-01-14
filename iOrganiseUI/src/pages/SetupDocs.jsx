@@ -18,7 +18,7 @@ function SetupDocs() {
       >
         <Header
           title="Setup Documentation"
-          subtitle="iOrganiseAPI setup process"
+          subtitle="iOrganiseAPI Setup Process"
         />
 
         <Box mt={4} p={5} backgroundColor={colours.primary[400]} borderRadius="5px">

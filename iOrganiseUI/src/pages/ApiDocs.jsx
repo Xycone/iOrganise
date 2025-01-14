@@ -18,7 +18,7 @@ function ApiDocs() {
       >
         <Header
           title="API Documentation"
-          subtitle="iOrganiseAPI endpoint information"
+          subtitle="iOrganiseAPI Endpoint Info"
         />
 
         <Box mt={4} p={5} backgroundColor={colours.primary[400]} borderRadius="5px">

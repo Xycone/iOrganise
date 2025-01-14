@@ -37,6 +37,6 @@ function App() {
         </div>
       </ThemeProvider>
     </ColourModeContext.Provider>
-  );
+  )
 }
 export default App;

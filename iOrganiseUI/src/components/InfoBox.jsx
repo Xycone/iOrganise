@@ -2,8 +2,6 @@ import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
 import { tokens } from '../themes/MyTheme';
 
-import ProgressCircle from './ProgressCircle';
-
 const InfoBox = ({ title, subtitle, icon, progress }) => {
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
@@ -16,9 +14,6 @@ const InfoBox = ({ title, subtitle, icon, progress }) => {
                     <Typography variant="h3">
                         {title}
                     </Typography>
-                </Box>
-                <Box>
-                    <ProgressCircle progress={progress} />
                 </Box>
             </Box>
 

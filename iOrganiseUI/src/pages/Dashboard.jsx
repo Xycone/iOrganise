@@ -4,7 +4,10 @@ import { Box, Typography, useTheme } from '@mui/material';
 import { tokens } from '../themes/MyTheme';
 
 // MUI Icons
-import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import CloudUploadOutlinedIcon from '@mui/icons-material/CloudUploadOutlined';
+import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import StorageOutlinedIcon from '@mui/icons-material/StorageOutlined';
+import DonutLargeOutlinedIcon from '@mui/icons-material/DonutLargeOutlined';
 
 // React Components
 import Header from '../components/Header';
@@ -22,7 +25,7 @@ function Dashboard() {
       >
         <Header
           title="Dashboard"
-          subtitle="File Upload Status & Insights"
+          subtitle="File Upload Management Status & Insights"
         />
 
         <Box
@@ -42,10 +45,10 @@ function Dashboard() {
             borderRadius="5px"
           >
             <InfoBox
-              title="24"
-              subtitle="Placeholder"
+              title="15th January 2025"
+              subtitle="Last Activity"
               icon={
-                <DescriptionOutlinedIcon
+                <CalendarMonthOutlinedIcon
                   sx={{ color: colours.greenAccent[300], fontSize: '32px' }}
                 />
               }
@@ -62,9 +65,9 @@ function Dashboard() {
           >
             <InfoBox
               title="24"
-              subtitle="Placeholder"
+              subtitle="Total Uploads"
               icon={
-                <DescriptionOutlinedIcon
+                <CloudUploadOutlinedIcon
                   sx={{ color: colours.greenAccent[300], fontSize: '32px' }}
                 />
               }
@@ -80,10 +83,10 @@ function Dashboard() {
             borderRadius="5px"
           >
             <InfoBox
-              title="24"
-              subtitle="Placeholder"
+              title="15.2GB / 20GB"
+              subtitle="Storage Used"
               icon={
-                <DescriptionOutlinedIcon
+                <StorageOutlinedIcon
                   sx={{ color: colours.greenAccent[300], fontSize: '32px' }}
                 />
               }
@@ -99,10 +102,10 @@ function Dashboard() {
             borderRadius="5px"
           >
             <InfoBox
-              title="24"
-              subtitle="Placeholder"
+              title="75%"
+              subtitle="Storage Breakdown"
               icon={
-                <DescriptionOutlinedIcon
+                <DonutLargeOutlinedIcon
                   sx={{ color: colours.greenAccent[300], fontSize: '32px' }}
                 />
               }

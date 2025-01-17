@@ -80,8 +80,8 @@ Make sure hardware virtualisation is enabled in the BIOS
 13. Make sure Docker Desktop is up to date and reboot Windows.
 
 ## Running the application ▶️
-Follow the instructions to start WhisperUI and WhisperAPI:
-### Starting WhisperUI frontend:
+Follow the instructions to start iOrganiseUI and iOrganiseAPI:
+### Starting iOrganiseUI frontend:
 1. Make sure NodeJS is properly installed
 2. Open the terminal or command prompt.
 3. Navigate to the iOrganiseUI directory:

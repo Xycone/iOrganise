@@ -96,17 +96,17 @@ Follow the instructions to start iOrganiseUI and iOrganiseAPI:
 ### Creating the Docker CPU Image
 1. Start Docker Desktop.
 2. Open the CLI.
-3. Run the command. Replace `<file_path>` with the path to the project directory with the Dockerfile:
+3. Run the command. Replace `<folder_path>` with the path to the project directory containing the Dockerfile:
     ```bash
-    docker build -f Dockerfile.cpu -t iorganise-api-cpu-img <file_path>
+    docker build -f Dockerfile.cpu -t iorganise-api-cpu-img <folder_path>
     ```
 ### Creating the Docker GPU Image
 1. Start Docker Desktop.
 2. Open the CLI.
 3. Ensure that your CUDA version is >= 12.2
-4. Run the command. Replace `<file_path>` with the path to the project directory with the Dockerfile:
+4. Run the command. Replace `<folder_path>` with the path to the project directory containing the Dockerfile:
     ```bash
-    docker build -f Dockerfile.gpu -t iorganise-api-gpu-img <file_path>
+    docker build -f Dockerfile.gpu -t iorganise-api-gpu-img <folder_path>
     ```
 ### Starting a regular container
 Open the Windows Terminal and run the following commands:

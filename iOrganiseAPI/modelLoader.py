@@ -1,5 +1,4 @@
 from manager.whisperXManager import WhisperXManager
-from manager.diarisationPipelineManager import DiarisationPipelineManager
 from manager.llamacppManager import LlamaCppManager
 from utils import *
 
@@ -25,14 +24,6 @@ class ModelLoader():
             self.__loaded_models[model_key] = WhisperXManager(model, device, batch_size, compute_type)
 
         return self.__loaded_models.get(model_key)  
-  
-    def load_speakerDiarisation(self, device: DeviceTypes, auth_token):
-        model_key = "SD"
-        
-        if model_key not in self.__loaded_models:
-            self.__loaded_models[model_key] = DiarisationPipelineManager(device, auth_token)
-
-        return self.__loaded_models.get(model_key)
     
     def load_llm(self, model: LlmModels, device: DeviceTypes):
         model_key = "LLM"

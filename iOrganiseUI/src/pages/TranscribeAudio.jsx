@@ -525,7 +525,7 @@ function TranscribeFiles() {
                                     Choose a file or drag & drop it here
                                 </Typography>
                                 <DialogContentText mb={2}>
-                                    mp3, mpeg, m4a & wav formats, up to 25MB
+                                    mp3, mp4, mpeg, mpga, m4a, wav, webm formats, up to 25MB
                                 </DialogContentText>
                                 <Button
                                     variant="contained"
@@ -535,7 +535,7 @@ function TranscribeFiles() {
                                     <input
                                         type="file"
                                         multiple
-                                        accept=".mp3,.mpeg,.m4a,.wav"
+                                        accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm"
                                         style={{ display: 'none' }}
                                         onChange={handleFileSelect}
                                     />

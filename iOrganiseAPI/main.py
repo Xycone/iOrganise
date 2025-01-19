@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import torch
 
+import subprocess
 from typing import List
 from tempfile import NamedTemporaryFile
 
@@ -35,18 +36,25 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
     response = {}
 
-    # 2. load models used for transciption/diarisation
+    # 2. load models used for transciption
     transcription_manager = (
         model_loader.load_asr(form_data.asr_model, DEVICE, 16, COMPUTE_TYPE)
     )
 
-    # 3. transcribe & diarise all audio files
+    # 3. transcribe all audio/video files
     for id, file in enumerate(files, start=1):
         with NamedTemporaryFile(delete=True) as temp:
             try:
-                # copies uploaded audio file to the temporary file
+                # copies uploaded file contents to the temporary file
                 with open(temp.name, 'wb') as temp_file:
                     temp_file.write(file.file.read())
+
+                # extract audio from video using ffmpeg
+                if is_video(temp.name):
+                    with NamedTemporaryFile(delete=True) as audio_temp:
+                        extracted_audio_path = audio_temp.name + ".mp3"
+                        command = ["ffmpeg", "-i", temp.name, extracted_audio_path]
+                        subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # performs audio transcription
                 transcript = transcription_manager.transcribe(temp.name)

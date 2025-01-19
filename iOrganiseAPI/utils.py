@@ -1,16 +1,16 @@
 import torch
 import gc
-from pydub import AudioSegment
 
-def is_stereo(path):
-    try:
-        audio = AudioSegment.from_file(path)
-        channels = audio.channels
-        return channels != 1
-        
-    except Exception as e:  
-        print(f"Error checking if audio is stereo: {e}")
+import filetype
+
+def is_video(path):
+    mime_types = ['video/mp4', 'video/mpeg', 'video/webm']
+
+    file_type = filetype.guess(path)
+    if file_type is None:
         return False
+
+    return file_type.mime in mime_types
     
 def free_memory():
     gc.collect()

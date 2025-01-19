@@ -143,10 +143,10 @@ function SetupDocs() {
 
               <Box>
                 <Typography>
-                  Replace &lt;img_name&gt; with a name of your choice and &lt;file_path&gt; with the path to the project directory
+                  Replace &lt;dockerfile_name&gt; with the name of the Dockerfile, &lt;img_name&gt; with a name of your choice and &lt;folder_path&gt; with the path to the project directory containing the Dockerfile
                 </Typography>
                 <Typography>
-                  <code>docker build -t &lt;img_name&gt; &lt;file_path&gt;</code>
+                  <code>docker build -f &lt;dockerfile_name&gt; -t &lt;img_name&gt; &lt;folder_path&gt;</code>
                 </Typography>
               </Box>
             </Box>

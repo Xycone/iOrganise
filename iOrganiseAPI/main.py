@@ -77,13 +77,8 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
         # 5. summarise transcript of all audio files
         for i, file_data in response.items():
-            try:
-                formatted_transcript = "\n".join(
-                    f"Segment {j + 1}: {segment.get('text')}"
-                    for j, segment in enumerate(file_data["segments"])
-                )
-                
-                response[i]["summary"] = llama_cpp_manager.generate_summary(formatted_transcript)
+            try:  
+                response[i]["summary"] = llama_cpp_manager.generate_summary(file_data["text"])
 
             except Exception as e:
                 response[i]["summary"] = {

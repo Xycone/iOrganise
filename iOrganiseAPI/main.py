@@ -58,10 +58,19 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
                 # performs audio transcription
                 transcript = transcription_manager.transcribe(temp.name)
+                segments = transcript["segments"]
+                    
                 response[id] = {
                     "filename": file.filename,
                     "language": transcript["language"],
-                    "text": "".join(f" {segment.get('text')}" if idx > 0 else segment.get('text') for idx, segment in enumerate(transcript["segments"])).lstrip()
+                    "segments": [
+                        {
+                            "start": segment.get("start"),
+                            "end": segment.get("end"),
+                            "text": segment.get("text")
+                        }
+                        for segment in segments
+                    ]
                 }
             
             except Exception as e:
@@ -77,8 +86,13 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
         # 5. summarise transcript of all audio files
         for i, file_data in response.items():
-            try:  
-                response[i]["summary"] = llama_cpp_manager.generate_summary(file_data["text"])
+            try:
+                formatted_transcript = "\n".join(
+                    f"Segment {j + 1}: {segment.get('text')}"
+                    for j, segment in enumerate(file_data["segments"])
+                )
+                
+                response[i]["summary"] = llama_cpp_manager.generate_summary(formatted_transcript)
 
             except Exception as e:
                 response[i]["summary"] = {

@@ -36,10 +36,6 @@ class WhisperXManager:
             self.__audio = whisperx.load_audio(path)
             transcript = self.__model.transcribe(self.__audio, batch_size=self.__batch_size, language="en")
 
-            # align output
-            model_a, metadata = whisperx.load_align_model(language_code=transcript["language"], device=self.__device)
-            transcript["segments"] = whisperx.align(transcript["segments"], model_a, metadata, self.__audio, self.__device, return_char_alignments=False)["segments"]
-
             return transcript
             
         except FileNotFoundError as e:

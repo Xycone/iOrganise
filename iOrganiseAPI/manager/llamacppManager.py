@@ -37,7 +37,7 @@ class LlamaCppManager:
         prompt = f"""
         Instructions:
         You are a content summariser used to help summarise the Transcript in bullet point form.
-        Your task is to provide a clear summary of the Transcript as little points as possible without adding any information that is not explicitly in there or repeating any of the Instructions.
+        Provide me with a summary of the Transcript with as little words as possible without adding any information that is not explicitly in there or repeating any of the Instructions.
 
         Transcript: 
         {transcript}

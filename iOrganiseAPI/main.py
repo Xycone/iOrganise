@@ -26,7 +26,7 @@ app.add_middleware(
 )
 
 DEVICE, COMPUTE_TYPE = ("cuda", "float16") if torch.cuda.is_available() else ("cpu", "int8")
-model_loader = ModelLoader("small", DEVICE, 16, COMPUTE_TYPE)
+model_loader = ModelLoader("small_sg", DEVICE, 16, COMPUTE_TYPE)
 
 @app.post("/transcribe-audio")
 async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: List[UploadFile] = File(...)):
@@ -58,19 +58,20 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
                 # performs audio transcription
                 transcript = transcription_manager.transcribe(temp.name)
-                segments = transcript["segments"]
+                # segments = transcript["segments"]
                     
                 response[id] = {
                     "filename": file.filename,
                     "language": transcript["language"],
-                    "segments": [
-                        {
-                            "start": segment.get("start"),
-                            "end": segment.get("end"),
-                            "text": segment.get("text")
-                        }
-                        for segment in segments
-                    ]
+                    "text": transcript["text"]
+                    # "segments": [
+                    #     {
+                    #         "start": segment.get("start"),
+                    #         "end": segment.get("end"),
+                    #         "text": segment.get("text")
+                    #     }
+                    #     for segment in segments
+                    # ]
                 }
             
             except Exception as e:

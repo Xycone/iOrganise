@@ -41,6 +41,20 @@ RUN mkdir -p /app/models/faster-whisper-small && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /app/models/faster-whisper-small-sg && \
+    curl -L -o /app/models/faster-whisper-small-sg/added_tokens.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/added_tokens.json" && \
+    curl -L -o /app/models/faster-whisper-small-sg/config.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/config.json" && \
+    curl -L -o /app/models/faster-whisper-small-sg/merges.txt "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/merges.txt" && \
+    curl -L -o /app/models/faster-whisper-small-sg/model.bin "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/model.bin" && \
+    curl -L -o /app/models/faster-whisper-small-sg/normalizer.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/normalizer.json" && \
+    curl -L -o /app/models/faster-whisper-small-sg/preprocessor_config.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/preprocessor_config.json" && \
+    curl -L -o /app/models/faster-whisper-small-sg/special_tokens_map.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/special_tokens_map.json" && \
+    curl -L -o /app/models/faster-whisper-small-sg/tokenizer_config.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/tokenizer_config.json" && \
+    curl -L -o /app/models/faster-whisper-small-sg/vocab.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/vocab.json" && \
+    curl -L -o /app/models/faster-whisper-small-sg/vocabulary.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/vocabulary.json" && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p /app/models/faster-whisper-medium && \
     curl -L -o /app/models/faster-whisper-medium/config.json "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/config.json" && \
     curl -L -o /app/models/faster-whisper-medium/model.bin "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/model.bin" && \

@@ -119,7 +119,7 @@ function TranscribeFiles() {
     const formik = useFormik({
         // Default Form Values
         initialValues: {
-            asr_model: "small",
+            asr_model: "small_sg",
             content_summary: true,
             llm: "mistral_7b"
         },

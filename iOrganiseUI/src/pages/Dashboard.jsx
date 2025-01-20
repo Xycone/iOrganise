@@ -37,7 +37,7 @@ function Dashboard() {
         >
           {/* Row 1 */}
           <Box
-            gridColumn={{ xs: "span 12", md: "span 6", lg: "span 3" }}
+            gridColumn={{ xs: "span 12", md: "span 6", xl: "span 3" }}
             backgroundColor={colours.primary[400]}
             display="flex"
             alignItems="center"
@@ -56,7 +56,7 @@ function Dashboard() {
           </Box>
 
           <Box
-            gridColumn={{ xs: "span 12", md: "span 6", lg: "span 3" }}
+            gridColumn={{ xs: "span 12", md: "span 6", xl: "span 3" }}
             backgroundColor={colours.primary[400]}
             display="flex"
             alignItems="center"
@@ -75,7 +75,7 @@ function Dashboard() {
           </Box>
 
           <Box
-            gridColumn={{ xs: "span 12", md: "span 6", lg: "span 3" }}
+            gridColumn={{ xs: "span 12", md: "span 6", xl: "span 3" }}
             backgroundColor={colours.primary[400]}
             display="flex"
             alignItems="center"
@@ -94,7 +94,7 @@ function Dashboard() {
           </Box>
 
           <Box
-            gridColumn={{ xs: "span 12", md: "span 6", lg: "span 3" }}
+            gridColumn={{ xs: "span 12", md: "span 6", xl: "span 3" }}
             backgroundColor={colours.primary[400]}
             display="flex"
             alignItems="center"
@@ -115,7 +115,7 @@ function Dashboard() {
           {/* Row 2 */}
           <Box
             p={5}
-            gridColumn={{ xs: "span 12", md: "span 12", lg: "span 8" }}
+            gridColumn={{ xs: "span 12", md: "span 12", xl: "span 8" }}
             gridRow="span 2"
             backgroundColor={colours.primary[400]}
             borderRadius="5px"
@@ -142,7 +142,7 @@ function Dashboard() {
           </Box>
 
           <Box
-            gridColumn={{ xs: "span 12", md: "span 12", lg: "span 4" }}
+            gridColumn={{ xs: "span 12", md: "span 12", xl: "span 4" }}
             gridRow="span 2"
             backgroundColor={colours.primary[400]}
             borderRadius="5px"

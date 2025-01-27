@@ -34,6 +34,15 @@ class ModelLoader():
         
         return self.__loaded_models.get(model_key)
     
+    # def load_bert(self, device: DeviceTypes):
+    #     model_key = "BERT"
+
+    #     if model_key not in self.__loaded_models:
+    #         self.del_models(model_key)
+    #         self.__loaded_models[model_key] = LlamaCppManager(model, device)
+        
+    #     return self.__loaded_models.get(model_key)
+    
     # retrieve model with key
     def get_model(self, model_key):
         return self.__loaded_models.get(model_key)

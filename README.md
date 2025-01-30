@@ -73,7 +73,8 @@ Make sure hardware virtualisation is enabled in the BIOS
           "path": "nvidia-container-runtime",
           "runtimeArgs": []
         }
-      }
+      },
+      "default-runtime": "nvidia"
     }
     EOF
     ```

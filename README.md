@@ -103,7 +103,7 @@ Follow the instructions to start iOrganiseUI and iOrganiseAPI:
 ### Creating the Docker GPU Image
 1. Start Docker Desktop.
 2. Open the Windows Terminal.
-3. Ensure that your CUDA version is >= 12.6
+3. Ensure that your CUDA version is >= 12.2
 4. Run the command. Replace `<folder_path>` with the path to the project directory containing the Dockerfile:
     ```bash
     docker build -f Dockerfile.gpu -t iorganise-api-gpu-img <folder_path>

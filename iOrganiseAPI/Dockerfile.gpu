@@ -74,7 +74,7 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-RUN CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python==0.2.77 --no-cache-dir
+RUN CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

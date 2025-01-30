@@ -74,8 +74,12 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-RUN pip install llama-cpp-python==0.3.7 \
---extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu122
+RUN CMAKE_ARGS="-DGGML_CUDA=on \
+    -DCUDAToolkit_ROOT=/usr/local/cuda-12.2 \
+    -DCMAKE_CUDA_COMPILER=/usr/local/cuda-12.2/bin/nvcc \
+    -DCMAKE_CUDA_ARCHITECTURES='native' \
+    -DCMAKE_LIBRARY_PATH=/usr/local/cuda-12.2/lib64" \
+    pip install llama-cpp-python==0.3.7 --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

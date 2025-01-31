@@ -14,61 +14,29 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # install CUDA & CUDNN
-CMD ["/bin/bash"]
-ENV NVIDIA_REQUIRE_CUDA=cuda>=12.2 brand=tesla,driver>=470,driver<471 brand=unknown,driver>=470,driver<471 brand=nvidia,driver>=470,driver<471 brand=nvidiartx,driver>=470,driver<471 brand=geforce,driver>=470,driver<471 brand=geforcertx,driver>=470,driver<471 brand=quadro,driver>=470,driver<471 brand=quadrortx,driver>=470,driver<471 brand=titan,driver>=470,driver<471 brand=titanrtx,driver>=470,driver<471 brand=tesla,driver>=525,driver<526 brand=unknown,driver>=525,driver<526 brand=nvidia,driver>=525,driver<526 brand=nvidiartx,driver>=525,driver<526 brand=geforce,driver>=525,driver<526 brand=geforcertx,driver>=525,driver<526 brand=quadro,driver>=525,driver<526 brand=quadrortx,driver>=525,driver<526 brand=titan,driver>=525,driver<526 brand=titanrtx,driver>=525,driver<526
+ENV NVIDIA_REQUIRE_CUDA=cuda>=12.2 \
+    NVIDIA_VISIBLE_DEVICES=all \
+    NVIDIA_DRIVER_CAPABILITIES=compute,utility \
+    CUDA_VERSION=12.2.0 \
+    PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH \
+    LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64 \
+    LIBRARY_PATH=/usr/local/cuda/lib64/stubs
 
-RUN /bin/bash -c "apt-get update && \
-    apt-get install -y --no-install-recommends gnupg2 ca-certificates && \
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gnupg2 ca-certificates curl && \
     curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
-    rm -rf /var/lib/apt/lists/*"
-
-ENV CUDA_VERSION=12.2.0
-
-RUN /bin/bash -c "apt-get update && \
-    apt-get install -y --no-install-recommends \
-    cuda-cudart-12-2=12.2.53-1 \
-    cuda-compat-12-2 && \
-    rm -rf /var/lib/apt/lists/*"
-
-RUN /bin/bash -c "echo '/usr/local/nvidia/lib' >> /etc/ld.so.conf.d/nvidia.conf && echo '/usr/local/nvidia/lib64' >> /etc/ld.so.conf.d/nvidia.conf"
-
-ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
-ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64
-
-ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
-
-RUN /bin/bash -c "apt-get update && \
-    apt-get install -y --no-install-recommends \
-    cuda-libraries-12-2=12.2.0-1 \
-    libnpp-12-2=12.1.1.14-1 \
-    cuda-nvtx-12-2=12.2.53-1 \
-    libcusparse-12-2=12.1.1.53-1 \
-    libcublas-12-2=12.2.1.16-1 && \
-    rm -rf /var/lib/apt/lists/*"
-
-RUN apt-mark hold libcublas-12-2
-
-ENV NVIDIA_PRODUCT_NAME=CUDA
-
-RUN /bin/bash -c "apt-get update && \
-    apt-get install -y --no-install-recommends \
-    cuda-cudart-dev-12-2=12.2.53-1 \
-    cuda-command-line-tools-12-2=12.2.0-1 \
-    cuda-minimal-build-12-2=12.2.0-1 \
-    cuda-libraries-dev-12-2=12.2.0-1 \
-    cuda-nvml-dev-12-2=12.2.81-1 \
-    cuda-nvprof-12-2=12.2.60-1 \
-    libnpp-dev-12-2=12.1.1.14-1 \
-    libcusparse-dev-12-2=12.1.1.53-1 \
-    libcublas-dev-12-2=12.2.1.16-1 \
-    cuda-nsight-compute-12-2=12.2.0-1 && \
-    rm -rf /var/lib/apt/lists/*"
-
-RUN apt-mark hold libcublas-dev-12-2
-
-ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs
+    apt-get update && apt-get install -y --no-install-recommends \
+    cuda-cudart-12-2 cuda-compat-12-2 \
+    cuda-libraries-12-2 libnpp-12-2 cuda-nvtx-12-2 libcusparse-12-2 libcublas-12-2 \
+    cuda-cudart-dev-12-2 cuda-command-line-tools-12-2 cuda-minimal-build-12-2 \
+    cuda-libraries-dev-12-2 cuda-nvml-dev-12-2 cuda-nvprof-12-2 \
+    libnpp-dev-12-2 libcusparse-dev-12-2 libcublas-dev-12-2 \
+    cuda-nsight-compute-12-2 && \
+    echo '/usr/local/nvidia/lib' >> /etc/ld.so.conf.d/nvidia.conf && \
+    echo '/usr/local/nvidia/lib64' >> /etc/ld.so.conf.d/nvidia.conf && \
+    apt-mark hold libcublas-12-2 libcublas-dev-12-2 && \
+    rm -rf /var/lib/apt/lists/*
 
 # install Github packages
 RUN pip install "git+https://github.com/m-bain/whisperx.git"
@@ -117,7 +85,7 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-RUN CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.2.77 --no-cache-dir
+RUN CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python==0.2.77 --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

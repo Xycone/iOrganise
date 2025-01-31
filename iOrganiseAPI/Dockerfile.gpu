@@ -8,24 +8,62 @@ RUN apt-get update && \
         git \
         build-essential \
         cmake \
-        wget \
         dpkg \
         ffmpeg \
         curl && \
     rm -rf /var/lib/apt/lists/*
 
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
+# install CUDA & CUDNN
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gnupg2 ca-certificates && \
+    curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
     dpkg -i cuda-keyring_1.0-1_all.deb && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    cuda-toolkit-12-2 \
-    libcudnn8 \
-    libcudnn8-dev && \
-    rm cuda-keyring_1.0-1_all.deb && \
+    apt-get purge --autoremove -y curl && \
     rm -rf /var/lib/apt/lists/*
 
-# set environment variable for CUDA
-ENV PATH=/usr/local/cuda-12.2/bin:$PATH
+ENV CUDA_VERSION=12.2.0
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    cuda-cudart-12-2=12.2.53-1 \
+    cuda-compat-12-2 && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN echo "/usr/local/nvidia/lib" >> /etc/ld.so.conf.d/nvidia.conf && echo "/usr/local/nvidia/lib64" >> /etc/ld.so.conf.d/nvidia.conf
+
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+ENV LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    cuda-libraries-12-2=12.2.0-1 \
+    libnpp-12-2=12.1.1.14-1 \
+    cuda-nvtx-12-2=12.2.53-1 \
+    libcusparse-12-2=12.1.1.53-1 \
+    libcublas-12-2=12.2.1.16-1 && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-mark hold libcublas-12-2
+
+ENV NVIDIA_PRODUCT_NAME=CUDA
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    cuda-cudart-dev-12-2=12.2.53-1 \
+    cuda-command-line-tools-12-2=12.2.0-1 \
+    cuda-minimal-build-12-2=12.2.0-1 \
+    cuda-libraries-dev-12-2=12.2.0-1 \
+    cuda-nvml-dev-12-2=12.2.81-1 \
+    cuda-nvprof-12-2=12.2.60-1 \
+    libnpp-dev-12-2=12.1.1.14-1 \
+    libcusparse-dev-12-2=12.1.1.53-1 \
+    libcublas-dev-12-2=12.2.1.16-1 \
+    cuda-nsight-compute-12-2=12.2.0-1 && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-mark hold libcublas-dev-12-2
+
+ENV LIBRARY_PATH=/usr/local/cuda/lib64/stubs
 
 # install Github packages
 RUN pip install "git+https://github.com/m-bain/whisperx.git"

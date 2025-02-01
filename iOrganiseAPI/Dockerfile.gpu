@@ -14,14 +14,6 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # install CUDA & CUDNN
-ENV NVIDIA_REQUIRE_CUDA=cuda>=12.2 \
-    NVIDIA_VISIBLE_DEVICES=all \
-    NVIDIA_DRIVER_CAPABILITIES=compute,utility \
-    CUDA_VERSION=12.2.0 \
-    PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH \
-    LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64 \
-    LIBRARY_PATH=/usr/local/cuda/lib64/stubs
-
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gnupg2 ca-certificates curl && \
     curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
@@ -33,10 +25,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-libraries-dev-12-2 cuda-nvml-dev-12-2 cuda-nvprof-12-2 \
     libnpp-dev-12-2 libcusparse-dev-12-2 libcublas-dev-12-2 \
     cuda-nsight-compute-12-2 && \
+    libcudnn8=8.9.2.26-1+cuda12.2 && \
+    libcudnn8-dev=8.9.2.26-1+cuda12.2 && \
     echo '/usr/local/nvidia/lib' >> /etc/ld.so.conf.d/nvidia.conf && \
     echo '/usr/local/nvidia/lib64' >> /etc/ld.so.conf.d/nvidia.conf && \
     apt-mark hold libcublas-12-2 libcublas-dev-12-2 && \
     rm -rf /var/lib/apt/lists/*
+
+ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH \
+    LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64 \
+    LIBRARY_PATH=/usr/local/cuda/lib64/stubs
 
 # install Github packages
 RUN pip install "git+https://github.com/m-bain/whisperx.git"
@@ -85,7 +83,8 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-RUN CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python==0.2.77 --no-cache-dir
+RUN pip install llama-cpp-python==0.3.7 --no-cache-dir \
+--extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu122
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

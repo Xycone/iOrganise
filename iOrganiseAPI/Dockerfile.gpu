@@ -24,12 +24,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     cuda-cudart-dev-12-2 cuda-command-line-tools-12-2 cuda-minimal-build-12-2 \
     cuda-libraries-dev-12-2 cuda-nvml-dev-12-2 cuda-nvprof-12-2 \
     libnpp-dev-12-2 libcusparse-dev-12-2 libcublas-dev-12-2 \
-    cuda-nsight-compute-12-2 && \
-    libcudnn8=8.9.2.26-1+cuda12.2 && \
-    libcudnn8-dev=8.9.2.26-1+cuda12.2 && \
+    cuda-nsight-compute-12-2 \
+    libcudnn8 \
+    libcudnn8-dev && \
     echo '/usr/local/nvidia/lib' >> /etc/ld.so.conf.d/nvidia.conf && \
     echo '/usr/local/nvidia/lib64' >> /etc/ld.so.conf.d/nvidia.conf && \
     apt-mark hold libcublas-12-2 libcublas-dev-12-2 && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH \
@@ -83,8 +84,9 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-RUN pip install llama-cpp-python==0.3.7 --no-cache-dir \
---extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu122
+ENV CUDA_DOCKER_ARCH=all
+ENV GGML_CUDA=1
+RUN CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir 
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

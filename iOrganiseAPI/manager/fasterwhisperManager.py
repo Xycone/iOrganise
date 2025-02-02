@@ -31,7 +31,7 @@ class FasterWhisperManager:
         try:
             segments, info = self.__model.transcribe(path, batch_size=self.__batch_size, vad_filter=True, language="en")
             transcript = {
-                "language": info.get("language", "unknown"),
+                "language": getattr(info, "language", "unknown"),
                 "segments": [
                     {
                         "start": segment.start,

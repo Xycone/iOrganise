@@ -19,7 +19,6 @@ RUN apt-get update && \
         libclblast-dev \
         libopenblas-dev && \
     apt-mark hold python3.10 && \
-    apt-get upgrade -y && \
     mkdir -p /etc/OpenCL/vendors && \
     echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
     apt-get clean && \
@@ -71,7 +70,7 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
 # install Python dependencies
 ENV CUDA_DOCKER_ARCH=all \
     GGML_CUDA=1
-RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
+RUN pip install pytest cmake scikit-build setuptools && \
     CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir
 
 COPY requirements.txt requirements.txt

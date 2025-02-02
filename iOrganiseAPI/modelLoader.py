@@ -1,4 +1,4 @@
-from manager.whisperXManager import WhisperXManager
+from manager.fasterwhisperManager import FasterWhisperManager
 from manager.llamacppManager import LlamaCppManager
 from utils import *
 
@@ -21,7 +21,7 @@ class ModelLoader():
 
         if model_key not in self.__loaded_models or self.__loaded_models[model_key].get_model() != model:
             self.del_models(model_key)
-            self.__loaded_models[model_key] = WhisperXManager(model, device, batch_size, compute_type)
+            self.__loaded_models[model_key] = FasterWhisperManager(model, device, batch_size, compute_type)
 
         return self.__loaded_models.get(model_key)  
     

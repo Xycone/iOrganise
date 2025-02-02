@@ -7,7 +7,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
         build-essential \
-        dpkg \
         ffmpeg \
         curl \
         python3.10 \
@@ -23,10 +22,11 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     mkdir -p /etc/OpenCL/vendors && \
     echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
     
 # install Github packages
-RUN pip install "git+https://github.com/m-bain/whisperx.git"
+RUN pip install "git+https://github.com/SYSTRAN/faster-whisper@v1.1.1"
 
 # download models
 RUN mkdir -p /app/models

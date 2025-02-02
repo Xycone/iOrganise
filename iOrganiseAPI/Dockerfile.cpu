@@ -11,10 +11,13 @@ RUN apt-get update && \
         curl \
         python3.10 \
         python3-pip && \ 
+    apt-mark hold python3.10 && \
+    apt-get upgrade -y && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
 # install Github packages
-RUN pip install "git+https://github.com/m-bain/whisperx.git"
+RUN pip install "git+https://github.com/SYSTRAN/faster-whisper"
 
 # download models
 RUN mkdir -p /app/models

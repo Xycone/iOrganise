@@ -19,7 +19,7 @@ class FasterWhisperManager:
             self.__model = BatchedInferencePipeline(model=WhisperModel(ASR_MODELS.get(self.__name), self.__device, compute_type=self.__compute_type))
 
         except Exception as e:
-            raise RuntimeError(f"Error initializing WhisperXManager: {e}")
+            raise RuntimeError(f"Error initializing FasterWhisperManager: {e}")
     
     def get_model(self):
         return self.__name

@@ -27,7 +27,7 @@ RUN apt-get update && \
 # build wheels for llama-cpp-python
 ENV CUDA_DOCKER_ARCH=all \
     GGML_CUDA=1 \
-    CUDA_HOME=/usr/local/cuda/bin/nvcc
+    CUDA_HOME=/usr/local/cuda
 RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
     CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir
 

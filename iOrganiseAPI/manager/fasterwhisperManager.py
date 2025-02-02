@@ -25,11 +25,11 @@ class FasterWhisperManager:
         return self.__name
 
     def transcribe(self, path):
-        if self.__model is None:    
-            raise RuntimeError("Model has not been loaded. Call load_model() first.")
+        if self.__model is None:
+            raise RuntimeError("Model has not been loaded.")
 
         try:
-            segments, info = self.__model.transcribe(path, batch_size=self.__batch_size, language="en")
+            segments, info = self.__model.transcribe(path, batch_size=self.__batch_size, vad_filter=True, language="en")
             transcript = {
                 "language": info.get("language", "unknown"),
                 "segments": [

@@ -25,11 +25,10 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
     
 # build wheels for llama-cpp-python
-ENV CUDA_DOCKER_ARCH=all \
-    GGML_CUDA=1
 RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
-    CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir
-    
+    pip install llama-cpp-python==0.3.7 --no-cache-dir \
+    --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/123
+
 # download models
 RUN mkdir -p /app/models
 

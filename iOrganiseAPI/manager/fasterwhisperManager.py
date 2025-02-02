@@ -30,10 +30,17 @@ class FasterWhisperManager:
 
         try:
             segments, info = self.__model.transcribe(path, batch_size=self.__batch_size, language="en")
-            transcript = [
-                {"start": segment.start, "end": segment.end, "text": segment.text}
-                for segment in segments
-            ]
+            transcript = {
+                "language": info.get("language", "unknown"),
+                "segments": [
+                    {
+                        "start": segment.start,
+                        "end": segment.end,
+                        "text": segment.text.lstrip()
+                    }
+                    for segment in segments
+                ]
+            }
 
             return transcript
             

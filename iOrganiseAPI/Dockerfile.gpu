@@ -26,7 +26,7 @@ RUN apt-get update && \
     
 # build wheels for llama-cpp-python
 RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
-    CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=80;86;90" pip install llama-cpp-python==0.3.7 --no-cache-dir
+    CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=all" pip install llama-cpp-python==0.3.7 --no-cache-dir
 
 # download models
 RUN mkdir -p /app/models

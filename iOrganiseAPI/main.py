@@ -58,9 +58,19 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
                 # performs audio transcription
                 transcript = transcription_manager.transcribe(temp.name)
+                segments = transcript["segments"]
                     
                 response[id] = {
-                    transcript
+                    "filename": file.filename,
+                    "language": transcript["language"],
+                    "segments": [
+                        {
+                            "start": segment.get("start"),
+                            "end": segment.get("end"),
+                            "text": segment.get("text").lstrip()
+                        }
+                        for segment in segments
+                    ]
                 }
             
             except Exception as e:

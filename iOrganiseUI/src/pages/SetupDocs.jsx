@@ -193,7 +193,7 @@ function SetupDocs() {
               
               <Box mb={2}>
                 <Typography>
-                  Ensure that Nvidia drivers on Windows are on CUDA 12.2 or above
+                  Ensure that Nvidia drivers on Windows are on CUDA 12.3 or above
                 </Typography>
               </Box>
 

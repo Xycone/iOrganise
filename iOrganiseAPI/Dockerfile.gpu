@@ -24,6 +24,12 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
     
+# build wheels for llama-cpp-python
+ENV CUDA_DOCKER_ARCH=all \
+    GGML_CUDA=1
+RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
+    CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir
+    
 # download models
 RUN mkdir -p /app/models
 
@@ -68,11 +74,6 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-ENV CUDA_DOCKER_ARCH=all \
-    GGML_CUDA=1
-RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
-    CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir
-
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 

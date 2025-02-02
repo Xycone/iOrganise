@@ -16,9 +16,6 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# install Github packages
-RUN pip install "git+https://github.com/SYSTRAN/faster-whisper"
-
 # download models
 RUN mkdir -p /app/models
 

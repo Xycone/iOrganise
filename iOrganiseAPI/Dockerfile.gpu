@@ -24,9 +24,9 @@ RUN apt-get update && \
     echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
-# install Github packages
-RUN pip install "git+https://github.com/SYSTRAN/faster-whisper@v1.1.1"
+
+# install CUDNN
+RUN pip install nvidia-cublas-cu12 nvidia-cudnn-cu12==9.*
 
 # download models
 RUN mkdir -p /app/models

@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM ubuntu:22.04
 
 WORKDIR /app
 
@@ -7,9 +7,10 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
         build-essential \
-        cmake \
         ffmpeg \
-        curl && \
+        curl \
+        python3.10 \
+        python3-pip && \ 
     rm -rf /var/lib/apt/lists/*
 
 # install Github packages
@@ -59,7 +60,8 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-RUN pip install llama-cpp-python==0.3.7 --no-cache-dir
+RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
+    pip install llama-cpp-python==0.3.7 --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

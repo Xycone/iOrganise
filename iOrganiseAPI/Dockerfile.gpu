@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM nvidia/cuda:12.2.0-devel-ubuntu22.04
 
 WORKDIR /app
 
@@ -7,36 +7,24 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
         build-essential \
-        cmake \
         dpkg \
         ffmpeg \
-        curl && \
+        curl \
+        python3.10 \
+        python3-pip \
+        gcc \
+        wget \
+        ocl-icd-opencl-dev \
+        opencl-headers \
+        clinfo \
+        libclblast-dev \
+        libopenblas-dev && \
+    apt-mark hold python3.10 && \
+    apt-get upgrade -y && \
+    mkdir -p /etc/OpenCL/vendors && \
+    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
     rm -rf /var/lib/apt/lists/*
-
-# install CUDA & CUDNN
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gnupg2 ca-certificates curl && \
-    curl -fsSLO https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
-    dpkg -i cuda-keyring_1.0-1_all.deb && \
-    apt-get update && apt-get install -y --no-install-recommends \
-    cuda-cudart-12-2 cuda-compat-12-2 \
-    cuda-libraries-12-2 libnpp-12-2 cuda-nvtx-12-2 libcusparse-12-2 libcublas-12-2 \
-    cuda-cudart-dev-12-2 cuda-command-line-tools-12-2 cuda-minimal-build-12-2 \
-    cuda-libraries-dev-12-2 cuda-nvml-dev-12-2 cuda-nvprof-12-2 \
-    libnpp-dev-12-2 libcusparse-dev-12-2 libcublas-dev-12-2 \
-    cuda-nsight-compute-12-2 \
-    libcudnn8 \
-    libcudnn8-dev && \
-    echo '/usr/local/nvidia/lib' >> /etc/ld.so.conf.d/nvidia.conf && \
-    echo '/usr/local/nvidia/lib64' >> /etc/ld.so.conf.d/nvidia.conf && \
-    apt-mark hold libcublas-12-2 libcublas-dev-12-2 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-ENV PATH=/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH \
-    LD_LIBRARY_PATH=/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64 \
-    LIBRARY_PATH=/usr/local/cuda/lib64/stubs
-
+    
 # install Github packages
 RUN pip install "git+https://github.com/m-bain/whisperx.git"
 
@@ -84,9 +72,10 @@ RUN mkdir -p /app/models/faster-whisper-medium && \
     rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-ENV CUDA_DOCKER_ARCH=all
-ENV GGML_CUDA=1
-RUN CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir 
+ENV CUDA_DOCKER_ARCH=all \
+    GGML_CUDA=1
+RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
+    CMAKE_ARGS="-DGGML_CUDA=on" pip install llama-cpp-python==0.3.7 --no-cache-dir
 
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt

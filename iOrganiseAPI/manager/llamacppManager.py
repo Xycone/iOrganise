@@ -38,11 +38,12 @@ class LlamaCppManager:
     def generate_summary(self, transcript):
         prompt = f"""
         Instructions:
-        You are a content summariser used to help summarise the Transcript in bullet point form.
-        Provide me with a summary of the Transcript with as little words as possible without adding any information that is not explicitly in there or repeating any of the Instructions.
+        Provide me with a summary of the Transcript with as little words as possible in bullet point form without adding your own information or repeating any of the Instructions.
 
         Transcript: 
         {transcript}
+
+        Summary:
         """
 
         # generate the content summary

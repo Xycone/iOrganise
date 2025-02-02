@@ -19,7 +19,6 @@ const InfoBox = ({ title, subtitle, icon, progress }) => {
 
             <Box display="flex" justifyContent="space-between">
                 <Typography
-                    variant="h5"
                     sx={{ color: colours.greenAccent[300] }}
                 >
                     {subtitle}

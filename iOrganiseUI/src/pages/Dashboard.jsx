@@ -123,7 +123,7 @@ function Dashboard() {
             flexDirection="column"
           >
             <Box>
-              <Typography variant="h5">
+              <Typography>
                 Current Batch
               </Typography>
               <Typography variant="h3" color={colours.greenAccent[300]}>
@@ -155,9 +155,7 @@ function Dashboard() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Typography
-                variant="h5"
-              >
+              <Typography>
                 Processing Queue
               </Typography>
             </Box>

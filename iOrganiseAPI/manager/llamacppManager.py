@@ -7,7 +7,7 @@ from enums.llmModels import LlmModels
 
 LLM_MODELS = {
     "mistral_7b": ("/app/models/mistral_7b/model.bin", 8192),
-    "deepseek_14b": ("/app/models/deepseek_14b/model.bin", 32768)
+    "deepseek_14b": ("/app/models/deepseek_14b/model.bin", 16384)
 }
 
 class LlamaCppManager:
@@ -24,7 +24,7 @@ class LlamaCppManager:
             }
 
             if device == "cuda":
-                llm_params["n_gpu_layers"] = 35
+                llm_params["n_gpu_layers"] = 45
                 llm_params["n_batch"] = 512
             
             self.__llm = LlamaCpp(**llm_params)

@@ -7,7 +7,7 @@ from enums.llmModels import LlmModels
 
 LLM_MODELS = {
     "mistral_7b": ("/app/models/mistral_7b/model.bin", 8192),
-    "deepseek_14b": ("/app/models/deepseek_14b/model.bin", 16384)
+    "deepseek_14b": ("/app/models/deepseek_14b/model.bin", 32768)
 }
 
 class LlamaCppManager:

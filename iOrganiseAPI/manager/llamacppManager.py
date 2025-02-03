@@ -50,7 +50,7 @@ class LlamaCppManager:
         result = self.__llm.invoke(prompt)
 
         # filter out COT tokens when using deepseek 14b
-        # if self.__name == "deepseek_14b":
-        #     result = re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL).strip()
+        if self.__name == "deepseek_14b":
+            result = re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL).strip()
 
         return result

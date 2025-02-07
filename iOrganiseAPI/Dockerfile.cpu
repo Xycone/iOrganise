@@ -27,7 +27,7 @@ RUN mkdir -p /app/models/mistral_7b \
     /app/models/faster-whisper-medium && \
     # mistral 7B (Q6K quant)
     curl -L -o /app/models/mistral_7b/model.bin "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q6_K.gguf" && \
-    # deepseek R1 qwen 14B distill (Q4K quant)
+    # deepseek R1 qwen 14B distill (Q4KM quant)
     curl -L -o /app/models/deepseek_14b/model.bin "https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-14B-Q4_K_M.gguf" && \
     # faster-whisper small
     curl -L -o /app/models/faster-whisper-small/config.json "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/config.json" && \

@@ -256,7 +256,7 @@ function SetupDocs() {
 
               <Box mb={2}>
                 <Typography>
-                  Make sure Docker Desktop is up to date and reboot Windows
+                  Make sure Docker Desktop is up to date and restart
                 </Typography>
               </Box>
 

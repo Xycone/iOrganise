@@ -141,8 +141,7 @@ This application was created as part of a Year 3 project module in our Diploma i
 
 - Last but not least, we made use of the following quantised models to perform content summarisation
   - Mistral 7B Instruct model, provided by [TheBloke on Hugging Face](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF)
-  - Llama 8B Instruct model, provided by [QuantFactory on Hugging Face](https://huggingface.co/QuantFactory/Meta-Llama-3.1-8B-Instruct-GGUF)
-  - Mistral Small Instruct 22B model, provided by [bartowski on Hugging Face](https://huggingface.co/bartowski/Mistral-Small-Instruct-2409-GGUF)
+  - Deepseek R1 Qwen 14B Distill model, provided by [bartowski on Hugging Face](https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF)
 
 ### Credits for other libraries and dependencies
 - **`llama-cpp-python`**: Python bindings for llama.cpp. [Source](https://github.com/abetlen/llama-cpp-python). Licensed under the MIT License.

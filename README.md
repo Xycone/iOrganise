@@ -135,7 +135,7 @@ docker start iorganise-api-gpu
 ## Acknowledgements 🙏
 This application was created as part of a Year 3 project module in our Diploma in Information Technology (DIT) program at Nanyang Polytechnic.
 
-- Utilizing the advanced audio alignment capabilities of [WhisperX](https://github.com/m-bain/whisperX), we deployed our fine-tuned Whisper model after converting it to the required format.
+- Utilising the faster transcription capabilities made possible by [faster-whisper](https://github.com/SYSTRAN/faster-whisper), we deployed our fine-tuned Whisper model after converting it to the required format.
 
 - Additionally, we also incorporated the (insert library/repository name) 
 

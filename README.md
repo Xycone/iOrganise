@@ -33,7 +33,7 @@ Make sure hardware virtualisation is enabled in the BIOS
     ```bash
     wsl --install
     ```
-3. Install Ubuntu from the Microsoft Store and open it.
+3. Check if Ubuntu is installed in the Microsoft store and open it.
 4. Follow the instructions to create a new UNIX user account.
 5. Download the Docker Desktop Installer from the following link: [Docker Desktop Installer](https://docs.docker.com/desktop/install/windows-install/)
 6. Run the installer and open the app after installation is complete.

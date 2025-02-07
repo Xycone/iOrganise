@@ -77,7 +77,7 @@ Make sure hardware virtualisation is enabled in the BIOS
     }
     EOF
     ```
-13. Make sure Docker Desktop is up to date and reboot Windows.
+13. Make sure Docker Desktop is up to date and restart.
 
 ## Running the application ▶️
 Follow the instructions to start iOrganiseUI and iOrganiseAPI:
@@ -147,7 +147,6 @@ This application was created as part of a Year 3 project module in our Diploma i
 - **`llama-cpp-python`**: Python bindings for llama.cpp. [Source](https://github.com/abetlen/llama-cpp-python). Licensed under the MIT License.
 - **`aiofiles`**: Asynchronous file handling. [Source](https://github.com/Tinche/aiofiles). Licensed under the Apache2 License.
 - **`fastapi`**: API framework. [Source](https://github.com/tiangolo/fastapi). Licensed under the MIT License.
-- **`langchain-community`**: Language model applications. [Source](https://github.com/langchain-ai/langchain). Licensed under the MIT License.
 - **`pydub`**: Audio processing. [Source](https://github.com/jiaaro/pydub). Licensed under the MIT License.
 - **`python-multipart`**: Multipart form handling. [Source](https://github.com/Kludex/python-multipart). Licensed under the Apache2 License.
 - **`uvicorn`**: ASGI server for Python web apps. [Source](https://github.com/encode/uvicorn). Licensed under the BSD 3-Clause License.

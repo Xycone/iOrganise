@@ -45,7 +45,7 @@ async def on_startup():
     await create_tables()
 
 @app.post("/sign-up")
-async def sign_up(form_data: SignUpDTO = Depends()):
+async def sign_up(form_data: SignUpDTO):
     # check if the email already exists
     existing_user = (await db_get_by_attribute(User, "email", form_data.email) or [None])[0]
     if existing_user:

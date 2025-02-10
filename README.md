@@ -97,11 +97,11 @@ Follow the instructions to start iOrganiseUI and iOrganiseAPI:
 1. Start Docker Desktop.
 2. Open the Windows Terminal.
 3. Navigate to the directory containing the docker-compose.yml file.
-4. If running the application with a GPU, make sure CUDA >= 12.3 by running the following command in Ubuntu:
+4. If running the backend with a GPU, make sure CUDA >= 12.3 by running the following command in Ubuntu:
     ```bash
     nvidia-smi
     ```
-5. Adjust the .env file in the same directory as needed.
+5. Adjust the environmental variables within the .env file as needed. It will attempt to build the Dockerfile.gpu using nvidia runtime if left unmodified.
 6. Run the command:
     ```bash
     docker-compose up --build
@@ -121,7 +121,7 @@ This application was created as part of a Year 3 project module in our Diploma i
   - Mistral 7B Instruct model, provided by [TheBloke on Hugging Face](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF)
   - Deepseek R1 Qwen 14B Distill model, provided by [bartowski on Hugging Face](https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF)
 
-### Credits for other libraries and dependencies
+### Credits for a few other libraries and dependencies
 - **`llama-cpp-python`**: Python bindings for llama.cpp. [Source](https://github.com/abetlen/llama-cpp-python). Licensed under the MIT License.
 - **`aiofiles`**: Asynchronous file handling. [Source](https://github.com/Tinche/aiofiles). Licensed under the Apache2 License.
 - **`fastapi`**: API framework. [Source](https://github.com/tiangolo/fastapi). Licensed under the MIT License.

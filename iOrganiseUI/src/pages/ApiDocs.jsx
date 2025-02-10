@@ -131,7 +131,7 @@ function ApiDocs() {
               <Typography variant="h5">Example Response:</Typography>
               <Typography mb={2}>Example response which shows the device your models are loaded on.</Typography>
               <Typography component="pre">
-                {"cuda"}
+                {'"cuda"'}
               </Typography>
             </Box>
           </Box>

@@ -13,13 +13,13 @@ function Topbar() {
     const colorMode = useContext(ColourModeContext);
     const navigate = useNavigate();
 
-    // State for managing the dropdown menu
+    // Dropdown
     const [anchorEl, setAnchorEl] = useState(null);
     const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
     const handleLoginRedirect = () => {
         navigate('/login');
-        handleMenuClose(); // Close the menu after redirecting
+        handleMenuClose();
     };
 
     return (
@@ -39,7 +39,7 @@ function Topbar() {
                 {/* Profile Picture Icon */}
                 <IconButton
                     onClick={handleMenuOpen}
-                    sx={{ width: 35, height: 35, ml: 1 }} // Fix the size of the IconButton
+                    sx={{ width: 35, height: 35, ml: 1 }}
                 >
                     <Avatar alt="Profile" src="/path/to/profile-pic.jpg" sx={{ width: 30, height: 30 }} />
                 </IconButton>

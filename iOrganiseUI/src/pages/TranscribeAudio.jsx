@@ -496,7 +496,7 @@ function TranscribeFiles() {
                                     Upload Files
                                 </Typography>
                                 <DialogContentText>
-                                    Upload & Attach Audio Files To The API Request.
+                                    Upload & attach audio/video files to the API request.
                                 </DialogContentText>
                             </Box>
 

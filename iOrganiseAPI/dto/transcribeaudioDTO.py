@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
-from enums.asrModels import AsrModels
-from enums.llmModels import LlmModels
+from enums.AsrModels import AsrModels
+from enums.LlmModels import LlmModels
 
 class TranscribeAudioDTO(BaseModel):
     asr_model: AsrModels

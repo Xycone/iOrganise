@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      dockerfile: ${DOCKERFILE}
+    ports:
+      - "8000:8000"
+    runtime: ${RUNTIME}
+    environment:
+      DB_USER: ${USER}
+      DB_PASSWORD: ${PASSWORD}
+      SECRET_KEY: ${SECRET_KEY}
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - app_network
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_USER: ${USER}
+      MYSQL_PASSWORD: ${PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app_network
+    healthcheck:
+      test: ["CMD", "/usr/bin/mysql", "--user=root", "--password=$PASSWORD", "--execute", "SHOW DATABASES;"]
+      interval: 5s
+      retries: 10
+      timeout: 5s
+
+volumes:
+  mysql_data:
+
+networks:
+  app_network:
+    driver: bridge

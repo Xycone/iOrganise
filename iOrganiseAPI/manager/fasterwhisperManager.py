@@ -1,7 +1,7 @@
 from faster_whisper import WhisperModel, BatchedInferencePipeline
 
-from enums.deviceTypes import DeviceTypes
-from enums.asrModels import AsrModels
+from enums.DeviceTypes import DeviceTypes
+from enums.AsrModels import AsrModels
 
 ASR_MODELS = {
     "small": "/app/models/faster-whisper-small",

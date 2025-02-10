@@ -1,17 +1,79 @@
-import torch
+from fastapi import HTTPException
+
+import os
 import gc
 
+import torch
 import filetype
 
+from passlib.context import CryptContext
+from datetime import datetime, timedelta
+import jwt
+
+# filetype check
 def is_video(path):
-    mime_types = ['video/mp4', 'video/mpeg', 'video/webm']
+    mime_types = ["video/mp4", "video/mpeg", "video/webm"]
 
     file_type = filetype.guess(path)
     if file_type is None:
         return False
 
     return file_type.mime in mime_types
+
+def is_audio(path):
+    mime_types = ['audio/mp3', 'audio/mpga', 'audio/m4a', 'audio/wav']
+
+    file_type = filetype.guess(path)
+    if file_type is None:
+        return False
+
+    return file_type.mime in mime_types
+
+def is_text(path):
+    mime_types = [
+        'text/plain',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/pdf'
+    ]
+
+    file_type = filetype.guess(path)
+    if file_type is None:
+        return False
+
+    return file_type.mime in mime_types
+
+# authentication
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    secret_key = os.getenv('SECRET_KEY')
+    if not secret_key:
+        raise ValueError("SECRET_KEY environment variable not set.")
     
+    to_encode = data.copy()
+    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=60))
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, secret_key, algorithm="HS256")
+
+def verify_jwt_token(token: str):
+    try:
+        payload = jwt.decode(token, os.getenv("SECRET_KEY"), algorithms="HS256")
+        user_id = payload.get("sub")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid JWT token")
+        return user_id
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token has expired")
+    except jwt.JWTError:
+        raise HTTPException(status_code=401, detail="Invalid JWT token")
+
+# memory management
 def free_memory():
     gc.collect()
     

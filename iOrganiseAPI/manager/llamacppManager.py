@@ -2,8 +2,8 @@ import re
 
 from langchain_community.llms import LlamaCpp
 
-from enums.deviceTypes import DeviceTypes
-from enums.llmModels import LlmModels
+from enums.DeviceTypes import DeviceTypes
+from enums.LlmModels import LlmModels
 
 LLM_MODELS = {
     "mistral_7b": ("/app/models/mistral_7b/model.bin", 8192),
@@ -51,6 +51,6 @@ class LlamaCppManager:
 
         # filter out COT tokens when using deepseek 14b
         if self.__name == "deepseek_14b":
-            result = re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL).strip()
+            result = re.sub(r".*</think>", "", result, flags=re.DOTALL).strip()
 
         return result

@@ -181,6 +181,15 @@ export const themeSettings = (mode) => {
                     }
                 }
             },
+            MuiInputLabel: {
+                styleOverrides: {
+                    root: {
+                        '&.Mui-focused': {
+                            color: colours.greenAccent[300]
+                        }
+                    }
+                }
+            },
             MuiMenu: {
                 styleOverrides: {
                     list: {

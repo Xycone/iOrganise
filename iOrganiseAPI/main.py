@@ -132,18 +132,13 @@ async def view_files(token: str = Depends(oauth2_scheme)):
 
         if os.path.exists(file_path):
             files.append({
-                "file_name": file.path,
-                "file_type": file.type,
-                "file_size": file.size,
-                "file_content": FileResponse(file_path)
+                "type": file.type,
+                "size": file.size,
+                "path": file.path,
+                "content": FileResponse(file_path)
             })
         else:
-            files.append({
-                "file_name": file.path,
-                "file_type": file.type,
-                "file_size": file.size,
-                "error": "File not found"
-            })
+            raise HTTPException(status_code=404, detail=f"File not found")
 
     return {"files": files}
 

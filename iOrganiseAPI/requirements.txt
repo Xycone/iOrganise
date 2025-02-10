@@ -8,11 +8,8 @@ langchain-community==0.2.2
 pydub==0.25.1
 python-multipart==0.0.9
 uvicorn==0.30.3
-<<<<<<< HEAD
-tokenizers
-tensorflow
-PyMuPDF
-python-docx
-=======
 transformers
->>>>>>> af2569e19788d80898930e05a0821f9ae6503df7
+tokenizers==0.21.0
+tensorflow==2.18.0
+PyMuPDF==1.25.3
+python-docx==1.1.2

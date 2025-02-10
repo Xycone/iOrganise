@@ -97,11 +97,12 @@ Follow the instructions to start iOrganiseUI and iOrganiseAPI:
 1. Start Docker Desktop.
 2. Open the Windows Terminal.
 3. Navigate to the directory containing the docker-compose.yml file.
-4. Make sure CUDA >= 12.3 by running the following command in Ubuntu:
+4. If running the application with a GPU, make sure CUDA >= 12.3 by running the following command in Ubuntu:
     ```bash
     nvidia-smi
     ```
-5. Run the command:
+5. Adjust the .env file in the same directory as needed.
+6. Run the command:
     ```bash
     docker-compose up --build
     ```

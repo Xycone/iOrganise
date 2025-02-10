@@ -1,8 +1,6 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Path, Request
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-
-import os
 
 import torch
 

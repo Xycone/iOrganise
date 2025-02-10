@@ -199,7 +199,7 @@ function CategoriseText() {
                         </Grid>
                     </Grid>
                     <Divider />
-                    <Box mt={2}>
+                    <Box my={2}>
                         <Typography variant="h6" gutterBottom>
                             Categorise plain text:
                         </Typography>
@@ -221,7 +221,7 @@ function CategoriseText() {
                     </Box>
 
                     {/* Submit Button */}
-                    <Box mt={4}>
+                    <Box my={3}>
                         <Divider sx={{ mb: 2 }} />
                         <Button
                             variant="contained"
@@ -232,6 +232,7 @@ function CategoriseText() {
                         </Button>
                     </Box>
                     <Typography my={2} mt={10} >API Response:</Typography>
+                    <Divider />
                     <Box
                         my={2}
                         p={5}
@@ -274,7 +275,7 @@ function CategoriseText() {
                                     Upload Files
                                 </Typography>
                                 <DialogContentText>
-                                    Upload & Attach Audio Files To The API Request.
+                                    Upload & attach text based files to the API request.
                                 </DialogContentText>
                             </Box>
 
@@ -304,7 +305,7 @@ function CategoriseText() {
                                     Choose a file or drag & drop it here
                                 </Typography>
                                 <DialogContentText mb={2}>
-                                    txt, pdf, docx formats, up to 25MB
+                                    txt, pdf, docx formats
                                 </DialogContentText>
                                 <Button
                                     variant="contained"

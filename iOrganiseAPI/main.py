@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 import torch
 
@@ -24,7 +24,6 @@ from dto.TranscribeAudioDTO import TranscribeAudioDTO
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
-app.mount("/files", StaticFiles(directory="/app/file_storage"), name="files")
 
 # CORS settings
 origins = [
@@ -127,7 +126,26 @@ async def view_files(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
 
-    return [{"file_name": file.path, "file_type": file.type, "file_size": file.size} for file in file_upload_list]
+    files = []
+    for file in file_upload_list:
+        file_path = file.path
+
+        if os.path.exists(file_path):
+            files.append({
+                "file_name": file.path,
+                "file_type": file.type,
+                "file_size": file.size,
+                "file_content": FileResponse(file_path)
+            })
+        else:
+            files.append({
+                "file_name": file.path,
+                "file_type": file.type,
+                "file_size": file.size,
+                "error": "File not found"
+            })
+
+    return {"files": files}
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

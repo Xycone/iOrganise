@@ -101,7 +101,7 @@ Follow the instructions to start iOrganiseUI and iOrganiseAPI:
     ```bash
     nvidia-smi
     ```
-5. Adjust the .env file in the same directory as needed.
+5. Adjust the environmental variables within the .env file as needed. It will attempt to build the Dockerfile.gpu using the nvidia runtime if left unmodified.
 6. Run the command:
     ```bash
     docker-compose up --build

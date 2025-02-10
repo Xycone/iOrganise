@@ -121,7 +121,7 @@ This application was created as part of a Year 3 project module in our Diploma i
   - Mistral 7B Instruct model, provided by [TheBloke on Hugging Face](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF)
   - Deepseek R1 Qwen 14B Distill model, provided by [bartowski on Hugging Face](https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF)
 
-### Credits for other libraries and dependencies
+### Credits for a few other libraries and dependencies
 - **`llama-cpp-python`**: Python bindings for llama.cpp. [Source](https://github.com/abetlen/llama-cpp-python). Licensed under the MIT License.
 - **`aiofiles`**: Asynchronous file handling. [Source](https://github.com/Tinche/aiofiles). Licensed under the Apache2 License.
 - **`fastapi`**: API framework. [Source](https://github.com/tiangolo/fastapi). Licensed under the MIT License.

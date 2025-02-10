@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard.jsx';
 import TranscribeAudio from './pages/TranscribeAudio.jsx';
 import SetupDocs from './pages/SetupDocs.jsx';
 import ApiDocs from './pages/ApiDocs.jsx';
+import CategoriseText from './pages/CategoriseText.jsx';
 
 function App() {
   const [theme, colourMode] = useMode();
@@ -32,6 +33,7 @@ function App() {
               <Route path="/transcribeaudio" element={<TranscribeAudio />} />
               <Route path="/setupdocs" element={<SetupDocs />} />
               <Route path="/apidocs" element={<ApiDocs />} />
+              <Route path="/categorisetext" element={<CategoriseText />} />
             </Routes>
           </main>
         </div>

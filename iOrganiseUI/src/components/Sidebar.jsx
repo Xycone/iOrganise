@@ -14,6 +14,8 @@ import AudioFileOutlinedIcon from '@mui/icons-material/AudioFileOutlined';
 import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
+
 
 const Item = ({ title, to, icon, selected }) => {
     const theme = useTheme();
@@ -39,7 +41,8 @@ function Sidebar() {
             pathname === '/dashboard' ? 'Dashboard' :
                 pathname === '/transcribeaudio' ? 'Transcribe Audio' :
                     pathname === '/setupdocs' ? 'Setup Documentation' :
-                        pathname === '/apidocs' ? 'API Documentation' : 'Home';
+                        pathname === '/apidocs' ? 'API Documentation' :
+                            pathname === '/categorisetext' ? 'Categorise Notes' : 'Home';
 
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
@@ -126,6 +129,13 @@ function Sidebar() {
                             title="Transcribe Audio"
                             to="/transcribeaudio"
                             icon={<AudioFileOutlinedIcon />}
+                            selected={selected}
+                        />
+
+                        <Item
+                            title="Categorise Notes"
+                            to="/categorisetext"
+                            icon={<NoteAltOutlinedIcon />}
                             selected={selected}
                         />
 

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.staticfiles import StaticFiles
 
 import torch
 
@@ -23,6 +24,7 @@ from dto.TranscribeAudioDTO import TranscribeAudioDTO
 app = FastAPI()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/token")
+app.mount("/files", StaticFiles(directory="/app/file_storage"), name="files")
 
 # CORS settings
 origins = [
@@ -61,7 +63,7 @@ async def sign_up(form_data: SignUpDTO):
     user_setting = UserSetting(asr_model="small_sg", llm="deepseek_14b", user=user)
     await db_create(user_setting)
     
-    return {"msg": "User created successfully", "user": response.email}
+    return {"msg": "User created successfully", "user": response}
 
 @app.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -78,7 +80,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 @app.get("/view-info")
 async def view_info(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
-    user = await db_get_by_attribute(User, "id", user_id)
+    user = await db_get_by_id(User, user_id)
 
     return {"user": user}
 
@@ -105,6 +107,27 @@ async def update_setting(id: int, form_data: UpdateSettingDTO, token: str = Depe
     response = await db_update(UserSetting, id, new_user_setting)
 
     return {"msg": "UserSetting updated successfully", "user_setting": response}
+
+@app.post("/upload-files")
+async def upload_files(files: List[UploadFile] = File(...), token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    user = await db_get_by_id(User, user_id)
+
+    for file in files:
+        type, size = get_file_info(file)
+        path = await save_uploaded_file(file)
+
+        file_upload = FileUpload(type=type, size=size, path=path, user=user)
+        await db_create(file_upload)
+
+    return {"msg": "Files uploaded successfully"}
+
+@app.get("/view-files")
+async def view_files(token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+
+    return [{"file_name": file.path, "file_type": file.type, "file_size": file.size} for file in file_upload_list]
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

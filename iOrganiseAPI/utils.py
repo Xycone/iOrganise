@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 
 import os
 import gc
@@ -41,6 +41,31 @@ def is_text(path):
         return False
 
     return file_type.mime in mime_types
+
+# file uploading
+def get_file_info(file: UploadFile):
+    try:
+        file_content = file.file.read()
+        size = round(len(file_content) / (1024 * 1024), 2)  # Size in MB
+
+        type = filetype.guess(file_content)
+        return type.mime if type else "unknown", size
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error reading file: {str(e)}")
+
+async def save_uploaded_file(file: UploadFile):
+    try:
+        file_location = os.path.join("/app/file_storage", file.filename)
+        
+        file_content = await file.read()
+        with open(file_location, "wb") as f:
+            f.write(file_content)
+
+        return file_location
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving file to storage: {str(e)}")
 
 # authentication
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

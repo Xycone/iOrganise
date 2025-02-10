@@ -12,6 +12,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    volumes:
+      - file_storage:/app/file_storage
     networks:
       - app_network
 
@@ -35,6 +37,7 @@ services:
 
 volumes:
   mysql_data:
+  file_storage:
 
 networks:
   app_network:

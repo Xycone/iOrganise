@@ -54,9 +54,11 @@ async def sign_up(form_data: SignUpDTO):
     # hash password
     hashed_password = hash_password(form_data.password)
     
-    # create new user record
-    new_user = User(name=form_data.name, email=form_data.email, password=hashed_password)
-    response = await db_create(new_user)
+    # create new user
+    user = User(name=form_data.name, email=form_data.email, password=hashed_password)
+    response = await db_create(user)
+    user_setting = UserSetting(asr_model="small_sg", llm_model="deepseek_14b", user=user.id)
+    await db_create(user_setting)
     
     return {"msg": "User created successfully", "user": response.email}
 
@@ -78,6 +80,13 @@ async def view_info(token: str = Depends(oauth2_scheme)):
     user = await db_get_by_attribute(User, "id", user_id)
 
     return {"user": user}
+
+@app.get("/view-setting")
+async def view_setting(token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    user_setting = await db_get_by_attribute(UserSetting, "user_id", user_id)
+
+    return {"user_setting": user_setting}
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

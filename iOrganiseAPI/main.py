@@ -57,7 +57,7 @@ async def sign_up(form_data: SignUpDTO):
     # create new user
     user = User(name=form_data.name, email=form_data.email, password=hashed_password)
     response = await db_create(user)
-    user_setting = UserSetting(asr_model="small_sg", llm_model="deepseek_14b", user=user.id)
+    user_setting = UserSetting(asr_model="small_sg", llm_model="deepseek_14b", user=user)
     await db_create(user_setting)
     
     return {"msg": "User created successfully", "user": response.email}

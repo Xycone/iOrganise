@@ -16,8 +16,9 @@ from tempfile import NamedTemporaryFile
 
 from utils import *
 from modelLoader import ModelLoader
-from dto.TranscribeAudioDTO import TranscribeAudioDTO
 from dto.SignUpDTO import SignUpDTO
+from dto.UpdateSettingDTO import UpdateSettingDTO
+from dto.TranscribeAudioDTO import TranscribeAudioDTO
 
 app = FastAPI()
 
@@ -57,7 +58,7 @@ async def sign_up(form_data: SignUpDTO):
     # create new user
     user = User(name=form_data.name, email=form_data.email, password=hashed_password)
     response = await db_create(user)
-    user_setting = UserSetting(asr_model="small_sg", llm_model="deepseek_14b", user=user)
+    user_setting = UserSetting(asr_model="small_sg", llm="deepseek_14b", user=user)
     await db_create(user_setting)
     
     return {"msg": "User created successfully", "user": response.email}
@@ -87,6 +88,23 @@ async def view_setting(token: str = Depends(oauth2_scheme)):
     user_setting = await db_get_by_attribute(UserSetting, "user_id", user_id)
 
     return {"user_setting": user_setting}
+
+@app.put("/update-setting/{id}")
+async def update_setting(id: int, form_data: UpdateSettingDTO, token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+
+    # check if the setting belongs to user
+    user_setting = await db_get_by_id(UserSetting, id)
+    if user_id != user_setting.user_id:
+        raise HTTPException(status_code=401, detail="Invalid permissions to update this setting")
+
+    new_user_setting = {
+        "asr_model": form_data.asr_model,
+        "llm": form_data.llm
+    }
+    response = await db_update(UserSetting, id, new_user_setting)
+
+    return {"msg": "UserSetting updated successfully", "user_setting": response}
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

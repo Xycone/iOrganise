@@ -11,7 +11,7 @@ class UserSetting(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     asr_model = Column(SqlEnum(AsrModels), nullable=False)
-    llm_model = Column(SqlEnum(LlmModels), nullable=False)
+    llm = Column(SqlEnum(LlmModels), nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'))
 
     user = relationship("User", back_populates="user_settings")

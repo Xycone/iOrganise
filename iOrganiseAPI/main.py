@@ -67,7 +67,7 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
                         {
                             "start": segment.get("start"),
                             "end": segment.get("end"),
-                            "text": segment.get("text")
+                            "text": segment.get("text").lstrip()
                         }
                         for segment in segments
                     ]

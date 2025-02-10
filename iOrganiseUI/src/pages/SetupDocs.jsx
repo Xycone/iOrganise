@@ -190,6 +190,12 @@ function SetupDocs() {
               <Typography mb={3} variant="h5">
                 Running the image with GPU acceleration
               </Typography>
+              
+              <Box mb={2}>
+                <Typography>
+                  Ensure that Nvidia drivers on Windows are on CUDA 12.3 or above
+                </Typography>
+              </Box>
 
               <Box mb={2}>
                 <Typography>
@@ -250,7 +256,7 @@ function SetupDocs() {
 
               <Box mb={2}>
                 <Typography>
-                  Make sure Docker Desktop is up to date and reboot Windows
+                  Make sure Docker Desktop is up to date and restart
                 </Typography>
               </Box>
 

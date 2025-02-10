@@ -35,8 +35,8 @@ import { useFormik } from 'formik';
 import Header from '../components/Header';
 
 // Toast
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+// import { ToastContainer, toast } from 'react-toastify';
+// import 'react-toastify/dist/ReactToastify.css';
 
 function TranscribeFiles() {
     const theme = useTheme();
@@ -64,19 +64,20 @@ function TranscribeFiles() {
 
     const handleFileSelect = (event) => {
         const files = Array.from(event.target.files);
-        let exceededFiles = [];
+        // let exceededFiles = [];
 
         files.forEach((file) => {
-            if (file.size <= 25 * 1024 * 1024) {
-                setSelectedFiles((prevFiles) => [...prevFiles, file]);
-            } else {
-                exceededFiles.push(file.name);
-            }
+            setSelectedFiles((prevFiles) => [...prevFiles, file]);
+            // if (file.size <= 25 * 1024 * 1024) {
+            //     setSelectedFiles((prevFiles) => [...prevFiles, file]);
+            // } else {
+            //     exceededFiles.push(file.name);
+            // }
         });
 
-        if (exceededFiles.length > 0) {
-            toast.error(`Files exceeding the 25MB size limit: ${exceededFiles.join(', ')}`);
-        }
+        // if (exceededFiles.length > 0) {
+        //     toast.error(`Files exceeding the 25MB size limit: ${exceededFiles.join(', ')}`);
+        // }
 
         event.target.value = '';
     };
@@ -85,19 +86,20 @@ function TranscribeFiles() {
         event.preventDefault();
 
         const files = Array.from(event.dataTransfer.files);
-        let exceededFiles = [];
+        // let exceededFiles = [];
 
         files.forEach((file) => {
-            if (file.size <= 25 * 1024 * 1024) {
-                setSelectedFiles((prevFiles) => [...prevFiles, file]);
-            } else {
-                exceededFiles.push(file.name);
-            }
+            setSelectedFiles((prevFiles) => [...prevFiles, file]);
+            // if (file.size <= 25 * 1024 * 1024) {
+            //     setSelectedFiles((prevFiles) => [...prevFiles, file]);
+            // } else {
+            //     exceededFiles.push(file.name);
+            // }
         });
 
-        if (exceededFiles.length > 0) {
-            toast.error(`Files exceeding the 25MB size limit: ${exceededFiles.join(', ')}`);
-        }
+        // if (exceededFiles.length > 0) {
+        //     toast.error(`Files exceeding the 25MB size limit: ${exceededFiles.join(', ')}`);
+        // }
     };
 
     const handleDragOver = (event) => {
@@ -121,7 +123,7 @@ function TranscribeFiles() {
         initialValues: {
             asr_model: "small_sg",
             content_summary: true,
-            llm: "mistral_7b"
+            llm: "deepseek_14b"
         },
 
         // Validation Schema
@@ -134,7 +136,7 @@ function TranscribeFiles() {
                 .required(),
 
             llm: yup.string()
-                .oneOf(["mistral_7b", "llama_8b", "mistral_22b"])
+                .oneOf(["mistral_7b", "deepseek_14b"])
                 .required(),
         }),
 
@@ -387,8 +389,7 @@ function TranscribeFiles() {
                                                 error={formik.touched.llm && Boolean(formik.errors.llm)}
                                             >
                                                 <MenuItem value={"mistral_7b"}>Mistral 7B</MenuItem>
-                                                <MenuItem value={"llama_8b"}>Llama 3.1 8B</MenuItem>
-                                                <MenuItem value={"mistral_22b"}>Mistral 22B</MenuItem>
+                                                <MenuItem value={"deepseek_14b"}>Deepseek 14B</MenuItem>
                                             </Select>
                                         </Box>
                                     </Grid>
@@ -525,7 +526,7 @@ function TranscribeFiles() {
                                     Choose a file or drag & drop it here
                                 </Typography>
                                 <DialogContentText mb={2}>
-                                    mp3, mp4, mpeg, mpga, m4a, wav, webm formats, up to 25MB
+                                    mp3, mp4, mpeg, mpga, m4a, wav & webm formats, up to 25MB
                                 </DialogContentText>
                                 <Button
                                     variant="contained"
@@ -575,7 +576,7 @@ function TranscribeFiles() {
             </Dialog>
 
             {/* Toast */}
-            <ToastContainer />
+            {/* <ToastContainer /> */}
         </Box >
     )
 }

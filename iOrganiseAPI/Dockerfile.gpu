@@ -1,4 +1,4 @@
-FROM python:3.10-slim
+FROM nvidia/cuda:12.3.2-cudnn9-devel-ubuntu22.04
 
 WORKDIR /app
 
@@ -7,56 +7,43 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         git \
         build-essential \
-        cmake \
-        wget \
         ffmpeg \
-        curl && \
+        curl \
+        python3.10 \
+        python3-pip \
+        gcc \
+        wget \
+        ocl-icd-opencl-dev \
+        opencl-headers \
+        clinfo \
+        libclblast-dev \
+        libopenblas-dev && \
+    apt-mark hold python3.10 && \
+    mkdir -p /etc/OpenCL/vendors && \
+    echo "libnvidia-opencl.so.1" > /etc/OpenCL/vendors/nvidia.icd && \
+    apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
-# install CUDA toolkit and cuDNN
-RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.0-1_all.deb && \
-    dpkg -i cuda-keyring_1.0-1_all.deb && \
-    rm cuda-keyring_1.0-1_all.deb && \
-    apt-get update && \
-    apt-get install -y --no-install-recommends \
-    cuda-toolkit-12-2 \
-    libcudnn8 \
-    libcudnn8-dev && \
-    rm -rf /var/lib/apt/lists/*
-
-# set environment variables for CUDA
-ENV PATH=/usr/local/cuda-12.2/bin:$PATH
-
-# install Github packages
-RUN pip install "git+https://github.com/m-bain/whisperx.git"
+    
+# build wheels for llama-cpp-python
+RUN pip install --upgrade pip pytest cmake scikit-build setuptools && \
+    CMAKE_ARGS="-DGGML_CUDA=on -DCMAKE_CUDA_ARCHITECTURES=75;86;89" pip install llama-cpp-python==0.3.7 --no-cache-dir
 
 # download models
-RUN mkdir -p /app/models
-
-RUN mkdir -p /app/models/mistral_7b && \
+RUN mkdir -p /app/models/mistral_7b \
+    /app/models/deepseek_14b \
+    /app/models/faster-whisper-small \
+    /app/models/faster-whisper-small-sg \
+    /app/models/faster-whisper-medium && \
+    # mistral 7B (Q6K quant)
     curl -L -o /app/models/mistral_7b/model.bin "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q6_K.gguf" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /app/models/llama_8b && \
-    curl -L -o /app/models/llama_8b/model.bin "https://huggingface.co/QuantFactory/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct.Q8_0.gguf" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /app/models/mistral_22b && \
-    curl -L -o /app/models/mistral_22b/model.bin "https://huggingface.co/bartowski/Mistral-Small-Instruct-2409-GGUF/resolve/main/Mistral-Small-Instruct-2409-Q6_K.gguf" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /app/models/faster-whisper-small && \
+    # deepseek R1 qwen 14B distill (Q4KM quant)
+    curl -L -o /app/models/deepseek_14b/model.bin "https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF/resolve/main/DeepSeek-R1-Distill-Qwen-14B-Q4_K_M.gguf" && \
+    # faster-whisper small
     curl -L -o /app/models/faster-whisper-small/config.json "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/config.json" && \
     curl -L -o /app/models/faster-whisper-small/model.bin "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/model.bin" && \
     curl -L -o /app/models/faster-whisper-small/tokenizer.json "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/tokenizer.json" && \
     curl -L -o /app/models/faster-whisper-small/vocabulary.txt "https://huggingface.co/guillaumekln/faster-whisper-small/resolve/main/vocabulary.txt" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /app/models/faster-whisper-small-sg && \
+    # faster-whisper small (SG finetune)
     curl -L -o /app/models/faster-whisper-small-sg/added_tokens.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/added_tokens.json" && \
     curl -L -o /app/models/faster-whisper-small-sg/config.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/config.json" && \
     curl -L -o /app/models/faster-whisper-small-sg/merges.txt "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/merges.txt" && \
@@ -67,20 +54,14 @@ RUN mkdir -p /app/models/faster-whisper-small-sg && \
     curl -L -o /app/models/faster-whisper-small-sg/tokenizer_config.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/tokenizer_config.json" && \
     curl -L -o /app/models/faster-whisper-small-sg/vocab.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/vocab.json" && \
     curl -L -o /app/models/faster-whisper-small-sg/vocabulary.json "https://huggingface.co/Xycone/faster-whisper-SGspeech-finetune/resolve/main/vocabulary.json" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN mkdir -p /app/models/faster-whisper-medium && \
+    # faster-whisper medium
     curl -L -o /app/models/faster-whisper-medium/config.json "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/config.json" && \
     curl -L -o /app/models/faster-whisper-medium/model.bin "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/model.bin" && \
     curl -L -o /app/models/faster-whisper-medium/tokenizer.json "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/tokenizer.json" && \
     curl -L -o /app/models/faster-whisper-medium/vocabulary.txt "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/vocabulary.txt" && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # install Python dependencies
-RUN CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python==0.2.77 --no-cache-dir
-
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 

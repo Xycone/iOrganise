@@ -22,8 +22,8 @@ For the best experience, ensure that your system meets or exceeds the recommende
 ### Recommended requirements
 - **CPU:** 8 or more x86 vCPUs (with AVX, Intel "Sandy Bridge" or later / AMD "Bulldozer" or later)
 - **RAM:** 16 GB or more
-- **Storage:** 70 GB of available disk space
-- **GPU:** Dedicated graphics card with at least 16 GB VRAM
+- **Storage:** 80 GB of available disk space
+- **GPU:** Nvidia 20/30/40 series graphics card with at least 16 GB VRAM
 
 ## Docker Setup 🐋
 Make sure hardware virtualisation is enabled in the BIOS
@@ -33,7 +33,7 @@ Make sure hardware virtualisation is enabled in the BIOS
     ```bash
     wsl --install
     ```
-3. Install Ubuntu from the Microsoft Store and open it.
+3. Check if Ubuntu is installed in the Microsoft store and open it.
 4. Follow the instructions to create a new UNIX user account.
 5. Download the Docker Desktop Installer from the following link: [Docker Desktop Installer](https://docs.docker.com/desktop/install/windows-install/)
 6. Run the installer and open the app after installation is complete.
@@ -77,7 +77,7 @@ Make sure hardware virtualisation is enabled in the BIOS
     }
     EOF
     ```
-13. Make sure Docker Desktop is up to date and reboot Windows.
+13. Make sure Docker Desktop is up to date and restart.
 
 ## Running the application ▶️
 Follow the instructions to start iOrganiseUI and iOrganiseAPI:
@@ -103,7 +103,7 @@ Follow the instructions to start iOrganiseUI and iOrganiseAPI:
 ### Creating the Docker GPU Image
 1. Start Docker Desktop.
 2. Open the Windows Terminal.
-3. Ensure that your CUDA version is >= 12.2
+3. Ensure that your CUDA version is >= 12.3
 4. Run the command. Replace `<folder_path>` with the path to the project directory containing the Dockerfile:
     ```bash
     docker build -f Dockerfile.gpu -t iorganise-api-gpu-img <folder_path>
@@ -135,20 +135,18 @@ docker start iorganise-api-gpu
 ## Acknowledgements 🙏
 This application was created as part of a Year 3 project module in our Diploma in Information Technology (DIT) program at Nanyang Polytechnic.
 
-- Utilizing the advanced audio alignment capabilities of [WhisperX](https://github.com/m-bain/whisperX), we deployed our fine-tuned Whisper model after converting it to the required format.
+- Utilising the faster transcription capabilities made possible by [faster-whisper](https://github.com/SYSTRAN/faster-whisper), we deployed our fine-tuned Whisper model after converting it to the required format.
 
 - Additionally, we also incorporated the (insert library/repository name) 
 
 - Last but not least, we made use of the following quantised models to perform content summarisation
   - Mistral 7B Instruct model, provided by [TheBloke on Hugging Face](https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF)
-  - Llama 8B Instruct model, provided by [QuantFactory on Hugging Face](https://huggingface.co/QuantFactory/Meta-Llama-3.1-8B-Instruct-GGUF)
-  - Mistral Small Instruct 22B model, provided by [bartowski on Hugging Face](https://huggingface.co/bartowski/Mistral-Small-Instruct-2409-GGUF)
+  - Deepseek R1 Qwen 14B Distill model, provided by [bartowski on Hugging Face](https://huggingface.co/bartowski/DeepSeek-R1-Distill-Qwen-14B-GGUF)
 
 ### Credits for other libraries and dependencies
 - **`llama-cpp-python`**: Python bindings for llama.cpp. [Source](https://github.com/abetlen/llama-cpp-python). Licensed under the MIT License.
 - **`aiofiles`**: Asynchronous file handling. [Source](https://github.com/Tinche/aiofiles). Licensed under the Apache2 License.
 - **`fastapi`**: API framework. [Source](https://github.com/tiangolo/fastapi). Licensed under the MIT License.
-- **`langchain-community`**: Language model applications. [Source](https://github.com/langchain-ai/langchain). Licensed under the MIT License.
 - **`pydub`**: Audio processing. [Source](https://github.com/jiaaro/pydub). Licensed under the MIT License.
 - **`python-multipart`**: Multipart form handling. [Source](https://github.com/Kludex/python-multipart). Licensed under the Apache2 License.
 - **`uvicorn`**: ASGI server for Python web apps. [Source](https://github.com/encode/uvicorn). Licensed under the BSD 3-Clause License.

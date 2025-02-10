@@ -72,8 +72,7 @@ function ApiDocs() {
                   <Typography>LlmModels:</Typography>
                   <Box ml={2}>
                     <Typography><code>"mistral_7b"</code></Typography>
-                    <Typography><code>"llama_8b"</code></Typography>
-                    <Typography><code>"mistral_22b"</code></Typography>
+                    <Typography><code>"deepseek_14b"</code></Typography>
                   </Box>
                 </Box>
               </Box>

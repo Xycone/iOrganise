@@ -134,7 +134,7 @@ async def view_files(token: str = Depends(oauth2_scheme)):
             files.append({
                 "type": file.type,
                 "size": file.size,
-                "path": file.path,
+                "path": file_path,
                 "content": FileResponse(file_path)
             })
         else:

@@ -50,7 +50,7 @@ function Register() {
                 .required("Password is required"),
             confirm_password: yup.string().trim()
                 .oneOf([yup.ref('password'), null], 'Passwords must match')
-                .required("Password is required")
+                .required("Confirm Password is required")
         }),
 
         onSubmit: (data) => {

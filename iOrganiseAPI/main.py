@@ -17,7 +17,7 @@ from tempfile import NamedTemporaryFile
 
 from utils import *
 from modelLoader import ModelLoader
-from dto.SignUpDTO import SignUpDTO
+from dto.RegisterDTO import RegisterDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
 
@@ -46,8 +46,8 @@ DEVICE, COMPUTE_TYPE = ("cuda", "float16") if torch.cuda.is_available() else ("c
 async def on_startup():
     await create_tables()
 
-@app.post("/sign-up")
-async def sign_up(form_data: SignUpDTO):
+@app.post("/register")
+async def register(form_data: RegisterDTO):
     # check if the email already exists
     existing_user = (await db_get_by_attribute(User, "email", form_data.email) or [None])[0]
     if existing_user:

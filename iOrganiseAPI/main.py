@@ -165,7 +165,7 @@ async def get_files(token: str = Depends(oauth2_scheme)):
 
     return {"files": files}
 
-@app.get("/download-files")
+@app.post("/download-files")
 async def download_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)

@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 import os
 import zipfile
@@ -184,7 +184,7 @@ async def download_files(id_list: List[int], token: str = Depends(oauth2_scheme)
             for file in files:
                 zip_file.write(file.path, os.path.basename(file.path))
         zip_buffer.seek(0)
-        return FileResponse(zip_buffer, media_type="application/zip", filename="files.zip")
+        return StreamingResponse(zip_buffer, media_type="application/zip", headers={"Content-Disposition": "attachment; filename=files.zip"})
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

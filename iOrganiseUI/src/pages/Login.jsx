@@ -15,8 +15,8 @@ import { useFormik } from 'formik';
 import Header from '../components/Header';
 
 // Toast
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
     const navigate = useNavigate();
@@ -34,21 +34,21 @@ function Login() {
         // Validation Schema
         validationSchema: yup.object({
             username: yup.string().trim()
-                .email('Enter a valid email')
-                .min(1, 'Password must be at least 1 character')
-                .max(255, 'Email must be at most 255 characters')
-                .required('Email is required'),
+                .email("Enter a valid email")
+                .min(1, "Email must be at least 1 character")
+                .max(255, "Email must be at most 255 characters")
+                .required("Email is required"),
             password: yup.string().trim()
-                .min(1, 'Password must be at least 1 character')
-                .max(255, 'Password must be at most 255 characters')
-                .required('Password is required')
+                .min(1, "Password must be at least 1 character")
+                .max(255, "Password must be at most 255 characters")
+                .required("Password is required")
         }),
 
         onSubmit: (data) => {
             const formData = new FormData();
 
-            formData.append('username', data.username.trim().toLowerCase());
-            formData.append('password', data.password.trim());
+            formData.append("username", data.username.trim().toLowerCase());
+            formData.append("password", data.password.trim());
 
             http.post("/login", formData)
                 .then((res) => {
@@ -72,7 +72,7 @@ function Login() {
             >
                 <Header title="Login" />
 
-                <Box component="form">
+                <Box component="form" width="100%" maxWidth="400px">
                     <TextField
                         sx={{ my: 1 }}
                         fullWidth

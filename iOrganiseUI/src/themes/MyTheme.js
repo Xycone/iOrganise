@@ -184,7 +184,7 @@ export const themeSettings = (mode) => {
             MuiInputLabel: {
                 styleOverrides: {
                     root: {
-                        '&.Mui-focused': {
+                        "&.Mui-focused": {
                             color: colours.greenAccent[300]
                         }
                     }
@@ -232,7 +232,23 @@ export const themeSettings = (mode) => {
                             }
                         )
                     }
-                }
+                },
+                variants: [
+                    {
+                        props: { variant: "outlined" },
+                        style: {
+                            backgroundColor: "transparent",
+                            border: "1px solid",
+                            borderColor: colours.greenAccent[300],
+                            color: colours.greenAccent[300],
+                            "&:hover": {
+                                backgroundColor: "transparent",
+                                borderColor: colours.greenAccent[300],
+                                color: colours.greenAccent[300],
+                            }
+                        }
+                    }
+                ]
             },
             MuiDialog: {
                 styleOverrides: {

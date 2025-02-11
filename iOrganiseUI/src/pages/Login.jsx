@@ -54,6 +54,7 @@ function Login() {
                 .then((res) => {
                     console.log(res)
                     localStorage.setItem("accessToken", res.data.access_token);
+                    console.log("Access Token:", localStorage.getItem("accessToken"));
                     navigate("/home")
                 })
                 .catch(function (err) {

@@ -52,7 +52,8 @@ function Login() {
 
             http.post("/login", formData)
                 .then((res) => {
-                    localStorage.setItem("accessToken", res.access_token);
+                    console.log(res)
+                    localStorage.setItem("accessToken", res.data.access_token);
                     navigate("/home")
                 })
                 .catch(function (err) {

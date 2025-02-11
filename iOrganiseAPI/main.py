@@ -3,6 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import FileResponse
 
+import os
+import zipfile
+import io
+
 import torch
 
 from database import create_tables, db_create, db_get, db_get_by_id, db_get_by_attribute, db_update, db_delete
@@ -151,19 +155,36 @@ async def get_files(token: str = Depends(oauth2_scheme)):
 
     files = []
     for file in file_upload_list:
-        file_path = file.path
-
-        if os.path.exists(file_path):
+        if os.path.exists(file.path):
             files.append({
+                "id": file.id,
                 "type": file.type,
                 "size": file.size,
-                "path": file_path,
-                "content": FileResponse(file_path)
+                "path": file.path
             })
-        else:
-            raise HTTPException(status_code=404, detail=f"File not found")
 
     return {"files": files}
+
+@app.get("/download-files")
+async def download_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+
+    files= [file for file in file_upload_list if file.id in id_list and os.path.exists(file.path)]
+    if not files:
+        raise HTTPException(status_code=404, detail="None of the requested files found or authorized for download")
+
+    if len(files) == 1:
+        file = files[0]
+        return FileResponse(file.path, filename=os.path.basename(file.path), media_type=file.type)
+    
+    else:
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            for file in files:
+                zip_file.write(file.path, os.path.basename(file.path))
+        zip_buffer.seek(0)
+        return FileResponse(zip_buffer, media_type="application/zip", filename="files.zip")
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

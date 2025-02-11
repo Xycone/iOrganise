@@ -53,10 +53,18 @@ function Topbar() {
 
                 {/* Dropdown Menu */}
                 <Menu
-                    sx={{ mt: 2}}
+                    sx={{ mt: 2 }}
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleMenuClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'right',
+                    }}
                 >
                     <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
                     <MenuItem onClick={handleLoginRedirect}>Login/Register</MenuItem>

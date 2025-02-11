@@ -18,6 +18,7 @@ from tempfile import NamedTemporaryFile
 from utils import *
 from modelLoader import ModelLoader
 from dto.RegisterDTO import RegisterDTO
+from dto.UpdateUserDTO import UpdateUserDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
 
@@ -76,12 +77,34 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/view-info")
-async def view_info(token: str = Depends(oauth2_scheme)):
+@app.get("/get-user")
+async def get_user(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     user = await db_get_by_id(User, user_id)
 
     return {"user": user}
+
+@app.put("/update-user")
+async def update_user(form_data: UpdateUserDTO, token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    user = await db_get_by_id(User, user_id)
+
+    # check if the email already exists
+    existing_user = (await db_get_by_attribute(User, "email", form_data.email) or [None])[0]
+    if existing_user and form_data.email != user.email:
+        raise HTTPException(status_code=400, detail="Email already registered")
+
+    # hash password
+    hashed_password = hash_password(form_data.password)
+
+    new_user = {
+        "name": form_data.name,
+        "email": form_data.email,
+        "password": hashed_password
+    }
+    response = await db_update(User, user_id, new_user)
+
+    return {"msg": "User updated successfully", "user_setting": response}
 
 @app.get("/view-setting")
 async def view_setting(token: str = Depends(oauth2_scheme)):

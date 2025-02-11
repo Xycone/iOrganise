@@ -52,10 +52,9 @@ function Login() {
 
             http.post("/login", formData)
                 .then((res) => {
-                    console.log(res)
                     localStorage.setItem("accessToken", res.data.access_token);
                     console.log("Access Token:", localStorage.getItem("accessToken"));
-                    navigate("/home")
+                    navigate("/home");
                 })
                 .catch(function (err) {
                     const errorMessage = err.response?.data?.detail || err.message || 'An error occurred';

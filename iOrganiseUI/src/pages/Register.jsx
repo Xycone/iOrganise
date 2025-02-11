@@ -60,7 +60,7 @@ function Register() {
 
             http.post("/register", data)
                 .then(() => {
-                    navigate("/login")
+                    navigate("/login");
                 })
                 .catch(function (err) {
                     const errorMessage = err.response?.data?.detail || err.message || 'An error occurred';

@@ -107,11 +107,6 @@ Follow the instructions to start iOrganiseUI and iOrganiseAPI:
     docker-compose up --build
     ```
 
-## TODO 📋
-- [x] Revamp file processing workflow to handle transcription content summarisation in batches.
-- [x] Add functionality to enable or disable content summarisation.
-- [ ] Update the layout, styling, and organization of the transcribe file page to enhance readability and user experience.
-
 ## Acknowledgements 🙏
 This application was created as part of a Year 3 project module in our Diploma in Information Technology (DIT) program at Nanyang Polytechnic.
 

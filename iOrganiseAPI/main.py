@@ -104,7 +104,7 @@ async def update_user(form_data: UpdateUserDTO, token: str = Depends(oauth2_sche
     }
     response = await db_update(User, user_id, new_user)
 
-    return {"msg": "User updated successfully", "user_setting": response}
+    return {"msg": "User updated successfully", "user": response}
 
 @app.get("/view-setting")
 async def view_setting(token: str = Depends(oauth2_scheme)):

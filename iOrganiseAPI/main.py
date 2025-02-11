@@ -176,7 +176,7 @@ async def download_files(id_list: List[int], token: str = Depends(oauth2_scheme)
 
     if len(files) == 1:
         file = files[0]
-        return FileResponse(file.path, filename=os.path.basename(file.path), media_type=file.type)
+        return FileResponse(file.path, media_type=file.type, filename=os.path.basename(file.path))
     
     else:
         zip_buffer = io.BytesIO()

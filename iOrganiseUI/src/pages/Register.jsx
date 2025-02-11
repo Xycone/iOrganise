@@ -29,7 +29,8 @@ function Register() {
         initialValues: {
             name: "",
             email: "",
-            password: ""
+            password: "",
+            confirm_password: ""
         },
 
         // Validation Schema
@@ -46,6 +47,9 @@ function Register() {
             password: yup.string().trim()
                 .min(1, "Password must be at least 1 character")
                 .max(255, "Password must be at most 255 characters")
+                .required("Password is required"),
+            confirm_password: yup.string().trim()
+                .oneOf([yup.ref('password'), null], 'Passwords must match')
                 .required("Password is required")
         }),
 
@@ -114,6 +118,20 @@ function Register() {
                         onBlur={formik.handleBlur}
                         error={formik.touched.password && Boolean(formik.errors.password)}
                         helperText={formik.touched.password && formik.errors.password}
+                    />
+
+                    <TextField
+                        sx={{ my: 1 }}
+                        fullWidth
+                        size="small"
+                        label="Confirm Password"
+                        name="confirm_password"
+                        type="password"
+                        value={formik.values.confirm_password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        error={formik.touched.confirm_password && Boolean(formik.errors.confirm_password)}
+                        helperText={formik.touched.confirm_password && formik.errors.confirm_password}
                     />
 
                     <Box my={3}>

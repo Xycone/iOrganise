@@ -1,32 +1,65 @@
-import React, { useContext, useState } from 'react';
-import { Box, IconButton, useTheme, Avatar, Menu, MenuItem } from '@mui/material';
-import { ColourModeContext, tokens } from '../themes/MyTheme';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
-import SearchIcon from '@mui/icons-material/Search';
-import App from '../App';
-import { useNavigate } from 'react-router-dom';
+import React, { useContext, useState, useEffect } from "react";
+import { Box, IconButton, useTheme, Avatar, Menu, MenuItem, Button, Typography } from "@mui/material";
+import { ColourModeContext, tokens } from "../themes/MyTheme";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import { useNavigate } from "react-router-dom";
 
 function Topbar() {
     const navigate = useNavigate();
-
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
     const colorMode = useContext(ColourModeContext);
 
-    // Dropdown
+    // User state
+    const [user, setUser] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const token = localStorage.getItem("accessToken");
+
+            if (!token) {
+                setUser(null);
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:8000/get-user", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.user) {
+                        setUser(data.user);
+                    } else {
+                        setUser(null);
+                    }
+                } else {
+                    setUser(null);
+                    console.error('Failed to fetch user data');
+                }
+            } catch (error) {
+                console.error("Error Fetching User:", error);
+            }
+        };
+
+        fetchUser();
+    }, [localStorage.getItem("accessToken")]);
+
     const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
 
     const handleLoginRedirect = () => {
-        navigate('/login');
+        navigate("/login");
         handleMenuClose();
     };
 
     const handleLogout = () => {
         localStorage.removeItem("accessToken");
-        navigate('/login');
+        setUser(null);
+        navigate("/home");
         handleMenuClose();
     };
 
@@ -35,41 +68,49 @@ function Topbar() {
             <Box />
 
             <Box display="flex">
-                <IconButton sx={{ mx: 1 }} onClick={colorMode.toggleColourMode} >
-                    {theme.palette.mode === "dark" ? (
-                        <DarkModeOutlinedIcon />
-                    ) : (
-                        <LightModeOutlinedIcon />
-                    )}
+                {/* Dark Mode Toggle */}
+                <IconButton sx={{ mx: 1 }} onClick={colorMode.toggleColourMode}>
+                    {theme.palette.mode === "dark" ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
                 </IconButton>
 
-                {/* Profile Picture Icon */}
-                <IconButton
-                    onClick={handleMenuOpen}
-                    sx={{ mx: 1, width: 35, height: 35 }}
-                >
-                    <Avatar alt="Profile" src="/path/to/profile-pic.jpg" sx={{ width: 30, height: 30 }} />
-                </IconButton>
+                {/* Conditionally Show Login or Profile */}
+                {user ? (
+                    <>
+                        {/* Profile Picture */}
+                        <Box onClick={handleMenuOpen} sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Typography>{user.name}</Typography>
+                            <IconButton sx={{ mx: 1, width: 35, height: 35 }}>
+                                <Avatar alt={user.name} src={user.profilePic} sx={{ width: 30, height: 30 }} />
+                            </IconButton>
+                        </Box>
 
-                {/* Dropdown Menu */}
-                <Menu
-                    sx={{ mt: 2 }}
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'right',
-                    }}
-                    transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'right',
-                    }}
-                >
-                    <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-                    <MenuItem onClick={handleLoginRedirect}>Login/Register</MenuItem>
-                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </Menu>
+
+                        {/* Dropdown Menu */}
+                        <Menu
+                            sx={{ mt: 2 }}
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "right",
+                            }}
+                            transformOrigin={{
+                                vertical: "top",
+                                horizontal: "right",
+                            }}
+                        >
+                            <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
+                            <MenuItem>Settings</MenuItem>
+                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                        </Menu>
+                    </>
+                ) : (
+                    // Show Login Button if User is NOT Logged In
+                    <Button variant="contained" onClick={handleLoginRedirect}>
+                        Login
+                    </Button>
+                )}
             </Box>
         </Box>
     );

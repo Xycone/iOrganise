@@ -1,9 +1,15 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Box, IconButton, useTheme, Avatar, Menu, MenuItem, Button, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
+import { Box, IconButton, useTheme, Menu, MenuItem, Button, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { ColourModeContext, tokens } from "../themes/MyTheme";
+
+// MUI Icons
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import { useNavigate } from "react-router-dom";
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 function Topbar() {
     const navigate = useNavigate();
@@ -97,9 +103,19 @@ function Topbar() {
                                 horizontal: "right",
                             }}
                         >
-                            <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                            <MenuItem>Settings</MenuItem>
-                            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                            <MenuItem sx={{ py: 2 }} onClick={() => navigate("/profile")}>
+                                <ListItemIcon><PersonOutlineOutlinedIcon /></ListItemIcon>
+                                <ListItemText>Profile</ListItemText>
+                            </MenuItem>
+
+                            <MenuItem sx={{ py: 2 }}>
+                                <ListItemIcon><SettingsOutlinedIcon /></ListItemIcon>
+                                <ListItemText>Settings</ListItemText>
+                            </MenuItem >
+                            <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
+                                <ListItemIcon><LogoutOutlinedIcon /></ListItemIcon>
+                                <ListItemText>Logout</ListItemText>
+                            </MenuItem>
                         </Menu>
                     </>
                 ) : (

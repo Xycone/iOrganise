@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import FileResponse
@@ -21,6 +21,8 @@ from dto.RegisterDTO import RegisterDTO
 from dto.UpdateUserDTO import UpdateUserDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
+from dto.TextInputDTO import TextInputDTO
+from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -300,6 +302,78 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
         # 6. unload the LLM
         model_loader.del_models("LLM")
+
+    return response
+
+# API Endpoint
+@app.post("/predict-text")
+async def predict_text(
+    text: Optional[str] = Form(None),
+    files: List[UploadFile] = File(None),
+):
+    # 1. Error check: Ensure text or files are provided
+    if not text and not files:
+        raise HTTPException(status_code=400, detail="No text or files uploaded")
+
+    response = {}
+
+    # Print the received text and files
+    print("Received text:", text)
+
+    # 2. Extract text from files (if any)
+    extracted_text = ""
+    if files:
+        for file in files:
+            with NamedTemporaryFile(delete=True) as temp:
+                try:
+                    # Copy uploaded file contents to the temporary file
+                    with open(temp.name, "wb") as temp_file:
+                        temp_file.write(file.file.read())
+
+                    # Extract text from the file based on extension
+                    if file.filename.endswith(".pdf"):
+                        extracted_text += TextExtractor.extract_text_from_pdf(temp.name)
+                    elif file.filename.endswith(".docx"):
+                        extracted_text += TextExtractor.extract_text_from_docx(temp.name)
+                    elif file.filename.endswith(".txt"):
+                        extracted_text += TextExtractor.extract_text_from_txt(temp.name)
+                    else:
+                        raise HTTPException(status_code=400, detail="Unsupported file type")
+
+                except Exception as e:
+                    response[file.filename] = {"error": str(e)}
+
+    # Print the extracted text (if any)
+    print("Extracted text from files:", extracted_text)
+
+    # Use extracted text if no plain text is provided
+    text = text or extracted_text
+
+    # Print the final text to be used
+    print("Final text for prediction:", text)
+
+    # 3. Use the pre-loaded model manager for prediction
+    if text:
+        try:
+            # Load the model from model_loader (it's already loaded there)
+            model_manager = model_loader.load_bert()
+
+            # Predict using the loaded model
+            predicted_label = model_manager.predict(text)
+
+            response = {
+                "text": text,
+                "predicted_label": int(predicted_label)
+            }
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+
+        # 6. Unload the model
+        model_loader.del_models("BERT")
+
+    # Print the final response
+    print("Response:", response)
 
     return response
 

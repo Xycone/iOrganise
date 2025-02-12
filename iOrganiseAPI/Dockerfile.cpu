@@ -24,7 +24,9 @@ RUN mkdir -p /app/models/mistral_7b \
     /app/models/deepseek_14b \
     /app/models/faster-whisper-small \
     /app/models/faster-whisper-small-sg \
-    /app/models/faster-whisper-medium && \
+    /app/models/faster-whisper-medium \
+    /app/models/DistilBERTSubjectClassification \
+    /app/models/DistilBERTSubjectClassification/variables && \
     # mistral 7B (Q6K quant)
     curl -L -o /app/models/mistral_7b/model.bin "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q6_K.gguf" && \
     # deepseek R1 qwen 14B distill (Q4KM quant)
@@ -50,7 +52,14 @@ RUN mkdir -p /app/models/mistral_7b \
     curl -L -o /app/models/faster-whisper-medium/model.bin "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/model.bin" && \
     curl -L -o /app/models/faster-whisper-medium/tokenizer.json "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/tokenizer.json" && \
     curl -L -o /app/models/faster-whisper-medium/vocabulary.txt "https://huggingface.co/guillaumekln/faster-whisper-medium/resolve/main/vocabulary.txt" && \
+    # distilbert finetune
+    curl -L -o /app/models/DistilBERTSubjectClassification/saved_model.pb "https://huggingface.co/dopey123/DistilBERTSubjectClassification/resolve/main/model/saved_model.pb" && \
+    curl -L -o /app/models/DistilBERTSubjectClassification/variables/variables.data-00000-of-00001 "https://huggingface.co/dopey123/DistilBERTSubjectClassification/resolve/main/model/variables/variables.data-00000-of-00001" && \
+    curl -L -o /app/models/DistilBERTSubjectClassification/variables/variables.index "https://huggingface.co/dopey123/DistilBERTSubjectClassification/resolve/main/model/variables/variables.index" && \
+    curl -L -o /app/models/DistilBERTSubjectClassification/fingerprint.pb "https://huggingface.co/dopey123/DistilBERTSubjectClassification/resolve/main/model/fingerprint.pb" && \
+    curl -L -o /app/models/DistilBERTSubjectClassification/keras_metadata.pb "https://huggingface.co/dopey123/DistilBERTSubjectClassification/resolve/main/model/keras_metadata.pb" && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+    
 
 # install Python dependencies
 COPY requirements.txt requirements.txt

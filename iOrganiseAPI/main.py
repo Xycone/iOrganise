@@ -64,6 +64,7 @@ async def register(form_data: RegisterDTO):
     response = await db_create(user)
     user_setting = UserSetting(asr_model="small_sg", llm="deepseek_14b", user=user)
     await db_create(user_setting)
+    os.makedirs(os.path.join("/app/file_storage", user.email), exist_ok=True)
     
     return {"msg": "User created successfully", "user": response}
 
@@ -138,9 +139,9 @@ async def upload_files(files: List[UploadFile] = File(...), token: str = Depends
     user = await db_get_by_id(User, user_id)
 
     for file in files:
-        type, size, path = await save_uploaded_file(file)
+        type, size, path = await save_uploaded_file(user.email, file)
 
-        file_upload = FileUpload(type=type, size=size, path=path, user=user)
+        file_upload = FileUpload(name=os.path.basename(path),type=type, size=size, path=path, user=user)
         await db_create(file_upload)
 
     return {"msg": "Files uploaded successfully"}
@@ -150,15 +151,7 @@ async def get_files(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
 
-    files = []
-    for file in file_upload_list:
-        if os.path.exists(file.path):
-            files.append({
-                "id": file.id,
-                "type": file.type,
-                "size": file.size,
-                "path": file.path
-            })
+    files = [file for file in file_upload_list if os.path.exists(file.path)]
 
     return {"files": files}
 
@@ -171,7 +164,7 @@ async def download_file(id: int, token: str = Depends(oauth2_scheme)):
     if file is None:
         raise HTTPException(status_code=404, detail="Requested file not found or authorized for download")
     
-    return FileResponse(file.path, filename=os.path.basename(file.path), headers={"Content-Disposition": f"attachment; filename={os.path.basename(file.path)}"})
+    return FileResponse(file.path, filename=file.name, headers={"Content-Disposition": f"attachment; filename={os.path.basename(file.path)}"})
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

@@ -44,13 +44,13 @@ def is_text(path):
     return file_type.mime in mime_types
 
 # file uploading
-async def save_uploaded_file(file: UploadFile):
+async def save_uploaded_file(email: str, file: UploadFile):
     try:
         file_content = await file.read()
 
         type = (filetype.guess(file_content) or {"mime": "unknown"}).mime
         size = round(len(file_content) / (1024 * 1024), 2)
-        path = os.path.join("/app/file_storage", file.filename)
+        path = os.path.join("/app/file_storage", email, file.filename)
         
         async with aiofiles.open(path, 'wb') as output_file:
             await output_file.write(file_content)

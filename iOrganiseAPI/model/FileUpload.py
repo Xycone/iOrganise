@@ -6,6 +6,7 @@ class FileUpload(Base):
     __tablename__ = "file_uploads"
 
     id = Column(Integer, primary_key=True, index=True)
+    name = Column(String(200))
     type = Column(String(20))
     size = Column(Integer)
     path = Column(String(255), unique=True, index=True)

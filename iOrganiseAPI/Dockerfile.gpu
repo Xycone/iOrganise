@@ -33,7 +33,9 @@ RUN mkdir -p /app/models/mistral_7b \
     /app/models/deepseek_14b \
     /app/models/faster-whisper-small \
     /app/models/faster-whisper-small-sg \
-    /app/models/faster-whisper-medium && \
+    /app/models/faster-whisper-medium \
+    /app/models/DistilBERTSubjectClassification \
+    /app/models/DistilBERTSubjectClassification/variables && \
     # mistral 7B (Q6K quant)
     curl -L -o /app/models/mistral_7b/model.bin "https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.1-GGUF/resolve/main/mistral-7b-instruct-v0.1.Q6_K.gguf" && \
     # deepseek R1 qwen 14B distill (Q4KM quant)

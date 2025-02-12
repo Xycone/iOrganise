@@ -165,7 +165,7 @@ async def get_files(token: str = Depends(oauth2_scheme)):
 
     return {"files": files}
 
-@app.post("/download-files")
+@app.get("/download-files")
 async def download_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
@@ -176,15 +176,16 @@ async def download_files(id_list: List[int], token: str = Depends(oauth2_scheme)
 
     if len(files) == 1:
         file = files[0]
-        return FileResponse(file.path)
+        return FileResponse(file.path, filename=os.path.basename(file.path), headers={'Access-Control-Expose-Headers': 'Content-Disposition'})
     
-    else:
-        zip_buffer = io.BytesIO()
-        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            for file in files:
-                zip_file.write(file.path, os.path.basename(file.path))
-        zip_buffer.seek(0)
-        return StreamingResponse(zip_buffer)
+    zip_buffer = io.BytesIO()
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+        for file in files:
+            zip_file.write(file.path, os.path.basename(file.path))
+
+    zip_buffer.seek(0)
+    
+    return StreamingResponse(zip_buffer, media_type="application/zip", headers={'Access-Control-Expose-Headers': 'Content-Disposition'})
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

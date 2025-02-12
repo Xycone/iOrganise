@@ -12,7 +12,7 @@ const UtilBox = ({ title, icon }) => {
       width="170px"
       background="invisible"
       border="2px solid"
-      borderColor={theme.palette.text.primary}
+      borderColor={colours.grey[300]}
       display="flex"
       alignItems="center"
       justifyContent="center"

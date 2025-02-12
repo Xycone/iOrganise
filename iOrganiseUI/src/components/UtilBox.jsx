@@ -11,7 +11,7 @@ const UtilBox = ({ title, icon }) => {
       height="100px"
       width="170px"
       background="invisible"
-      border="2px solid"
+      border="1px solid"
       borderColor={colours.grey[300]}
       display="flex"
       alignItems="center"

@@ -54,11 +54,11 @@ def get_file_info(file: UploadFile):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading file: {str(e)}")
 
-async def save_uploaded_file(file: UploadFile):
+def save_uploaded_file(file: UploadFile):
     try:
         file_location = os.path.join("/app/file_storage", file.filename)
         
-        file_content = await file.file.read()
+        file_content = file.file.read()
         with open(file_location, "wb") as f:
             f.write(file_content)
 

@@ -30,7 +30,7 @@ class LlamaCppManager:
             self.__llm = LlamaCpp(**llm_params)
 
         except Exception as e:
-            raise RuntimeError(f"Error initializing LlamaCppManager: {e}")
+            raise RuntimeError(f"Error initialising LlamaCppManager: {e}")
 
     def get_model(self):
         return self.__name

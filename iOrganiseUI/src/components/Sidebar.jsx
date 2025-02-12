@@ -24,7 +24,7 @@ const Item = ({ title, to, icon, selected }) => {
     return (
         <MenuItem
             active={selected === title}
-            style={{ color: colours.grey[100] }}
+            style={{ color: theme.palette.text.primary }}
             icon={icon}
         >
             <Typography>{title}</Typography>
@@ -86,7 +86,7 @@ function Sidebar() {
                                 alignItems="center"
                                 ml="15px"
                             >
-                                <Typography variant="h2" color={colours.grey[100]}>
+                                <Typography variant="h2" color={theme.palette.text.primary}>
                                     iOrganise
                                 </Typography>
                                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -100,7 +100,7 @@ function Sidebar() {
                     <Box paddingLeft={isCollapsed ? undefined : "10%"}>
                         <Typography
                             variant="h6"
-                            color={colours.grey[300]}
+                            color={theme.palette.text.primary}
                             sx={{ p: "25px 0 5px 20px" }}
                         >
                             Main
@@ -120,7 +120,7 @@ function Sidebar() {
 
                         <Typography
                             variant="h6"
-                            color={colours.grey[300]}
+                            color={theme.palette.text.primary}
                             sx={{ p: "25px 0 5px 20px" }}
                         >
                             APIs
@@ -141,7 +141,7 @@ function Sidebar() {
 
                         <Typography
                             variant="h6"
-                            color={colours.grey[300]}
+                            color={theme.palette.text.primary}
                             sx={{ p: "25px 0 5px 20px" }}
                         >
                             Docs

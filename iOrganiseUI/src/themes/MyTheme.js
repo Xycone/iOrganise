@@ -243,6 +243,7 @@ export const themeSettings = (mode) => {
                             color: colours.greenAccent[300],
                             "&:hover": {
                                 backgroundColor: "transparent",
+                                border: "1px solid",
                                 borderColor: colours.greenAccent[300],
                                 color: colours.greenAccent[300],
                             }

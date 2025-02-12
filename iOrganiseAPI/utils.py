@@ -71,7 +71,7 @@ async def save_uploaded_file(email: str, file: UploadFile):
     try:
         file_content = await file.read()
 
-        type = (filetype.guess(file_content) or {"mime": "unknown"}).mime
+        type = (filetype.guess(file_content) or {}).get("mime", "application/octet-stream")
         size = round(len(file_content) / (1024 * 1024), 2)
         path = os.path.join("/app/file_storage", email, file.filename)
         

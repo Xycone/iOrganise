@@ -59,7 +59,7 @@ function Home() {
         getFiles();
     }, []);
 
-    // File Selection
+    // File Upload
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -69,6 +69,7 @@ function Home() {
 
     const handleDialogClose = () => {
         setDialogOpen(false);
+        setSelectedFiles([]);
     };
 
     const handleFileSelect = (event) => {
@@ -101,6 +102,24 @@ function Home() {
             updatedFiles.splice(index, 1);
             return updatedFiles;
         });
+    };
+
+    const handleFileUpload = async () => {
+        const formData = new FormData();
+        for (const file of selectedFiles) {
+            formData.append("files", file);
+        }
+
+        // POST Request, /upload-files
+        http.post("/upload-files", formData)
+            .then((res) => {
+                console.log("API Response:", res.data);
+                setSelectedFiles([]);
+                handleDialogClose();
+            })
+            .catch((error) => {
+                console.error("API Error:", error);
+            });
     };
 
     const downloadFile = async (fileId) => {
@@ -251,7 +270,6 @@ function Home() {
                                     <input
                                         type="file"
                                         multiple
-                                        accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm"
                                         style={{ display: 'none' }}
                                         onChange={handleFileSelect}
                                     />
@@ -286,6 +304,16 @@ function Home() {
                                 <Divider />
                             </Box>
                         ))}
+                        <Box mt={5}>
+                            <Button
+                                size="large"
+                                fullWidth
+                                component="label"
+                                onClick={handleFileUpload}
+                            >
+                                <Typography>Upload Files</Typography>
+                            </Button>
+                        </Box>
                     </Box>
                 </DialogContent>
             </Dialog>

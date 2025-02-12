@@ -238,7 +238,7 @@ export const themeSettings = (mode) => {
                         props: { variant: "outlined" },
                         style: {
                             backgroundColor: "transparent",
-                            border: "1px solid",
+                            border: "2px solid",
                             borderColor: colours.greenAccent[300],
                             color: colours.greenAccent[300],
                             "&:hover": {

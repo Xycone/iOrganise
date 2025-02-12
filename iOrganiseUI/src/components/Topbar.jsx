@@ -76,12 +76,9 @@ function Topbar() {
                 {/* Conditionally Show Login or Profile */}
                 {user ? (
                     <>
-                        {/* Profile Picture */}
-                        <Box onClick={handleMenuOpen} sx={{ display: 'flex', alignItems: 'center' }}>
+                        {/* User's Name */}
+                        <Box onClick={handleMenuOpen} sx={{ mx: 1, display: 'flex', alignItems: 'center', cursor: "pointer", userSelect: "none" }}>
                             <Typography>{user.name}</Typography>
-                            <IconButton sx={{ mx: 1, width: 35, height: 35 }}>
-                                <Avatar alt={user.name} src={user.profilePic} sx={{ width: 30, height: 30 }} />
-                            </IconButton>
                         </Box>
 
 

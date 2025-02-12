@@ -4,7 +4,7 @@ import { Box, Typography, IconButton, ListItemIcon, ListItemText, Menu, MenuItem
 import { tokens } from '../themes/MyTheme';
 
 // MUI Icons
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 
 const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
   const theme = useTheme();
@@ -71,7 +71,7 @@ const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
         >
           <Box sx={{ minWidth: "170px", display: "flex", justifyContent: "flex-start", pl: 1 }}>
             <IconButton onClick={handleClose}>
-              <CloseOutlinedIcon sx={{ color: theme.palette.text.primary}}/>
+              <CloseIcon sx={{ color: theme.palette.text.primary}}/>
             </IconButton>
           </Box>
           {menuItems.map((item, index) => (

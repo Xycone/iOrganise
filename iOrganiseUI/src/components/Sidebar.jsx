@@ -24,7 +24,7 @@ const Item = ({ title, to, icon, selected }) => {
     return (
         <MenuItem
             active={selected === title}
-            style={{ color: colours.grey[100] }}
+            style={{ color: theme.palette.text.primary }}
             icon={icon}
         >
             <Typography>{title}</Typography>
@@ -86,7 +86,7 @@ function Sidebar() {
                                 alignItems="center"
                                 ml="15px"
                             >
-                                <Typography variant="h2" color={colours.grey[100]}>
+                                <Typography variant="h2" color={theme.palette.text.primary}>
                                     iOrganise
                                 </Typography>
                                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -100,7 +100,7 @@ function Sidebar() {
                     <Box paddingLeft={isCollapsed ? undefined : "10%"}>
                         <Typography
                             variant="h6"
-                            color={colours.grey[300]}
+                            color={theme.palette.text.primary}
                             sx={{ p: "25px 0 5px 20px" }}
                         >
                             Main
@@ -108,19 +108,19 @@ function Sidebar() {
                         <Item
                             title="Home"
                             to="/home"
-                            icon={<HomeOutlinedIcon sx={{ fontSize: '24px' }}/>}
+                            icon={<HomeOutlinedIcon />}
                             selected={selected}
                         />
                         <Item
                             title="Dashboard"
                             to="/dashboard"
-                            icon={<DashboardOutlinedIcon sx={{ fontSize: '24px' }}/>}
+                            icon={<DashboardOutlinedIcon />}
                             selected={selected}
                         />
 
                         <Typography
                             variant="h6"
-                            color={colours.grey[300]}
+                            color={theme.palette.text.primary}
                             sx={{ p: "25px 0 5px 20px" }}
                         >
                             APIs
@@ -128,20 +128,20 @@ function Sidebar() {
                         <Item
                             title="Transcribe Audio"
                             to="/transcribeaudio"
-                            icon={<AudioFileOutlinedIcon sx={{ fontSize: '24px' }}/>}
+                            icon={<AudioFileOutlinedIcon />}
                             selected={selected}
                         />
 
                         <Item
                             title="Categorise Notes"
                             to="/categorisetext"
-                            icon={<NoteAltOutlinedIcon sx={{ fontSize: '24px' }}/>}
+                            icon={<NoteAltOutlinedIcon />}
                             selected={selected}
                         />
 
                         <Typography
                             variant="h6"
-                            color={colours.grey[300]}
+                            color={theme.palette.text.primary}
                             sx={{ p: "25px 0 5px 20px" }}
                         >
                             Docs
@@ -149,13 +149,13 @@ function Sidebar() {
                         <Item
                             title="Setup Documentation"
                             to="/setupdocs"
-                            icon={<DescriptionOutlinedIcon sx={{ fontSize: '24px' }}/>}
+                            icon={<DescriptionOutlinedIcon />}
                             selected={selected}
                         />
                         <Item
                             title="API Documentation"
                             to="/apidocs"
-                            icon={<DataObjectOutlinedIcon sx={{ fontSize: '24px' }}/>}
+                            icon={<DataObjectOutlinedIcon />}
                             selected={selected}
                         />
                     </Box>

@@ -13,7 +13,7 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
-import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
+import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 
 // React Components
 import Header from '../components/Header';
@@ -76,7 +76,7 @@ function Home() {
                         gap={4}
                     >
                         <UtilBox
-                            title="Upload Items"
+                            title="Upload items"
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
                                 { icon: <UploadFileOutlinedIcon />, label: "Upload File", onClick: () => console.log("Uploading File") },
@@ -88,14 +88,15 @@ function Home() {
                             title="New folder"
                             icon={<CreateNewFolderOutlinedIcon />}
                             menuItems={[
-                                { icon: <AutoAwesomeOutlinedIcon />, label: "AI Folder", onClick: () => console.log("Creating Automated Folder") },
+                                { icon: <AutoAwesomeOutlinedIcon />, label: "AI Folder", onClick: () => console.log("Creating AI Folder") },
                                 { icon: <FolderOutlinedIcon />, label: "Regular Folder", onClick: () => console.log("Creating Folder") },
                             ]}
                         />
 
                         <UtilBox
-                            title="New file"
-                            icon={<NoteAddOutlinedIcon />}
+                            title="Share items"
+                            icon={<IosShareOutlinedIcon />}
+                            onClick={() => console.log("Sharing Items")}
                         />
                     </Box>
                 </Box>

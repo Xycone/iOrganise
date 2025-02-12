@@ -6,7 +6,7 @@ import { tokens } from '../themes/MyTheme';
 // MUI Icons
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 
-const UtilBox = ({ title, icon, menuItems = [] }) => {
+const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
   const theme = useTheme();
   const colours = tokens(theme.palette.mode);
 
@@ -14,7 +14,13 @@ const UtilBox = ({ title, icon, menuItems = [] }) => {
   const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    if (menuItems.length > 0) {
+      setAnchorEl(event.currentTarget);
+    } else {
+      if (onClick) {
+        onClick();
+      }
+    }
   };
 
   const handleClose = () => {

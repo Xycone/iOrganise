@@ -172,7 +172,7 @@ async def download_file(id: int, token: str = Depends(oauth2_scheme)):
     if file is None:
         raise HTTPException(status_code=404, detail="Requested file not found or authorized for download")
     
-    return FileResponse(file.path, filename=os.path.basename(file.path), headers={"Content-Disposition": f"attachment; filename='{(os.path.basename(file.path))}'"})
+    return FileResponse(file.path, filename=os.path.basename(file.path), headers={"Content-Disposition": f"attachment; filename={os.path.basename(file.path)}"})
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

@@ -115,8 +115,7 @@ function CategoriseText() {
 
         // Prioritize text input over file uploads
         if (textInput.trim()) {
-            formData.append('text', textInput);
-            setSelectedFiles([]); // Clear files if text is used
+            setSelectedFiles([]);
         } else {
             // Use file uploads if no text
             for (const file of selectedFiles) {
@@ -133,8 +132,8 @@ function CategoriseText() {
         setLoading(true);
 
         http.post("/predict-text", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+            params: {
+                text: textInput.trim()
             }
         })
             .then((res) => {

@@ -24,7 +24,6 @@ from dto.UpdateUserDTO import UpdateUserDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
 from dto.TextInputDTO import TextInputDTO
-from pydantic import BaseModel
 
 app = FastAPI()
 
@@ -306,32 +305,24 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
 
     return response
 
-# API Endpoint
 @app.post("/predict-text")
-async def predict_text(
-    text: Optional[str] = Form(None),
-    files: List[UploadFile] = File(None),
-):
-    # 1. Error check: Ensure text or files are provided
-    if not text and not files:
-        raise HTTPException(status_code=400, detail="No text or files uploaded")
+async def predict_text(form_data: TextInputDTO = Depends(), files: List[UploadFile] = File(...)):
+    # 1. error check
+    if not form_data.text and not files:
+        raise HTTPException(status_code=400, detail="No text or file uploaded")
 
     response = {}
 
-    # Print the received text and files
-    print("Received text:", text)
-
-    # 2. Extract text from files (if any)
+    # 2. extract text from files
     extracted_text = ""
     if files:
         for file in files:
             with NamedTemporaryFile(delete=True) as temp:
                 try:
-                    # Copy uploaded file contents to the temporary file
                     with open(temp.name, "wb") as temp_file:
                         temp_file.write(file.file.read())
 
-                    # Extract text from the file based on extension
+                    # extract text from the file based on extension
                     if file.filename.endswith(".pdf"):
                         extracted_text += TextExtractor.extract_text_from_pdf(temp.name)
                     elif file.filename.endswith(".docx"):
@@ -344,23 +335,13 @@ async def predict_text(
                 except Exception as e:
                     response[file.filename] = {"error": str(e)}
 
-    # Print the extracted text (if any)
-    print("Extracted text from files:", extracted_text)
+    text = form_data.text or extracted_text
 
-    # Use extracted text if no plain text is provided
-    text = text or extracted_text
-
-    # Print the final text to be used
-    print("Final text for prediction:", text)
-
-    # 3. Use the pre-loaded model manager for prediction
+    # 3. predict subject for file
     if text:
         try:
-            # Load the model from model_loader (it's already loaded there)
-            model_manager = model_loader.load_bert()
-
-            # Predict using the loaded model
-            predicted_label = model_manager.predict(text)
+            classification_manager = model_loader.load_bert()
+            predicted_label = classification_manager.predict(text)
 
             response = {
                 "text": text,
@@ -370,11 +351,8 @@ async def predict_text(
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
 
-        # 6. Unload the model
+        # 4. unload the model
         model_loader.del_models("BERT")
-
-    # Print the final response
-    print("Response:", response)
 
     return response
 

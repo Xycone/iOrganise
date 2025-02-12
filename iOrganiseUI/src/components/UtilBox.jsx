@@ -48,33 +48,35 @@ const UtilBox = ({ title, icon, menuItems = [] }) => {
         </Box>
       </Box>
       {/* Dropdown Menu */}
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-      >
-        <Box sx={{ minWidth: "170px", display: "flex", justifyContent: "flex-start", pl: 1 }}>
-          <IconButton onClick={handleClose}>
-            <CloseOutlinedIcon />
-          </IconButton>
-        </Box>
-        {menuItems.map((item, index) => (
-          <MenuItem sx={{ py: 2, minWidth: "170px" }} key={index} onClick={item.onClick}>
-            <ListItemIcon>
-              {item.icon}
-            </ListItemIcon>
-            <ListItemText>{item.label}</ListItemText>
-          </MenuItem>
-        ))}
-      </Menu>
+      {menuItems.length > 0 && (
+        <Menu
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+        >
+          <Box sx={{ minWidth: "170px", display: "flex", justifyContent: "flex-start", pl: 1 }}>
+            <IconButton onClick={handleClose}>
+              <CloseOutlinedIcon />
+            </IconButton>
+          </Box>
+          {menuItems.map((item, index) => (
+            <MenuItem sx={{ py: 2, minWidth: "170px" }} key={index} onClick={item.onClick}>
+              <ListItemIcon>
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText>{item.label}</ListItemText>
+            </MenuItem>
+          ))}
+        </Menu>
+      )}
     </Box>
   )
 }

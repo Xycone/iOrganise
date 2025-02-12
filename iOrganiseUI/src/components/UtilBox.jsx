@@ -67,7 +67,7 @@ const UtilBox = ({ title, icon, menuItems = [] }) => {
           </IconButton>
         </Box>
         {menuItems.map((item, index) => (
-          <MenuItem sx={{ minWidth: "170px" }} key={index} onClick={item.onClick}>
+          <MenuItem sx={{ py: 2, minWidth: "170px" }} key={index} onClick={item.onClick}>
             <ListItemIcon>
               {item.icon}
             </ListItemIcon>

@@ -11,6 +11,8 @@ import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 
 // React Components
@@ -74,7 +76,7 @@ function Home() {
                         gap={4}
                     >
                         <UtilBox
-                            title="Upload or drop"
+                            title="Upload Items"
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
                                 { icon: <UploadFileOutlinedIcon />, label: "Upload File", onClick: () => console.log("Uploading File") },
@@ -85,6 +87,10 @@ function Home() {
                         <UtilBox
                             title="New folder"
                             icon={<CreateNewFolderOutlinedIcon />}
+                            menuItems={[
+                                { icon: <AutoAwesomeOutlinedIcon />, label: "AI Folder", onClick: () => console.log("Creating Automated Folder") },
+                                { icon: <FolderOutlinedIcon />, label: "Regular Folder", onClick: () => console.log("Creating Folder") },
+                            ]}
                         />
 
                         <UtilBox

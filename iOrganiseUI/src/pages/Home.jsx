@@ -138,7 +138,7 @@ function Home() {
                             title="Upload items"
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
-                                { icon: <UploadFileOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload File", onClick: handleDialogOpen },
+                                { icon: <UploadFileOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Files", onClick: handleDialogOpen },
                                 { icon: <DriveFolderUploadIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Folder", onClick: () => console.log("Uploading Folder") },
                             ]}
                         />
@@ -211,7 +211,7 @@ function Home() {
                                     Upload Files
                                 </Typography>
                                 <DialogContentText>
-                                    Upload & attach audio/video files to the API request.
+                                    Upload and attach your files to iOrganise.
                                 </DialogContentText>
                             </Box>
 
@@ -241,7 +241,7 @@ function Home() {
                                     Choose a file or drag & drop it here
                                 </Typography>
                                 <DialogContentText mb={2}>
-                                    mp3, mp4, mpeg, mpga, m4a, wav & webm formats, up to 25MB
+                                    all audio, video, image & document formats accepted
                                 </DialogContentText>
                                 <Button
                                     variant="contained"

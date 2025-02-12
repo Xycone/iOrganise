@@ -119,10 +119,10 @@ function Login() {
                     >
                         New user? <Link to="/register" style={{ color: colours.greenAccent[300] }}>Create an account.</Link>
                     </Typography>
-
-                    <ToastContainer />
                 </Box>
             </Box>
+            
+            <ToastContainer />
         </Box>
     );
 }

@@ -108,13 +108,13 @@ function Sidebar() {
                         <Item
                             title="Home"
                             to="/home"
-                            icon={<HomeOutlinedIcon />}
+                            icon={<HomeOutlinedIcon sx={{ fontSize: '24px' }}/>}
                             selected={selected}
                         />
                         <Item
                             title="Dashboard"
                             to="/dashboard"
-                            icon={<DashboardOutlinedIcon />}
+                            icon={<DashboardOutlinedIcon sx={{ fontSize: '24px' }}/>}
                             selected={selected}
                         />
 
@@ -128,14 +128,14 @@ function Sidebar() {
                         <Item
                             title="Transcribe Audio"
                             to="/transcribeaudio"
-                            icon={<AudioFileOutlinedIcon />}
+                            icon={<AudioFileOutlinedIcon sx={{ fontSize: '24px' }}/>}
                             selected={selected}
                         />
 
                         <Item
                             title="Categorise Notes"
                             to="/categorisetext"
-                            icon={<NoteAltOutlinedIcon />}
+                            icon={<NoteAltOutlinedIcon sx={{ fontSize: '24px' }}/>}
                             selected={selected}
                         />
 
@@ -149,13 +149,13 @@ function Sidebar() {
                         <Item
                             title="Setup Documentation"
                             to="/setupdocs"
-                            icon={<DescriptionOutlinedIcon />}
+                            icon={<DescriptionOutlinedIcon sx={{ fontSize: '24px' }}/>}
                             selected={selected}
                         />
                         <Item
                             title="API Documentation"
                             to="/apidocs"
-                            icon={<DataObjectOutlinedIcon />}
+                            icon={<DataObjectOutlinedIcon sx={{ fontSize: '24px' }}/>}
                             selected={selected}
                         />
                     </Box>

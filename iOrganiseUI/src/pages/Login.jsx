@@ -57,7 +57,7 @@ function Login() {
                     navigate("/home");
                 })
                 .catch(function (err) {
-                    const errorMessage = err.response?.data?.detail || err.message || 'An error occurred';
+                    const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
                     toast.error(errorMessage);
                 });
         }

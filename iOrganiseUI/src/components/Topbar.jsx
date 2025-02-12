@@ -75,7 +75,7 @@ function Topbar() {
 
             <Box display="flex">
                 {/* Dark Mode Toggle */}
-                <IconButton sx={{ mx: 1 }} onClick={colorMode.toggleColourMode}>
+                <IconButton sx={{ mx: 2 }} onClick={colorMode.toggleColourMode}>
                     {theme.palette.mode === "dark" ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
                 </IconButton>
 
@@ -83,7 +83,7 @@ function Topbar() {
                 {user ? (
                     <>
                         {/* User's Name */}
-                        <Box onClick={handleMenuOpen} sx={{ mx: 1, display: 'flex', alignItems: 'center', cursor: "pointer", userSelect: "none" }}>
+                        <Box onClick={handleMenuOpen} sx={{ mx: 2, display: 'flex', alignItems: 'center', cursor: "pointer", userSelect: "none" }}>
                             <Typography>{user.name}</Typography>
                         </Box>
 
@@ -120,7 +120,7 @@ function Topbar() {
                     </>
                 ) : (
                     // Show Login Button if User is NOT Logged In
-                    <Button variant="contained" onClick={handleLoginRedirect}>
+                    <Button variant="contained" onClick={handleLoginRedirect} sx={{ mx: 2 }}>
                         Login
                     </Button>
                 )}

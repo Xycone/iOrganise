@@ -4,6 +4,7 @@ import os
 import gc
 
 import torch
+import aiofiles
 import filetype
 
 from passlib.context import CryptContext
@@ -54,13 +55,13 @@ def get_file_info(file: UploadFile):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error reading file: {str(e)}")
 
-def save_uploaded_file(file: UploadFile):
+async def save_uploaded_file(file: UploadFile):
     try:
         file_location = os.path.join("/app/file_storage", file.filename)
         
-        file_content = file.file.read()
-        with open(file_location, "wb") as f:
-            f.write(file_content)
+        async with aiofiles.open(file_location, 'wb') as out_file:
+            while content := await file.read(1024):
+                await out_file.write(content)
 
         return file_location
 

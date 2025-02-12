@@ -132,7 +132,7 @@ function CategoriseText() {
         setResponse();
         setLoading(true);
 
-        http.post("http://localhost:8000/predict", formData, {
+        http.post("/predict-text", formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }

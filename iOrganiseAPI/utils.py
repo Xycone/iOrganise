@@ -44,26 +44,18 @@ def is_text(path):
     return file_type.mime in mime_types
 
 # file uploading
-def get_file_info(file: UploadFile):
-    try:
-        file_content = file.file.read()
-        size = round(len(file_content) / (1024 * 1024), 2)  # Size in MB
-
-        type = filetype.guess(file_content)
-        return type.mime if type else "unknown", size
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error reading file: {str(e)}")
-
 async def save_uploaded_file(file: UploadFile):
     try:
-        file_location = os.path.join("/app/file_storage", file.filename)
-        
-        async with aiofiles.open(file_location, 'wb') as out_file:
-            while content := await file.read(1024):
-                await out_file.write(content)
+        file_content = await file.read()
 
-        return file_location
+        type = (filetype.guess(file_content) or {"mime": "unknown"}).mime
+        size = round(len(file_content) / (1024 * 1024), 2)
+        path = os.path.join("/app/file_storage", file.filename)
+        
+        async with aiofiles.open(path, 'wb') as output_file:
+            await output_file.write(file_content)
+
+        return type, size, path
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error saving file to storage: {str(e)}")

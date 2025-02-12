@@ -138,8 +138,7 @@ async def upload_files(files: List[UploadFile] = File(...), token: str = Depends
     user = await db_get_by_id(User, user_id)
 
     for file in files:
-        type, size = get_file_info(file)
-        path = await save_uploaded_file(file)
+        type, size, path = await save_uploaded_file(file)
 
         file_upload = FileUpload(type=type, size=size, path=path, user=user)
         await db_create(file_upload)

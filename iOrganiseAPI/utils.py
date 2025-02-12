@@ -58,7 +58,7 @@ async def save_uploaded_file(file: UploadFile):
     try:
         file_location = os.path.join("/app/file_storage", file.filename)
         
-        file_content = await file.read()
+        file_content = await file.file.read()
         with open(file_location, "wb") as f:
             f.write(file_content)
 

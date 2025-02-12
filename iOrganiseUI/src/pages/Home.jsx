@@ -79,8 +79,8 @@ function Home() {
                             title="Upload items"
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
-                                { icon: <UploadFileOutlinedIcon />, label: "Upload File", onClick: () => console.log("Uploading File") },
-                                { icon: <DriveFolderUploadIcon />, label: "Upload Folder", onClick: () => console.log("Uploading Folder") },
+                                { icon: <UploadFileOutlinedIcon sx={{ color: theme.palette.text.primary}} />, label: "Upload File", onClick: () => console.log("Uploading File") },
+                                { icon: <DriveFolderUploadIcon sx={{ color: theme.palette.text.primary}} />, label: "Upload Folder", onClick: () => console.log("Uploading Folder") },
                             ]}
                         />
 
@@ -88,8 +88,8 @@ function Home() {
                             title="New folder"
                             icon={<CreateNewFolderOutlinedIcon />}
                             menuItems={[
-                                { icon: <AutoAwesomeOutlinedIcon />, label: "AI Folder", onClick: () => console.log("Creating AI Folder") },
-                                { icon: <FolderOutlinedIcon />, label: "Regular Folder", onClick: () => console.log("Creating Folder") },
+                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary}} />, label: "AI Folder", onClick: () => console.log("Creating AI Folder") },
+                                { icon: <FolderOutlinedIcon sx={{ color: theme.palette.text.primary}} />, label: "Regular Folder", onClick: () => console.log("Creating Folder") },
                             ]}
                         />
 

@@ -34,7 +34,7 @@ const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
         width="170px"
         background="invisible"
         border="1px solid"
-        borderColor={colours.grey[300]}
+        borderColor={theme.palette.divider}
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -56,6 +56,7 @@ const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
       {/* Dropdown Menu */}
       {menuItems.length > 0 && (
         <Menu
+          sx={{ mt: 2 }}
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
@@ -70,7 +71,7 @@ const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
         >
           <Box sx={{ minWidth: "170px", display: "flex", justifyContent: "flex-start", pl: 1 }}>
             <IconButton onClick={handleClose}>
-              <CloseOutlinedIcon />
+              <CloseOutlinedIcon sx={{ color: theme.palette.text.primary}}/>
             </IconButton>
           </Box>
           {menuItems.map((item, index) => (

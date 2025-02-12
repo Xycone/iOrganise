@@ -59,7 +59,6 @@ RUN mkdir -p /app/models/mistral_7b \
     curl -L -o /app/models/DistilBERTSubjectClassification/fingerprint.pb "https://huggingface.co/dopey123/DistilBERTSubjectClassification/resolve/main/model/fingerprint.pb" && \
     curl -L -o /app/models/DistilBERTSubjectClassification/keras_metadata.pb "https://huggingface.co/dopey123/DistilBERTSubjectClassification/resolve/main/model/keras_metadata.pb" && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-    
 
 # install Python dependencies
 COPY requirements.txt requirements.txt

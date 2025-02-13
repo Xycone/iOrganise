@@ -227,7 +227,7 @@ async def download_all(token: str = Depends(oauth2_scheme)):
 
     return Response(zip_buffer.read(), headers=headers)
 
-@app.post("/view-extract/{id}") # need to trigger when view extract button is pressed and user is logged in
+@app.post("/view-extract/{id}")
 async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     user = await db_get_by_id(User, user_id)
@@ -240,11 +240,11 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     if user_id != file.user_id:
         raise HTTPException(status_code=403, detail="You are not authorized to view this file")
     
+    content = None
+    summary = None
+    
     # retrieve content and summary if viewed before
     if file.content_path and file.summary_path:
-        content = None
-        summary = None
-
         async with aiofiles.open(file.content_path, 'r') as content_file:
             content = await content_file.read()
         async with aiofiles.open(file.summary_path, 'r') as summary_file:
@@ -255,16 +255,12 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
             "summary": summary
         }
         
-        return response
-        
     # process file if not viewed before
     with NamedTemporaryFile(delete=True) as temp:
         try:
             with open(file.path, "rb") as src_file:
                 with open(temp.name, "wb") as temp_file:
                     temp_file.write(src_file.read())
-
-            content = None
 
             # transcribe audio
             if is_video(temp.name):
@@ -287,7 +283,6 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
             # subject classification
 
             # summarise content
-            summary = None
             if content:
                 model_loader.del_all_models()
 
@@ -320,11 +315,11 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
                 "content": content if content else None,
                 "summary": summary if summary else None
             }
-
-            return response
         
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
+        
+    return response
 
 @app.post("/transcribe-audio")
 async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: List[UploadFile] = File(...)):

@@ -260,7 +260,7 @@ function Home() {
                                     Choose a file or drag & drop it here
                                 </Typography>
                                 <DialogContentText mb={2}>
-                                    all audio, video, image & document formats accepted
+                                    common audio, video, image & document formats accepted
                                 </DialogContentText>
                                 <Button
                                     variant="contained"

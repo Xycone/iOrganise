@@ -129,10 +129,10 @@ async def update_setting(id: int, form_data: UpdateSettingDTO, token: str = Depe
     }
     
     response_user = await db_update(User, user_id, new_user)
-    user_status = {"status": "User updated successfully", "user": response_user} if response_user else {"status": "Failed"}
+    user_status = {"status": "User updated successfully"} if response_user else {"status": "Failed"}
 
     response_setting = await db_update(UserSetting, id, new_setting)
-    setting_status = {"status": "UserSetting updated successfully", "user_setting": response_setting} if response_setting else {"status": "Failed"}
+    setting_status = {"status": "UserSetting updated successfully"} if response_setting else {"status": "Failed"}
 
     return {
         "user_msg": user_status,

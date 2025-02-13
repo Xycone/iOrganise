@@ -90,7 +90,7 @@ async def get_settings(token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=404, detail="User settings not found")
 
     setting = {
-        "id": user.id,
+        "id": user_setting.id,
         "name": user.name,
         "email": user.email,
         "asr_model": user_setting.asr_model,
@@ -100,7 +100,7 @@ async def get_settings(token: str = Depends(oauth2_scheme)):
     return {"setting": setting}
 
 @app.put("/update-setting/{id}")
-async def update_setting(form_data: UpdateSettingDTO, token: str = Depends(oauth2_scheme)):
+async def update_setting(id: int, form_data: UpdateSettingDTO, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     user = await db_get_by_id(User, user_id)
     user_setting = await db_get_by_id(UserSetting, id)

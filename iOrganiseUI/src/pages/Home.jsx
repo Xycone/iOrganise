@@ -97,7 +97,7 @@ function Home() {
         event.preventDefault();
     };
 
-    const handleDeleteFile = (index) => {
+    const handleRemoveFile = (index) => {
         setSelectedFiles((prevFiles) => {
             const updatedFiles = [...prevFiles];
             updatedFiles.splice(index, 1);
@@ -123,13 +123,14 @@ function Home() {
             });
     };
 
-    const downloadFile = async (fileId) => {
+    // File Download
+    const downloadFile = async (fileId, fileName) => {
         http.get(`/download-file/${fileId}`, { responseType: "blob" })
             .then(response => {
                 const url = window.URL.createObjectURL(response.data);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = "downloads";
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
@@ -137,6 +138,23 @@ function Home() {
             .catch((err) => {
                 const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
                 toast.error(errorMessage);
+            });
+    };
+
+    const downloadAll = async () => {
+        http.get("/download-all", { responseType: "blob" })
+            .then(response => {
+                const url = window.URL.createObjectURL(response.data);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "files.zip";
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            })
+            .catch(error => {
+                console.error('Error downloading files:', error);
+                toast.error('Failed to download files');
             });
     };
 
@@ -167,7 +185,7 @@ function Home() {
                             title="Migrate data"
                             icon={<DriveFileMoveOutlinedIcon />}
                             menuItems={[
-                                { icon: <BrowserUpdatedIcon sx={{ color: theme.palette.text.primary }} />, label: "Local Download", onClick: () => console.log("Downloading all items") },
+                                { icon: <BrowserUpdatedIcon sx={{ color: theme.palette.text.primary }} />, label: "Local Download", onClick: () => downloadAll() },
                                 { icon: <AddToDriveOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Export to Drive", onClick: () => console.log("Transferring all items") },
                                 { icon: <AttachEmailOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Send to Mail", onClick: () => console.log("Sending to email") }
                             ]}
@@ -200,7 +218,7 @@ function Home() {
                                         <Button
                                             variant="contained"
                                             color="primary"
-                                            onClick={() => downloadFile(file.id)}
+                                            onClick={() => downloadFile(file.id, file.name)}
                                         >
                                             Download
                                         </Button>
@@ -299,7 +317,7 @@ function Home() {
                                         </DialogContentText>
                                     </Box>
 
-                                    <IconButton onClick={() => handleDeleteFile(index)}>
+                                    <IconButton onClick={() => handleRemoveFile(index)}>
                                         <DeleteOutlinedIcon />
                                     </IconButton>
                                 </Box>

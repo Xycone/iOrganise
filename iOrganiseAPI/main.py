@@ -260,9 +260,11 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     # process file if not viewed before
     with NamedTemporaryFile(delete=True) as temp:
         try:
-            # copies uploaded file contents to the temporary file
-            with open(temp.name, "wb") as temp_file:
-                temp_file.write(file.path.read())
+            with open(file.path, "rb") as src_file:
+                with open(temp.name, "wb") as temp_file:
+                    temp_file.write(src_file.read())
+
+            content = None
 
             # transcribe audio
             if is_video(temp.name):
@@ -285,6 +287,7 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
             # subject classification
 
             # summarise content
+            summary = None
             if content:
                 model_loader.del_all_models()
 

@@ -32,6 +32,7 @@ import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
 import AddToDriveOutlinedIcon from '@mui/icons-material/AddToDriveOutlined';
 import AttachEmailOutlinedIcon from '@mui/icons-material/AttachEmailOutlined';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
+import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
@@ -195,6 +196,18 @@ function Home() {
         setFileToDelete();
     };
 
+    // View Extract
+    const viewExtract = async (fileId) => {
+        http.post(`/view-extract/${fileId}`)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.error('Error processing extract:', error);
+                toast.error('Error processing extract');
+            });
+    };
+
     return (
         <Box px={5} pb={5}>
             <Box display="flex" flexDirection="column">
@@ -256,6 +269,9 @@ function Home() {
                                     />
                                     {/* Buttons*/}
                                     <Box>
+                                        <IconButton onClick={() => viewExtract(file.id)}>
+                                            <SummarizeOutlinedIcon />
+                                        </IconButton>
                                         <IconButton onClick={() => downloadFile(file.id, file.name)}>
                                             <FileDownloadOutlinedIcon />
                                         </IconButton>

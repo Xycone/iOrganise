@@ -142,7 +142,7 @@ async def upload_files(files: List[UploadFile] = File(...), token: str = Depends
     for file in files:
         type, size, path = await save_uploaded_file(user.email, file)
 
-        file_upload = FileUpload(name=os.path.basename(path),type=type, size=size, path=path, user=user)
+        file_upload = FileUpload(name=os.path.basename(path), type=type, size=size, path=path, user=user)
         await db_create(file_upload)
 
     return {"msg": "Files uploaded successfully"}

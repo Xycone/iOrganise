@@ -79,19 +79,19 @@ async def db_update(model, model_id, update_data):
             return None
         except Exception as e:
             print(f"Error during db_update: {e}")
+            await db.rollback()
             return None
     
 async def db_delete(model, model_id):
     async with async_session() as db:
         try:
             obj = await db.execute(select(model).where(model.id == model_id))
-            existing_obj = obj.scalar_one_or_none()
+            existing_obj = obj.scalars().first()
 
             if existing_obj:
                 await db.delete(existing_obj)
                 await db.commit()
-                return existing_obj
-            return None
         except Exception as e:
             print(f"Error during db_delete: {e}")
+            await db.rollback()
             return None

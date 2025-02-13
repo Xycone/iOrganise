@@ -16,7 +16,7 @@ from model.FileUpload import FileUpload
 from model.UserSetting import UserSetting
 
 import subprocess
-from typing import List
+from typing import List, Optional
 from tempfile import NamedTemporaryFile
 
 from utils import *
@@ -366,7 +366,7 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
     return response
 
 @app.post("/predict-text")
-async def predict_text(form_data: TextInputDTO = Depends(), files: List[UploadFile] = File(None)):
+async def predict_text(form_data: TextInputDTO = Depends(), files: Optional[List[UploadFile]] = File(None)):
     # 1. error check
     if not form_data.text and not files:
         raise HTTPException(status_code=400, detail="No text or file uploaded")

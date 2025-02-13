@@ -254,70 +254,70 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
             "content": content,
             "summary": summary
         }
-        
-    # process file if not viewed before
-    with NamedTemporaryFile(delete=True) as temp:
-        try:
-            with open(file.path, "rb") as src_file:
-                with open(temp.name, "wb") as temp_file:
-                    temp_file.write(src_file.read())
+    else:  
+        # process file if not viewed before
+        with NamedTemporaryFile(delete=True) as temp:
+            try:
+                with open(file.path, "rb") as src_file:
+                    with open(temp.name, "wb") as temp_file:
+                        temp_file.write(src_file.read())
 
-            # transcribe audio
-            if is_video(temp.name):
-                with NamedTemporaryFile(delete=True) as audio_temp:
-                    extracted_audio_path = audio_temp.name + ".mp3"
-                    command = ["ffmpeg", "-i", temp.name, extracted_audio_path]
-                    subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                # transcribe audio
+                if is_video(temp.name):
+                    with NamedTemporaryFile(delete=True) as audio_temp:
+                        extracted_audio_path = audio_temp.name + ".mp3"
+                        command = ["ffmpeg", "-i", temp.name, extracted_audio_path]
+                        subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-            if is_audio(temp.name):
-                transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
-                content = "\n".join(
-                    f"Segment {j + 1}: {segment.get('text')}"
-                    for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
-                )
-                            
-            # image to text
+                if is_audio(temp.name):
+                    transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
+                    content = "\n".join(
+                        f"Segment {j + 1}: {segment.get('text')}"
+                        for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
+                    )
+                                
+                # image to text
 
-            # document text extraction
+                # document text extraction
 
-            # subject classification
+                # subject classification
 
-            # summarise content
-            if content:
-                model_loader.del_all_models()
-
-                llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
-                summary = llama_cpp_manager.generate_summary(content)
-
-                model_loader.del_models("LLM")
-
-            # save response
-            content_path = os.path.join("/app/file_storage", user.email, "content_" + file.name)
-            summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.name)
-        
-            async with aiofiles.open(content_path, 'w') as content_file:
+                # summarise content
                 if content:
-                    await content_file.write(content)
+                    model_loader.del_all_models()
 
-            async with aiofiles.open(summary_path, 'w') as summary_file:
-                if summary:
-                    await summary_file.write(summary)
+                    llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
+                    summary = llama_cpp_manager.generate_summary(content)
 
-            updated_fields = {
-                "content_path": content_path,
-                "summary_path": summary_path
-            }
+                    model_loader.del_models("LLM")
 
-            await db_update(FileUpload, id, updated_fields)
+                # save response
+                content_path = os.path.join("/app/file_storage", user.email, "content_" + file.name)
+                summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.name)
+            
+                async with aiofiles.open(content_path, 'w') as content_file:
+                    if content:
+                        await content_file.write(content)
+
+                async with aiofiles.open(summary_path, 'w') as summary_file:
+                    if summary:
+                        await summary_file.write(summary)
+
+                updated_fields = {
+                    "content_path": content_path,
+                    "summary_path": summary_path
+                }
+
+                await db_update(FileUpload, id, updated_fields)
 
 
-            response = {
-                "content": content if content else None,
-                "summary": summary if summary else None
-            }
-        
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
+                response = {
+                    "content": content if content else None,
+                    "summary": summary if summary else None
+                }
+            
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
         
     return response
 

@@ -25,7 +25,7 @@ def is_video(path):
     return file_type.mime in mime_types
 
 def is_audio(path):
-    mime_types = ['audio/mp3', 'audio/mpga', 'audio/m4a', 'audio/wav']
+    mime_types = ["audio/mp3", "audio/mpga", "audio/m4a", "audio/wav"]
 
     file_type = filetype.guess(path)
     if file_type is None:
@@ -35,9 +35,9 @@ def is_audio(path):
 
 def is_text(path):
     mime_types = [
-        'text/plain',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/pdf'
+        "text/plain",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/pdf"
     ]
 
     file_type = filetype.guess(path)
@@ -72,6 +72,21 @@ async def save_uploaded_file(email: str, file: UploadFile):
         file_content = await file.read()
 
         type = filetype.guess(file_content)
+
+        mime_types = [
+        "video/mp4", 
+        "video/mpeg", 
+        "video/webm",
+        "audio/mp3", 
+        "audio/mpga", 
+        "audio/m4a", 
+        "audio/wav",
+        "text/plain",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "application/pdf"
+        ]
+        if not type in mime_types:
+            HTTPException(status_code=415, detail=f"File type not supported")
         size = round(len(file_content) / (1024 * 1024), 2)
         path = os.path.join("/app/file_storage", email, file.filename)
         

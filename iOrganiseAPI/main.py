@@ -165,7 +165,12 @@ async def delete_file(id: int, token: str = Depends(oauth2_scheme)):
     if file is None:
         raise HTTPException(status_code=404, detail="Requested file not found or authorised for deletion")
     
-    db_delete(FileUpload, id)
+    try:
+        os.remove(file.path)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error removing file from storage: {e}")
+    
+    await db_delete(FileUpload, id)
     
     return {"msg": "File deleted successfully"}
 

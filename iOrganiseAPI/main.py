@@ -1,9 +1,11 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 
 import os
+import zipfile
+from io import BytesIO
 
 import torch
 
@@ -189,6 +191,34 @@ async def download_file(id: int, token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=404, detail="Requested file not found or authorised for download")
     
     return FileResponse(file.path, filename=file.name, headers={"Content-Disposition": f"attachment; filename={os.path.basename(file.path)}"})
+
+@app.get("/download-all")
+async def download_all(token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+    files = [file_upload for file_upload in file_upload_list if os.path.exists(file_upload.path)]
+
+    if files is None:
+        raise HTTPException(status_code=404, detail="No files found or authorised for download")
+    
+    # Create an in-memory zip file
+    zip_buffer = BytesIO()
+
+    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        for file_upload in files:
+            file_path = file_upload.path
+            file_name = os.path.basename(file_path)
+            zip_file.write(file_path, arcname=file_name)
+
+    zip_buffer.seek(0) 
+
+    headers = {
+        "Content-Disposition": "attachment; filename=files.zip",
+        "Content-Type": "application/zip"
+    }
+
+    return Response(zip_buffer.read(), headers=headers)
+
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
 # async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):

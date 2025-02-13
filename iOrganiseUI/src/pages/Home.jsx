@@ -24,10 +24,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
-import CreateNewFolderOutlinedIcon from '@mui/icons-material/CreateNewFolderOutlined';
 import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
-import FolderOutlinedIcon from '@mui/icons-material/FolderOutlined';
+import DriveFileMoveOutlinedIcon from '@mui/icons-material/DriveFileMoveOutlined';
+import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
+import AddToDriveOutlinedIcon from '@mui/icons-material/AddToDriveOutlined';
+import AttachEmailOutlinedIcon from '@mui/icons-material/AttachEmailOutlined';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
 
 // React Components
@@ -158,16 +159,17 @@ function Home() {
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
                                 { icon: <UploadFileOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Files", onClick: handleDialogOpen },
-                                { icon: <DriveFolderUploadIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Folder", onClick: () => console.log("Uploading Folder") },
+                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Smart Upload", onClick: () => console.log("Uploading Folder") }
                             ]}
                         />
 
                         <UtilBox
-                            title="New folder"
-                            icon={<CreateNewFolderOutlinedIcon />}
+                            title="Migrate data"
+                            icon={<DriveFileMoveOutlinedIcon />}
                             menuItems={[
-                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "AI Folder", onClick: () => console.log("Creating AI Folder") },
-                                { icon: <FolderOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Regular Folder", onClick: () => console.log("Creating Folder") },
+                                { icon: <BrowserUpdatedIcon sx={{ color: theme.palette.text.primary }} />, label: "Local Download", onClick: () => console.log("Downloading all items") },
+                                { icon: <AddToDriveOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Export to Drive", onClick: () => console.log("Transferring all items") },
+                                { icon: <AttachEmailOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Send to Mail", onClick: () => console.log("Sending to email") }
                             ]}
                         />
 

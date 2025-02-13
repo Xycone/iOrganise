@@ -10,7 +10,7 @@ class FileUpload(Base):
     type = Column(String(20), nullable=False)
     size = Column(Integer, nullable=False)
     path = Column(String(255), unique=True, index=True, nullable=False)
-    transcript_path = Column(String(255), unique=True, index=True, nullable=True)
+    content_path = Column(String(255), unique=True, index=True, nullable=True)
     summary_path = Column(String(255), unique=True, index=True, nullable=True)
     user_id = Column(Integer, ForeignKey('users.id'))
 

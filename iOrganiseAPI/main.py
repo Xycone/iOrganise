@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse, Response
 
 import os
 import zipfile
+import aiofiles
 from io import BytesIO
 
 import torch
@@ -225,6 +226,91 @@ async def download_all(token: str = Depends(oauth2_scheme)):
     }
 
     return Response(zip_buffer.read(), headers=headers)
+
+@app.post("/smart-upload")
+async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    user = await db_get_by_id(User, user_id)
+    user_settings = next(iter(await db_get_by_attribute(UserSetting, "user_id", user_id)), None)
+
+    if not files:
+        raise HTTPException(status_code=400, detail="No Files Uploaded")
+    
+    processing_dict = {}
+
+    for file in files:
+        type, size, path = await save_uploaded_file(user.email, file)
+
+        file_upload = FileUpload(name=os.path.basename(path), type=type, size=size, path=path, user=user)
+
+        await db_create(file_upload)
+        processing_dict[file_upload.id] = path
+
+    for file_id, file_path in processing_dict.items(): 
+        try:
+            if is_video(file_path):
+                with NamedTemporaryFile(suffix=".mp3", delete=True) as audio_temp:
+                    command = ["ffmpeg", "-i", file_path, "-q:a", "0", "-map", "a", "-y", audio_temp.name]
+                    subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                    transcription_manager = (
+                        model_loader.load_asr(user_settings.asr_model, DEVICE, 16, COMPUTE_TYPE)
+                    )
+
+                    content = "\n".join(
+                        f"Segment {j + 1}: {segment.get('text')}"
+                        for j, segment in enumerate(transcription_manager.transcribe(audio_temp.name).get("segments"))
+                    )
+
+                    model_loader.del_all_models()
+
+            if is_audio(file_path):
+                transcription_manager = (
+                    model_loader.load_asr(user_settings.asr_model, DEVICE, 16, COMPUTE_TYPE)
+                )
+
+                content = "\n".join(
+                    f"Segment {j + 1}: {segment.get('text')}"
+                    for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
+                )
+
+                model_loader.del_all_models()
+                            
+            # image to text
+
+            # subject classification
+
+            # summarise content
+            if content:
+                llama_cpp_manager = model_loader.load_llm(user_settings.llm, DEVICE)
+                summary = llama_cpp_manager.generate_summary(content)
+
+                model_loader.del_models("LLM")
+
+            # write to file
+            content_path = os.path.join("/app/file_storage", user.email, "content_" + file.filename)
+            summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.filename)
+        
+            async with aiofiles.open(content_path, 'w') as content_file:
+                if content:
+                    await content_file.write(content)
+
+            async with aiofiles.open(summary_path, 'w') as summary_file:
+                if summary:
+                    await summary_file.write(summary)
+
+            updated_fields = {
+                "content_path": content_path,
+                "summary_path": summary_path
+            }
+
+            await db_update(FileUpload, file_id, updated_fields)
+        
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
+        
+    return {"msg": "Files successfully uploaded and processed"}
+        
 
 
 # @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in

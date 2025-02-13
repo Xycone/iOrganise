@@ -82,6 +82,13 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     return {"access_token": access_token, "token_type": "bearer"}
 
+@app.get("/get-user")
+async def get_user(token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    user = await db_get_by_id(User, user_id)
+
+    return {"user": user}
+
 @app.get("/get-setting")
 async def get_settings(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)

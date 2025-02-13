@@ -38,11 +38,10 @@ function Sidebar() {
     const { pathname } = location;
     const selected =
         pathname === '/home' ? 'Home' :
-            pathname === '/dashboard' ? 'Dashboard' :
-                pathname === '/transcribeaudio' ? 'Transcribe Audio' :
-                    pathname === '/setupdocs' ? 'Setup Documentation' :
-                        pathname === '/apidocs' ? 'API Documentation' :
-                            pathname === '/categorisetext' ? 'Categorise Notes' : 'Home';
+            pathname === '/transcribeaudio' ? 'Transcribe Audio' :
+                pathname === '/setupdocs' ? 'Setup Documentation' :
+                    pathname === '/categorisetext' ? 'Categorise Notes' :
+                        pathname === '/apidocs' ? 'API Documentation' : 'Home';
 
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
@@ -109,12 +108,6 @@ function Sidebar() {
                             title="Home"
                             to="/home"
                             icon={<HomeOutlinedIcon />}
-                            selected={selected}
-                        />
-                        <Item
-                            title="Dashboard"
-                            to="/dashboard"
-                            icon={<DashboardOutlinedIcon />}
                             selected={selected}
                         />
 

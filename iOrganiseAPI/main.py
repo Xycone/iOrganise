@@ -240,86 +240,63 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     if user_id != file.user_id:
         raise HTTPException(status_code=403, detail="You are not authorized to view this file")
     
-    content = None
-    summary = None
+    content, summary = None, None
     
-    # retrieve content and summary if viewed before
-    if file.content_path and file.summary_path:
-        async with aiofiles.open(file.content_path, 'r') as content_file:
-            content = await content_file.read()
-        async with aiofiles.open(file.summary_path, 'r') as summary_file:
-            summary = await summary_file.read()
-
-        response = {
-            "content": content,
-            "summary": summary
+    # retrieve content and summary if information has been extracted before
+    if file.content_path and file.summary_path and file.content_path.strip() and file.summary_path.strip():
+        return {
+            "content": await aiofiles.open(file.content_path, 'r').__aenter__().read(),
+            "summary": await aiofiles.open(file.summary_path, 'r').__aenter__().read()
         }
-    else:  
-        # process file if not viewed before
-        with NamedTemporaryFile(delete=True) as temp:
-            try:
-                with open(file.path, "rb") as src_file:
-                    with open(temp.name, "wb") as temp_file:
-                        temp_file.write(src_file.read())
+      
+    # process file if not viewed before
+    with NamedTemporaryFile(delete=True) as temp:
+        try:
+            with open(file.path, "rb") as src_file, open(temp.name, "wb") as temp_file:
+                temp_file.write(src_file.read())
 
-                # transcribe audio
-                if is_video(temp.name):
-                    with NamedTemporaryFile(delete=True) as audio_temp:
-                        extracted_audio_path = audio_temp.name + ".mp3"
-                        command = ["ffmpeg", "-i", temp.name, extracted_audio_path]
-                        subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # transcribe audio
+            if is_video(temp.name):
+                with NamedTemporaryFile(delete=True) as audio_temp:
+                    extracted_audio_path = audio_temp.name + ".mp3"
+                    subprocess.run(["ffmpeg", "-i", temp.name, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                if is_audio(temp.name):
-                    transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
-                    content = "\n".join(
-                        f"Segment {j + 1}: {segment.get('text')}"
-                        for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
-                    )
-                                
-                # image to text
+            if is_audio(temp.name):
+                transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
+                content = "\n".join(
+                    f"Segment {j + 1}: {segment.get('text')}"
+                    for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
+                )
+                model_loader.del_models("ASR")
+                            
+            # image to text
 
-                # document text extraction
+            # document text extraction
 
-                # subject classification
+            # subject classification
 
-                # summarise content
-                if content:
-                    model_loader.del_all_models()
+            # summarise content
+            if content:
+                model_loader.del_all_models()
+                llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
+                summary = llama_cpp_manager.generate_summary(content)
+                model_loader.del_models("LLM")
 
-                    llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
-                    summary = llama_cpp_manager.generate_summary(content)
-
-                    model_loader.del_models("LLM")
-
-                # save response
+            if content and summary:
                 content_path = os.path.join("/app/file_storage", user.email, "content_" + file.name)
                 summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.name)
-            
+                
                 async with aiofiles.open(content_path, 'w') as content_file:
-                    if content:
-                        await content_file.write(content)
-
+                    await content_file.write(content)
                 async with aiofiles.open(summary_path, 'w') as summary_file:
-                    if summary:
-                        await summary_file.write(summary)
+                    await summary_file.write(summary)
 
-                updated_fields = {
-                    "content_path": content_path,
-                    "summary_path": summary_path
-                }
+                await db_update(FileUpload, id, {"content_path": content_path, "summary_path": summary_path})
 
-                await db_update(FileUpload, id, updated_fields)
-
-
-                response = {
-                    "content": content if content else None,
-                    "summary": summary if summary else None
-                }
-            
-            except Exception as e:
-                raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
+            return {"content": content, "summary": summary}
         
-    return response
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 @app.post("/transcribe-audio")
 async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: List[UploadFile] = File(...)):
@@ -344,28 +321,25 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
                 if is_video(temp.name):
                     with NamedTemporaryFile(delete=True) as audio_temp:
                         extracted_audio_path = audio_temp.name + ".mp3"
-                        command = ["ffmpeg", "-i", temp.name, extracted_audio_path]
-                        subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        subprocess.run(["ffmpeg", "-i", temp.name, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 if is_audio(temp.name):
-                    raise HTTPException(status_code=400, detail="Unsupported file type")
-
-                # performs audio transcription
-                transcript = transcription_manager.transcribe(temp.name)
-                segments = transcript["segments"]
-                    
-                response[id] = {
-                    "filename": file.filename,
-                    "language": transcript["language"],
-                    "segments": [
-                        {
-                            "start": segment.get("start"),
-                            "end": segment.get("end"),
-                            "text": segment.get("text").lstrip()
-                        }
-                        for segment in segments
-                    ]
-                }
+                    # performs audio transcription
+                    transcript = transcription_manager.transcribe(temp.name)
+                    segments = transcript["segments"]
+                        
+                    response[id] = {
+                        "filename": file.filename,
+                        "language": transcript["language"],
+                        "segments": [
+                            {
+                                "start": segment.get("start"),
+                                "end": segment.get("end"),
+                                "text": segment.get("text").lstrip()
+                            }
+                            for segment in segments
+                        ]
+                    }
             
             except Exception as e:
                 response[id] = {

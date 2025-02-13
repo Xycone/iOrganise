@@ -32,7 +32,7 @@ def is_video(path):
     return file_type in mime_types if file_type else False
 
 def is_audio(path):
-    mime_types = ["audio/mp3", "audio/mpga", "audio/m4a", "audio/wav"]
+    mime_types = ["audio/mp3", "audio/mpeg", "audio/mpga", "audio/m4a", "audio/x-m4a", "audio/mp4", "audio/x-mp4", "audio/wav", "audio/x-wav", "audio/webm"]
 
     file_type = get_file_type(path)
     return file_type in mime_types if file_type else False

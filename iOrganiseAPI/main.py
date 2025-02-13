@@ -366,7 +366,7 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
     return response
 
 @app.post("/predict-text")
-async def predict_text(form_data: TextInputDTO = Depends(), files: List[UploadFile] = File(...)):
+async def predict_text(form_data: TextInputDTO = Depends(), files: List[UploadFile] = File(None)):
     # 1. error check
     if not form_data.text and not files:
         raise HTTPException(status_code=400, detail="No text or file uploaded")

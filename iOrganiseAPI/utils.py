@@ -26,26 +26,15 @@ def get_file_type(path):
         return None
     
 def is_video(path):
-    mime_types = ["video/mp4", "video/mpeg", "video/webm"]
-
     file_type = get_file_type(path)
-    return file_type in mime_types if file_type else False
+    return bool(file_type) and file_type.startswith("video/")
 
 def is_audio(path):
-    mime_types = ["audio/mp3", "audio/mpeg", "audio/mpga", "audio/m4a", "audio/x-m4a", "audio/mp4", "audio/x-mp4", "audio/wav", "audio/x-wav", "audio/webm"]
-
     file_type = get_file_type(path)
-    return file_type in mime_types if file_type else False
+    return bool(file_type) and file_type.startswith("audio/")
 
 def is_text(path):
-    mime_types = [
-        "text/plain",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/pdf"
-    ]
-
-    file_type = get_file_type(path)
-    return file_type in mime_types if file_type else False
+    return
 
 def extract_text_from_pdf(pdf_path: str) -> str:
     doc = fitz.open(pdf_path)

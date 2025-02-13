@@ -20,7 +20,6 @@ from tempfile import NamedTemporaryFile
 from utils import *
 from modelLoader import ModelLoader
 from dto.RegisterDTO import RegisterDTO
-from dto.UpdateUserDTO import UpdateUserDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
 from dto.TextInputDTO import TextInputDTO
@@ -81,17 +80,32 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     
     return {"access_token": access_token, "token_type": "bearer"}
 
-@app.get("/get-user")
-async def get_user(token: str = Depends(oauth2_scheme)):
+@app.get("/get-setting")
+async def get_settings(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     user = await db_get_by_id(User, user_id)
+    user_setting = await db_get_by_attribute(UserSetting, "user_id", user_id)
 
-    return {"user": user}
+    setting = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "password": user.password,
+        "asr_model": user_setting.asr_model,
+        "llm": user_setting.llm
+    }
 
-@app.put("/update-user")
-async def update_user(form_data: UpdateUserDTO, token: str = Depends(oauth2_scheme)):
+    return {"setting": setting}
+
+@app.put("/update-setting/{id}")
+async def update_setting(form_data: UpdateSettingDTO, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     user = await db_get_by_id(User, user_id)
+    user_setting = await db_get_by_id(UserSetting, id)
+
+    # check if the user setting belongs to user
+    if user_id != user_setting.user_id:
+        raise HTTPException(status_code=401, detail="Invalid permissions to update this setting")
 
     # check if the email already exists
     existing_user = (await db_get_by_attribute(User, "email", form_data.email) or [None])[0]
@@ -106,33 +120,22 @@ async def update_user(form_data: UpdateUserDTO, token: str = Depends(oauth2_sche
         "email": form_data.email,
         "password": hashed_password
     }
-    response = await db_update(User, user_id, new_user)
 
-    return {"msg": "User updated successfully", "user": response}
-
-@app.get("/get-setting")
-async def get_setting(token: str = Depends(oauth2_scheme)):
-    user_id = verify_jwt_token(token)
-    user_setting = await db_get_by_attribute(UserSetting, "user_id", user_id)
-
-    return {"user_setting": user_setting}
-
-@app.put("/update-setting/{id}")
-async def update_setting(id: int, form_data: UpdateSettingDTO, token: str = Depends(oauth2_scheme)):
-    user_id = verify_jwt_token(token)
-
-    # check if the setting belongs to user
-    user_setting = await db_get_by_id(UserSetting, id)
-    if user_id != user_setting.user_id:
-        raise HTTPException(status_code=401, detail="Invalid permissions to update this setting")
-
-    new_user_setting = {
+    new_setting = {
         "asr_model": form_data.asr_model,
         "llm": form_data.llm
     }
-    response = await db_update(UserSetting, id, new_user_setting)
+    
+    response_user = await db_update(User, user_id, new_user)
+    user_status = {"status": "User updated successfully", "user": response_user} if response_user else {"status": "Failed"}
 
-    return {"msg": "UserSetting updated successfully", "user_setting": response}
+    response_setting = await db_update(UserSetting, id, new_setting)
+    setting_status = {"status": "UserSetting updated successfully", "user_setting": response_setting} if response_setting else {"status": "Failed"}
+
+    return {
+        "user_msg": user_status,
+        "setting_msg": setting_status
+    }
 
 @app.post("/upload-files")
 async def upload_files(files: List[UploadFile] = File(...), token: str = Depends(oauth2_scheme)):

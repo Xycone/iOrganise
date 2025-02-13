@@ -84,7 +84,10 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
 async def get_settings(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     user = await db_get_by_id(User, user_id)
-    user_setting = await db_get_by_attribute(UserSetting, "user_id", user_id)
+    user_setting = next(iter(await db_get_by_attribute(UserSetting, "user_id", user_id)), None)
+
+    if not user_setting:
+        raise HTTPException(status_code=404, detail="User settings not found")
 
     setting = {
         "id": user.id,

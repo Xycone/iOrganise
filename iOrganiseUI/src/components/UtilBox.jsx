@@ -30,8 +30,8 @@ const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
   return (
     <Box>
       <Box
-        height="100px"
-        width="170px"
+        height="120px"
+        width="200px"
         background="invisible"
         border="1px solid"
         borderColor={theme.palette.divider}
@@ -69,7 +69,7 @@ const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
             horizontal: "left",
           }}
         >
-          <Box sx={{ minWidth: "170px", display: "flex", justifyContent: "flex-start", pl: 1 }}>
+          <Box sx={{ minWidth: "200px", display: "flex", justifyContent: "flex-start", pl: 1 }}>
             <IconButton onClick={handleClose}>
               <CloseIcon sx={{ color: theme.palette.text.primary}}/>
             </IconButton>

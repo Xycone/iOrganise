@@ -156,6 +156,19 @@ async def get_files(token: str = Depends(oauth2_scheme)):
 
     return {"files": files}
 
+@app.delete("/delete-file/{id}")
+async def delete_file(id: int, token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+    file = next((file_upload for file_upload in file_upload_list if file_upload.id == id and os.path.exists(file_upload.path)), None)
+
+    if file is None:
+        raise HTTPException(status_code=404, detail="Requested file not found or authorised for deletion")
+    
+    db_delete(FileUpload, id)
+    
+    return {"msg": "File deleted successfully"}
+
 @app.get("/download-file/{id}")
 async def download_file(id: int, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
@@ -163,7 +176,7 @@ async def download_file(id: int, token: str = Depends(oauth2_scheme)):
     file = next((file_upload for file_upload in file_upload_list if file_upload.id == id and os.path.exists(file_upload.path)), None)
 
     if file is None:
-        raise HTTPException(status_code=404, detail="Requested file not found or authorized for download")
+        raise HTTPException(status_code=404, detail="Requested file not found or authorised for download")
     
     return FileResponse(file.path, filename=file.name, headers={"Content-Disposition": f"attachment; filename={os.path.basename(file.path)}"})
 

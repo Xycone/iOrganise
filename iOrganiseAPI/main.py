@@ -93,7 +93,6 @@ async def get_settings(token: str = Depends(oauth2_scheme)):
         "id": user.id,
         "name": user.name,
         "email": user.email,
-        "password": user.password,
         "asr_model": user_setting.asr_model,
         "llm": user_setting.llm
     }

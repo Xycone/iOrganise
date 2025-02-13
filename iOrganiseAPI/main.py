@@ -227,69 +227,75 @@ async def download_all(token: str = Depends(oauth2_scheme)):
 
     return Response(zip_buffer.read(), headers=headers)
 
-@app.post("/smart-upload")
-async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends(oauth2_scheme)):
+@app.post("/view-extract/{id}") # need to trigger when view extract button is pressed and user is logged in
+async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     user = await db_get_by_id(User, user_id)
-    user_settings = next(iter(await db_get_by_attribute(UserSetting, "user_id", user_id)), None)
+    user_setting = next(iter(await db_get_by_attribute(UserSetting, "user_id", user_id)), None)
 
-    if not files:
-        raise HTTPException(status_code=400, detail="No Files Uploaded")
+    # retrieve file
+    file = await db_get_by_id(FileUpload, id)
+    if not file:
+        raise HTTPException(status_code=404, detail="File not found")
+    if user_id != file.user_id:
+        raise HTTPException(status_code=403, detail="You are not authorized to view this file")
     
-    processing_dict = {}
+    # retrieve content and summary if viewed before
+    if file.content_path and file.summary_path:
+        content = None
+        summary = None
 
-    for file in files:
-        type, size, path = await save_uploaded_file(user.email, file)
+        async with aiofiles.open(file.content_path, 'r') as content_file:
+            content = await content_file.read()
+        async with aiofiles.open(file.summary_path, 'r') as summary_file:
+            summary = await summary_file.read()
 
-        file_upload = FileUpload(name=os.path.basename(path), type=type, size=size, path=path, user=user)
-
-        await db_create(file_upload)
-        processing_dict[file_upload.id] = path
-
-    for file_id, file_path in processing_dict.items(): 
+        response = {
+            "content": content,
+            "summary": summary
+        }
+        
+        return response
+        
+    # process file if not viewed before
+    with NamedTemporaryFile(delete=True) as temp:
         try:
-            if is_video(file_path):
-                with NamedTemporaryFile(suffix=".mp3", delete=True) as audio_temp:
-                    command = ["ffmpeg", "-i", file_path, "-q:a", "0", "-map", "a", "-y", audio_temp.name]
+            # copies uploaded file contents to the temporary file
+            with open(temp.name, "wb") as temp_file:
+                temp_file.write(file.path.read())
+
+            # transcribe audio
+            if is_video(temp.name):
+                with NamedTemporaryFile(delete=True) as audio_temp:
+                    extracted_audio_path = audio_temp.name + ".mp3"
+                    command = ["ffmpeg", "-i", temp.name, extracted_audio_path]
                     subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-                    transcription_manager = (
-                        model_loader.load_asr(user_settings.asr_model, DEVICE, 16, COMPUTE_TYPE)
-                    )
-
-                    content = "\n".join(
-                        f"Segment {j + 1}: {segment.get('text')}"
-                        for j, segment in enumerate(transcription_manager.transcribe(audio_temp.name).get("segments"))
-                    )
-
-                    model_loader.del_all_models()
-
-            if is_audio(file_path):
-                transcription_manager = (
-                    model_loader.load_asr(user_settings.asr_model, DEVICE, 16, COMPUTE_TYPE)
-                )
-
+            if is_audio(temp.name):
+                transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
                 content = "\n".join(
                     f"Segment {j + 1}: {segment.get('text')}"
-                    for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
+                    for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
                 )
-
-                model_loader.del_all_models()
                             
             # image to text
+
+            # document text extraction
 
             # subject classification
 
             # summarise content
             if content:
-                llama_cpp_manager = model_loader.load_llm(user_settings.llm, DEVICE)
+                model_loader.del_all_models()
+
+                llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
                 summary = llama_cpp_manager.generate_summary(content)
 
                 model_loader.del_models("LLM")
 
-            # write to file
-            content_path = os.path.join("/app/file_storage", user.email, "content_" + file.filename)
-            summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.filename)
+            # save response
+            content_path = os.path.join("/app/file_storage", user.email, "content_" + file.name)
+            summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.name)
         
             async with aiofiles.open(content_path, 'w') as content_file:
                 if content:
@@ -304,73 +310,18 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                 "summary_path": summary_path
             }
 
-            await db_update(FileUpload, file_id, updated_fields)
+            await db_update(FileUpload, id, updated_fields)
+
+
+            response = {
+                "content": content if content else None,
+                "summary": summary if summary else None
+            }
+
+            return response
         
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
-        
-    return {"msg": "Files successfully uploaded and processed"}
-        
-
-
-# @app.post("/view-extract/{file_id}") # need to trigger when view extract button is pressed and user is logged in
-# async def view_extract(file_id: str = Path(..., description="The ID of the file to process"), current_user: str = Depends(get_current_user)):
-#     # . retrieve file
-#     file = await db_get_id(FileUpload, file_id)
-#     if not file:
-#         raise HTTPException(status_code=400, detail="File does not exist")
-    
-#     # . process file
-#     with NamedTemporaryFile(delete=True) as temp:
-#         try:
-#             # copies uploaded file contents to the temporary file
-#             with open(temp.name, "wb") as temp_file:
-#                 temp_file.write(file.file.read())
-
-#             # transcribe audio
-#             if is_video(temp.name):
-#                 with NamedTemporaryFile(delete=True) as audio_temp:
-#                     extracted_audio_path = audio_temp.name + ".mp3"
-#                     command = ["ffmpeg", "-i", temp.name, extracted_audio_path]
-#                     subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-#             if is_audio(temp.name):
-#                 transcription_manager = (
-#                     model_loader.load_asr(user_settings.asr_model, DEVICE, 16, COMPUTE_TYPE)
-#                 )
-
-#                 content = "\n".join(
-#                     f"Segment {j + 1}: {segment.get('text')}"
-#                     for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
-#                 )
-                            
-#             # image to text
-
-#             # subject classification
-
-#             # extract text
-#             if is_text(temp.name):
-#                 content = "test"
-
-#             # summarise content
-#             if content:
-#                 model_loader.del_all_models()
-
-#                 llama_cpp_manager = model_loader.load_llm(user_settings.llm, DEVICE)
-#                 summary = llama_cpp_manager.generate_summary(content)
-
-#                 model_loader.del_models("LLM")
-
-#             # format response
-#             response = {
-#                 "content": content if content else None,
-#                 "summary": summary if summary else None
-#             }
-
-#             return response
-        
-#         except Exception as e:
-#             raise HTTPException(status_code=500, detail=f"Error processing file: {str(e)}")
 
 @app.post("/transcribe-audio")
 async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: List[UploadFile] = File(...)):
@@ -381,9 +332,7 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
     response = {}
 
     # 2. load models used for transciption
-    transcription_manager = (
-        model_loader.load_asr(form_data.asr_model, DEVICE, 16, COMPUTE_TYPE)
-    )
+    transcription_manager = model_loader.load_asr(form_data.asr_model, DEVICE, 16, COMPUTE_TYPE)
 
     # 3. transcribe all audio/video files
     for id, file in enumerate(files, start=1):

@@ -63,8 +63,15 @@ function Home() {
     // File Upload
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isSmart, setIsSmart] = useState();
 
     const handleDialogOpen = () => {
+        setIsSmart(false);
+        setDialogOpen(true);
+    };
+    
+    const handleSmartDialogOpen = () => {
+        setIsSmart(true);
         setDialogOpen(true);
     };
 
@@ -111,8 +118,10 @@ function Home() {
             formData.append("files", file);
         }
 
-        // POST Request, /upload-files
-        http.post("/upload-files", formData)
+        const endpoint = isSmart ? "/smart-upload" : "/upload-files";
+
+        // POST Request
+        http.post(endpoint, formData)
             .then((res) => {
                 console.log("API Response:", res.data);
                 setSelectedFiles([]);
@@ -177,7 +186,7 @@ function Home() {
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
                                 { icon: <UploadFileOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Files", onClick: handleDialogOpen },
-                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Smart Upload", onClick: () => console.log("Uploading Folder") }
+                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Smart Upload", onClick: handleSmartDialogOpen }
                             ]}
                         />
 
@@ -234,6 +243,7 @@ function Home() {
             <Dialog
                 open={dialogOpen}
                 onClose={handleDialogClose}
+                onExited={() => setIsSmart()}
                 fullWidth
                 maxWidth="sm"
             >
@@ -246,12 +256,27 @@ function Home() {
                             justifyContent="space-between"
                         >
                             <Box>
-                                <Typography variant="h5">
-                                    Upload Files
-                                </Typography>
-                                <DialogContentText>
-                                    Upload and attach your files to iOrganise.
-                                </DialogContentText>
+                                {isSmart === true && (
+                                    <>
+                                        <Typography variant="h5">
+                                            Smart Upload
+                                        </Typography>
+                                        <DialogContentText>
+                                            Upload and attach your files to iOrganise for AI processing.
+                                        </DialogContentText>
+                                    </>
+                                )}
+
+                                {isSmart === false && (
+                                    <>
+                                        <Typography variant="h5">
+                                            Upload Files
+                                        </Typography>
+                                        <DialogContentText>
+                                            Upload and attach your files to iOrganise.
+                                        </DialogContentText>
+                                    </>
+                                )}
                             </Box>
 
                             <IconButton onClick={handleDialogClose}>

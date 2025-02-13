@@ -72,21 +72,6 @@ async def save_uploaded_file(email: str, file: UploadFile):
         file_content = await file.read()
 
         type = filetype.guess(file_content)
-
-        mime_types = [
-        "video/mp4", 
-        "video/mpeg", 
-        "video/webm",
-        "audio/mp3", 
-        "audio/mpga", 
-        "audio/m4a", 
-        "audio/wav",
-        "text/plain",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/pdf"
-        ]
-        if not type in mime_types:
-            HTTPException(status_code=415, detail=f"File type not supported")
         size = round(len(file_content) / (1024 * 1024), 2)
         path = os.path.join("/app/file_storage", email, file.filename)
         

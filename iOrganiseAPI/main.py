@@ -324,11 +324,11 @@ async def predict_text(form_data: TextInputDTO = Depends(), files: List[UploadFi
 
                     # extract text from the file based on extension
                     if file.filename.endswith(".pdf"):
-                        extracted_text += TextExtractor.extract_text_from_pdf(temp.name)
+                        extracted_text += extract_text_from_pdf(temp.name)
                     elif file.filename.endswith(".docx"):
-                        extracted_text += TextExtractor.extract_text_from_docx(temp.name)
+                        extracted_text += extract_text_from_docx(temp.name)
                     elif file.filename.endswith(".txt"):
-                        extracted_text += TextExtractor.extract_text_from_txt(temp.name)
+                        extracted_text += extract_text_from_txt(temp.name)
                     else:
                         raise HTTPException(status_code=400, detail="Unsupported file type")
 

@@ -47,24 +47,23 @@ def is_text(path):
     return file_type.mime in mime_types
 
 
-class TextExtractor:
-    def extract_text_from_pdf(pdf_path: str) -> str:
-        doc = fitz.open(pdf_path)
-        text = ""
-        for page in doc:
-            text += page.get_text()
-        return text
+def extract_text_from_pdf(pdf_path: str) -> str:
+    doc = fitz.open(pdf_path)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+    return text
 
-    def extract_text_from_docx(docx_path: str) -> str:
-        doc = Document(docx_path)
-        text = ""
-        for para in doc.paragraphs:
-            text += para.text
-        return text
+def extract_text_from_docx(docx_path: str) -> str:
+    doc = Document(docx_path)
+    text = ""
+    for para in doc.paragraphs:
+        text += para.text
+    return text
 
-    def extract_text_from_txt(txt_path: str) -> str:
-        with open(txt_path, 'r', encoding='utf-8') as file:
-            return file.read()
+def extract_text_from_txt(txt_path: str) -> str:
+    with open(txt_path, 'r', encoding='utf-8') as file:
+        return file.read()
 
 # file uploading
 async def save_uploaded_file(email: str, file: UploadFile):

@@ -244,10 +244,12 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     
     # retrieve content and summary if information has been extracted before
     if file.content_path and file.summary_path and file.content_path.strip() and file.summary_path.strip():
-        return {
-            "content": await aiofiles.open(file.content_path, 'r').__aenter__().read(),
-            "summary": await aiofiles.open(file.summary_path, 'r').__aenter__().read()
-        }
+        async with aiofiles.open(file.content_path, 'r') as content_file:
+            content = await content_file.read()
+        async with aiofiles.open(file.summary_path, 'r') as summary_file:
+            summary = await summary_file.read()
+
+        return {"content": content, "summary": summary}
       
     # process file if not viewed before
     with NamedTemporaryFile(delete=True) as temp:

@@ -258,17 +258,24 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
                 temp_file.write(src_file.read())
 
             # transcribe audio
-            if is_video(temp.name):
-                with NamedTemporaryFile(delete=True) as audio_temp:
-                    extracted_audio_path = audio_temp.name + ".mp3"
-                    subprocess.run(["ffmpeg", "-i", temp.name, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            if is_audio(temp.name):
+            if is_video(temp.name) or is_audio(temp.name):
                 transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
-                content = "\n".join(
-                    f"Segment {j + 1}: {segment.get('text')}"
-                    for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
-                )
+
+                if is_video(temp.name):
+                    with NamedTemporaryFile(delete=True) as audio_temp:
+                        extracted_audio_path = audio_temp.name + ".mp3"
+                        subprocess.run(["ffmpeg", "-i", temp.name, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        content = "\n".join(
+                            f"Segment {j + 1}: {segment.get('text')}"
+                            for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
+                        )
+
+                elif is_audio(temp.name):
+                    content = "\n".join(
+                        f"Segment {j + 1}: {segment.get('text')}"
+                        for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
+                    )
+
                 model_loader.del_models("ASR")
                             
             # image to text
@@ -325,23 +332,26 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
                         extracted_audio_path = audio_temp.name + ".mp3"
                         subprocess.run(["ffmpeg", "-i", temp.name, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
+                        transcript = transcription_manager.transcribe(extracted_audio_path)
+                        segments = transcript["segments"]
+
                 if is_audio(temp.name):
                     # performs audio transcription
                     transcript = transcription_manager.transcribe(temp.name)
                     segments = transcript["segments"]
                         
-                    response[id] = {
-                        "filename": file.filename,
-                        "language": transcript["language"],
-                        "segments": [
-                            {
-                                "start": segment.get("start"),
-                                "end": segment.get("end"),
-                                "text": segment.get("text").lstrip()
-                            }
-                            for segment in segments
-                        ]
-                    }
+                response[id] = {
+                    "filename": file.filename,
+                    "language": transcript["language"],
+                    "segments": [
+                        {
+                            "start": segment.get("start"),
+                            "end": segment.get("end"),
+                            "text": segment.get("text").lstrip()
+                        }
+                        for segment in segments
+                    ]
+                }
             
             except Exception as e:
                 response[id] = {

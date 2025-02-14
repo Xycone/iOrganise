@@ -246,49 +246,50 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
     # bucket sort based on MIME type for later processing
     buckets = {"video": [], "audio": [], "image": [], "document": [], "other": []}
 
-    for id, name, type, path in myList:
+    for file_id, file_name, file_type, file_path in myList:
         category = type.split("/")[0] if type and type.split("/")[0] in buckets else "other"
-        buckets[category].append((id, name, path, type))
+        buckets[category].append((file_id, file_name, file_path, file_type))
 
     # file processing (1st stage)
-    myList = []
+    updatedList = []
+    # extract audio from audio/video files
     if buckets["video"] or buckets["audio"]:
         transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
 
-        for id, name, path, type in buckets["video"] + buckets["audio"]:
+        for file_id, file_name, file_path, file_type in buckets["video"] + buckets["audio"]:
             try:
-                if type == "video":
+                if file_type == "video":
                     with NamedTemporaryFile(delete=True) as audio_temp:
                         extracted_audio_path = audio_temp.name + ".mp3"
-                        subprocess.run(["ffmpeg", "-i", path, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        subprocess.run(["ffmpeg", "-i", file_path, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         content = "\n".join(
                             f"Segment {j + 1}: {segment.get('text')}"
-                            for j, segment in enumerate(transcription_manager.transcribe(path).get("segments"))
+                            for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                         )
 
-                elif type == "audio":
+                elif file_type == "audio":
                     content = "\n".join(
                         f"Segment {j + 1}: {segment.get('text')}"
-                        for j, segment in enumerate(transcription_manager.transcribe(path).get("segments"))
+                        for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                     )
 
-                myList.append((id, name, path, type, content))
+                updatedList.append((file_id, file_name, file_path, file_type, content))
 
             except Exception as e:
-                print(f"Error processing file {name}: {e}")
+                print(f"Error processing file {file_name}: {e}")
 
         model_loader.del_models("ASR")
 
     # extract text from image files
     if buckets["image"]:
         # load model(s) here
-        for id, name, path, type in buckets["image"]:
+        for file_id, file_name, file_path, file_type in buckets["image"]:
             # processing steps for file here
             pass
             
             # make sure to pass in value for "content"
             content = None
-            myList.append((id, name, path, type, content))
+            updatedList.append((file_id, file_name, file_path, file_type, content))
         
         # unload model(s) here
 
@@ -296,49 +297,54 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
     if buckets["document"]:
         # load model(s) here
 
-        for id, name, path, type in buckets["document"]:
+        for file_id, file_name, file_path, file_type in buckets["document"]:
             # processing steps for file here
             pass
 
             # make sure to pass in value for "content"
             content = None
-            myList.append((id, name, path, type, content))
+            updatedList.append((file_id, file_name, file_path, file_type, content))
         
         # unload model(s) here
 
     if buckets["other"]:
-        for id, name, path, type in buckets["other"]:
+        for file_id, file_name, file_path, file_type in buckets["other"]:
             content = None
-            myList.append((id, name, path, type, content))
+            updatedList.append((file_id, file_name, file_path, file_type, content))
 
     # subject classification (2nd stage)
     # load models for subject classification here
 
-    for id, name, path, type, content in myList:
+    for file_id, file_name, file_path, file_type, content in updatedList:
         # classify files and save the subject to db
         pass
 
     # content summary (final stage)
-    model_loader.del_all_models()
-    llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
+    if updatedList:
+        model_loader.del_all_models()
+        llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
 
-    for id, name, path, type, content in myList:
-        if content:
+        for file_id, file_name, file_path, file_type, content in updatedList:
+            if not content:
+                continue
+
             summary = llama_cpp_manager.generate_summary(content)
 
-            content_path = os.path.join("/app/file_storage", user.email, "content_" + name)
-            summary_path = os.path.join("/app/file_storage", user.email, "summary_" + name)
+            content_path = os.path.join("/app/file_storage", user.email, "content_" + file_name)
+            summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file_name)
 
             async with aiofiles.open(content_path, 'w') as content_file:
                 await content_file.write(content)
             async with aiofiles.open(summary_path, 'w') as summary_file:
                 await summary_file.write(summary)
 
-            await db_update(FileUpload, id, {"content_path": content_path, "summary_path": summary_path})
+            await db_update(FileUpload, file_id, {"content_path": content_path, "summary_path": summary_path})
 
-    model_loader.del_models("LLM")
+        model_loader.del_models("LLM")
 
-    return {"Files Uploaded & Processed"}
+        return {"Files uploaded & processed"}
+    
+    return {"Files uploaded but not processed"}
 
 @app.post("/view-extract/{id}")
 async def view_extract(id: str, token: str = Depends(oauth2_scheme)):

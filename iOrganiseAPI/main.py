@@ -25,7 +25,6 @@ from modelLoader import ModelLoader
 from dto.RegisterDTO import RegisterDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
-from dto.TextInputDTO import TextInputDTO
 
 app = FastAPI()
 
@@ -505,9 +504,12 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
     return response
 
 @app.post("/predict-text")
-async def predict_text(form_data: TextInputDTO = Depends(), files: Optional[List[UploadFile]] = File(None)):
+async def predict_text(
+    text: Optional[str] = Form(None),
+    files: List[UploadFile] = File(default=None)
+):
     # 1. error check
-    if not form_data.text and not files:
+    if not text and not files:
         raise HTTPException(status_code=400, detail="No text or file uploaded")
 
     response = {}
@@ -534,7 +536,7 @@ async def predict_text(form_data: TextInputDTO = Depends(), files: Optional[List
                 except Exception as e:
                     response[file.filename] = {"error": str(e)}
 
-    text = form_data.text or extracted_text
+    text = text or extracted_text
 
     # 3. predict subject for file
     if text:

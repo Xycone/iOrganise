@@ -246,7 +246,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
     # bucket sort based on MIME type for later processing
     buckets = {"video": [], "audio": [], "image": [], "document": [], "other": []}
 
-    for id, name, path in myList.items():
+    for id, name, path in myList:
         mime_type = get_file_type(path) 
         category = mime_type.split("/")[0] if mime_type and mime_type.split("/")[0] in buckets else "other"
         buckets[category].append((id, name, path, mime_type))

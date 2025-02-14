@@ -299,7 +299,9 @@ function Home() {
             <Dialog
                 open={dialogOpen}
                 onClose={handleDialogClose}
-                onExited={() => setIsSmart()}
+                TransitionProps={{
+                    onExited: () => setIsSmart(),
+                  }}
                 fullWidth
                 maxWidth="sm"
             >

@@ -247,7 +247,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
     buckets = {"video": [], "audio": [], "image": [], "document": [], "other": []}
 
     for file_id, file_name, file_type, file_path in myList:
-        category = type.split("/")[0] if type and type.split("/")[0] in buckets else "other"
+        category = file_type.split("/")[0] if file_type and file_type.split("/")[0] in buckets else "other"
         buckets[category].append((file_id, file_name, file_path, file_type))
 
     # file processing (1st stage)
@@ -267,7 +267,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                             for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                         )
 
-                elif file_type == "audio":
+                if file_type == "audio":
                     content = "\n".join(
                         f"Segment {j + 1}: {segment.get('text')}"
                         for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
@@ -280,44 +280,44 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
 
         model_loader.del_models("ASR")
 
-    # extract text from image files
-    if buckets["image"]:
-        # load model(s) here
-        for file_id, file_name, file_path, file_type in buckets["image"]:
-            # processing steps for file here
-            pass
+    # # extract text from image files
+    # if buckets["image"]:
+    #     # load model(s) here
+    #     for file_id, file_name, file_path, file_type in buckets["image"]:
+    #         # processing steps for file here
+    #         pass
             
-            # make sure to pass in value for "content"
-            content = None
-            updatedList.append((file_id, file_name, file_path, file_type, content))
+    #         # make sure to pass in value for "content"
+    #         content = None
+    #         updatedList.append((file_id, file_name, file_path, file_type, content))
         
-        # unload model(s) here
+    #     # unload model(s) here
 
-    # extract text from document
-    if buckets["document"]:
-        # load model(s) here
+    # # extract text from document
+    # if buckets["document"]:
+    #     # load model(s) here
 
-        for file_id, file_name, file_path, file_type in buckets["document"]:
-            # processing steps for file here
-            pass
+    #     for file_id, file_name, file_path, file_type in buckets["document"]:
+    #         # processing steps for file here
+    #         pass
 
-            # make sure to pass in value for "content"
-            content = None
-            updatedList.append((file_id, file_name, file_path, file_type, content))
+    #         # make sure to pass in value for "content"
+    #         content = None
+    #         updatedList.append((file_id, file_name, file_path, file_type, content))
         
-        # unload model(s) here
+    #     # unload model(s) here
 
-    if buckets["other"]:
-        for file_id, file_name, file_path, file_type in buckets["other"]:
-            content = None
-            updatedList.append((file_id, file_name, file_path, file_type, content))
+    # if buckets["other"]:
+    #     for file_id, file_name, file_path, file_type in buckets["other"]:
+    #         content = None
+    #         updatedList.append((file_id, file_name, file_path, file_type, content))
 
-    # subject classification (2nd stage)
-    # load models for subject classification here
+    # # subject classification (2nd stage)
+    # # load models for subject classification here
 
-    for file_id, file_name, file_path, file_type, content in updatedList:
-        # classify files and save the subject to db
-        pass
+    # for file_id, file_name, file_path, file_type, content in updatedList:
+    #     # classify files and save the subject to db
+    #     pass
 
     # content summary (final stage)
     if updatedList:

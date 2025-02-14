@@ -248,7 +248,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
 
     for file_id, file_name, file_type, file_path in myList:
         category = file_type.split("/")[0] if file_type and file_type.split("/")[0] in buckets else "other"
-        buckets[category].append((file_id, file_name, file_path, file_type))
+        buckets[category].append((file_id, file_name, file_path, category))
 
     # file processing (1st stage)
     updatedList = []

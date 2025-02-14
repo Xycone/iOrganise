@@ -47,7 +47,7 @@ class ModelLoader():
     def del_models(self, *model_keys):
         for key in model_keys:
             if key in self.__loaded_models:
-                del self.__loaded_models[key]  # Remove model from dictionary
+                del self.__loaded_models[key]
         free_memory()
 
     # delete all models currently loaded

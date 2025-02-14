@@ -26,7 +26,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
-import DriveFolderUploadOutlinedIcon from '@mui/icons-material/DriveFolderUploadOutlined';
+import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
 import DriveFileMoveOutlinedIcon from '@mui/icons-material/DriveFileMoveOutlined';
 import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
 import AddToDriveOutlinedIcon from '@mui/icons-material/AddToDriveOutlined';
@@ -68,8 +68,15 @@ function Home() {
     // File Upload
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isSmart, setIsSmart] = useState();
 
     const handleDialogOpen = () => {
+        setIsSmart(false);
+        setDialogOpen(true);
+    };
+    
+    const handleSmartDialogOpen = () => {
+        setIsSmart(true);
         setDialogOpen(true);
     };
 
@@ -115,9 +122,11 @@ function Home() {
         for (const file of selectedFiles) {
             formData.append("files", file);
         }
+        
+        const endpoint = isSmart ? "/smart-upload" : "/upload-files";
 
         // POST Request, /upload-files
-        http.post("/upload-files", formData)
+        http.post(endpoint, formData)
             .then((res) => {
                 console.log("API Response:", res.data);
                 setSelectedFiles([]);
@@ -227,7 +236,7 @@ function Home() {
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
                                 { icon: <UploadFileOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Files", onClick: handleDialogOpen },
-                                { icon: <DriveFolderUploadOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Folder", onClick: () => console.log("Uploading Folder") }
+                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Smart Upload", onClick: handleSmartDialogOpen }
                             ]}
                         />
 
@@ -290,6 +299,7 @@ function Home() {
             <Dialog
                 open={dialogOpen}
                 onClose={handleDialogClose}
+                onExited={() => setIsSmart()}
                 fullWidth
                 maxWidth="sm"
             >
@@ -302,12 +312,26 @@ function Home() {
                             justifyContent="space-between"
                         >
                             <Box>
-                                <Typography variant="h5">
-                                    Upload Files
-                                </Typography>
-                                <DialogContentText>
-                                    Upload and attach your files to iOrganise.
-                                </DialogContentText>
+                                {isSmart === true && (
+                                    <>
+                                        <Typography variant="h5">
+                                            Smart Upload
+                                        </Typography>
+                                        <DialogContentText>
+                                            Upload and attach your files to iOrganise for AI processing.
+                                        </DialogContentText>
+                                    </>
+                                )}
+                                {isSmart === false && (
+                                    <>
+                                        <Typography variant="h5">
+                                            Upload Files
+                                        </Typography>
+                                        <DialogContentText>
+                                            Upload and attach your files to iOrganise.
+                                        </DialogContentText>
+                                    </>
+                                )}
                             </Box>
 
                             <IconButton onClick={handleDialogClose}>

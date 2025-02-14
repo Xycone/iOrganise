@@ -7,6 +7,7 @@ import os
 import zipfile
 import aiofiles
 from io import BytesIO
+import re
 
 import torch
 
@@ -513,15 +514,16 @@ async def predict_text(
         raise HTTPException(status_code=400, detail="No text or file uploaded")
 
     response = {}
-
+    
     # 2. extract text from files
     extracted_text = ""
     if files:
         for file in files:
             with NamedTemporaryFile(delete=True) as temp:
                 try:
+                    content = await file.read()  # Read file content
                     with open(temp.name, "wb") as temp_file:
-                        temp_file.write(file.file.read())
+                        temp_file.write(content)
 
                     # extract text from the file based on extension
                     if file.filename.endswith(".pdf"):
@@ -532,20 +534,29 @@ async def predict_text(
                         extracted_text += extract_text_from_txt(temp.name)
                     else:
                         raise HTTPException(status_code=400, detail="Unsupported file type")
+                    
+                    await file.seek(0)  # Reset file pointer
 
                 except Exception as e:
                     response[file.filename] = {"error": str(e)}
 
-    text = text or extracted_text
-
-    # 3. predict subject for file
+   # Combine texts
+    combined_text = ""
     if text:
+        combined_text += text
+    if extracted_text:
+        combined_text += " " + extracted_text
+
+    cleaned_text = re.sub(r'[^a-zA-Z0-9\s,!?-]', '', combined_text)
+    cleaned_text = ' '.join(cleaned_text.split())
+
+    # 3. predict subject for combined text
+    if cleaned_text:
         try:
             classification_manager = model_loader.load_bert()
-            predicted_label = classification_manager.predict(text)
+            predicted_label = classification_manager.predict(cleaned_text)
 
             response = {
-                "text": text,
                 "predicted_label": int(predicted_label)
             }
 

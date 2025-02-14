@@ -335,23 +335,6 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
 
         return {"Files Uploaded & Processed"}
 
-    
-
-    
-    
-    
-
-            
-
-
-
-
-
-
-
-
-
-
 @app.post("/view-extract/{id}")
 async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)

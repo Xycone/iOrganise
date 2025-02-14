@@ -138,9 +138,9 @@ function Sidebar() {
                             Docs
                         </Typography>
                         <Item
-                            title="Setup Documentation"
-                            to="/setupdocs"
-                            icon={<DescriptionOutlinedIcon />}
+                            title="API Documentation"
+                            to="/apidocs"
+                            icon={<DataObjectOutlinedIcon />}
                             selected={selected}
                         />
                     </Box>

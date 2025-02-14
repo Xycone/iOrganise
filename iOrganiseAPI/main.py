@@ -241,14 +241,13 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
         file_upload = FileUpload(name=os.path.basename(path), type=type, size=size, path=path, user=user)
         response = await db_create(file_upload)
 
-        myList.append((response.id, response.name, response.path))
+        myList.append((response.id, response.name, response.type, response.path))
 
     # bucket sort based on MIME type for later processing
     buckets = {"video": [], "audio": [], "image": [], "document": [], "other": []}
 
-    for id, name, path in myList:
-        mime_type = get_file_type(path) 
-        category = mime_type.split("/")[0] if mime_type and mime_type.split("/")[0] in buckets else "other"
+    for id, name, type, path in myList:
+        category = type.split("/")[0] if type and type.split("/")[0] in buckets else "other"
         buckets[category].append((id, name, path, mime_type))
 
     # file processing (1st stage)
@@ -256,10 +255,9 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
     if buckets["video"] or buckets["audio"]:
         transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
 
-        for id, name, path, mime_type in buckets["video"] + buckets["audio"]:
-            content = None
+        for id, name, path, type in buckets["video"] + buckets["audio"]:
             try:
-                if mime_type == "video":
+                if type == "video":
                     with NamedTemporaryFile(delete=True) as audio_temp:
                         extracted_audio_path = audio_temp.name + ".mp3"
                         subprocess.run(["ffmpeg", "-i", path, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -268,7 +266,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                             for j, segment in enumerate(transcription_manager.transcribe(path).get("segments"))
                         )
 
-                elif mime_type == "audio":
+                elif type == "audio":
                     content = "\n".join(
                         f"Segment {j + 1}: {segment.get('text')}"
                         for j, segment in enumerate(transcription_manager.transcribe(path).get("segments"))
@@ -277,20 +275,20 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
             except Exception as e:
                 print(f"Error processing file {name}: {e}")
 
-            myList.append((id, name, path, mime_type, content))
+            myList.append((id, name, path, type, content))
 
         model_loader.del_models("ASR")
 
     # extract text from image files
     if buckets["image"]:
         # load model(s) here
-        for id, name, path, mime_type in buckets["image"]:
+        for id, name, path, type in buckets["image"]:
             # processing steps for file here
             pass
             
             # make sure to pass in value for "content"
             content = None
-            myList.append((id, name, path, mime_type, content))
+            myList.append((id, name, path, type, content))
         
         # unload model(s) here
 
@@ -298,20 +296,25 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
     if buckets["document"]:
         # load model(s) here
 
-        for id, name, path, mime_type in buckets["document"]:
+        for id, name, path, type in buckets["document"]:
             # processing steps for file here
             pass
 
             # make sure to pass in value for "content"
             content = None
-            myList.append((id, name, path, mime_type, content))
+            myList.append((id, name, path, type, content))
         
         # unload model(s) here
+
+    if buckets["others"]:
+        for id, name, path, type in buckets["others"]:
+            content = None
+            myList.append((id, name, path, type, content))
 
     # subject classification (2nd stage)
     # load models for subject classification here
 
-    for id, name, path, mime_type, content in myList:
+    for id, name, path, type, content in myList:
         # classify files and save the subject to db
         pass
 
@@ -319,8 +322,9 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
     model_loader.del_all_models()
     llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
 
-    for id, name, path, mime_type, content in myList:
-        summary = llama_cpp_manager.generate_summary(content)
+    for id, name, path, type, content in myList:
+        if content:
+            summary = llama_cpp_manager.generate_summary(content)
 
         if content and summary:
             content_path = os.path.join("/app/file_storage", user.email, "content_" + name)

@@ -209,7 +209,7 @@ async def download_all(token: str = Depends(oauth2_scheme)):
     if files is None:
         raise HTTPException(status_code=404, detail="No files found or authorised for download")
     
-    # Create an in-memory zip file
+    # create an in-memory zip file
     zip_buffer = BytesIO()
 
     with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
@@ -226,6 +226,131 @@ async def download_all(token: str = Depends(oauth2_scheme)):
     }
 
     return Response(zip_buffer.read(), headers=headers)
+
+@app.post("/smart-upload")
+async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    user = await db_get_by_id(User, user_id)
+    user_setting = next(iter(await db_get_by_attribute(UserSetting, "user_id", user_id)), None)
+
+    # upload files
+    myList = []
+    for file in files:
+        type, size, path = await save_uploaded_file(user.email, file)
+
+        file_upload = FileUpload(name=os.path.basename(path), type=type, size=size, path=path, user=user)
+        response = await db_create(file_upload)
+
+        myList.append((response.id, response.name, response.path))
+
+    # bucket sort based on MIME type for later processing
+    buckets = {"video": [], "audio": [], "image": [], "document": [], "other": []}
+
+    for id, name, path in myList.items():
+        mime_type = get_file_type(path) 
+        category = mime_type.split("/")[0] if mime_type and mime_type.split("/")[0] in buckets else "other"
+        buckets[category].append((id, name, path, mime_type))
+
+    # file processing (1st stage)
+    myList = []
+    if buckets["video"] or buckets["audio"]:
+        transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
+
+        for id, name, path, mime_type in buckets["video"] + buckets["audio"]:
+            content = None
+            try:
+                if mime_type == "video":
+                    with NamedTemporaryFile(delete=True) as audio_temp:
+                        extracted_audio_path = audio_temp.name + ".mp3"
+                        subprocess.run(["ffmpeg", "-i", path, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        content = "\n".join(
+                            f"Segment {j + 1}: {segment.get('text')}"
+                            for j, segment in enumerate(transcription_manager.transcribe(path).get("segments"))
+                        )
+
+                elif mime_type == "audio":
+                    content = "\n".join(
+                        f"Segment {j + 1}: {segment.get('text')}"
+                        for j, segment in enumerate(transcription_manager.transcribe(path).get("segments"))
+                    )
+
+            except Exception as e:
+                print(f"Error processing file {name}: {e}")
+
+            myList.append((id, name, path, mime_type, content))
+
+        model_loader.del_models("ASR")
+
+    # extract text from image files
+    if buckets["image"]:
+        # load model(s) here
+        for id, name, path, mime_type in buckets["image"]:
+            # processing steps for file here
+            pass
+            
+            # make sure to pass in value for "content"
+            content = None
+            myList.append((id, name, path, mime_type, content))
+        
+        # unload model(s) here
+
+    # extract text from document
+    if buckets["document"]:
+        # load model(s) here
+
+        for id, name, path, mime_type in buckets["document"]:
+            # processing steps for file here
+            pass
+
+            # make sure to pass in value for "content"
+            content = None
+            myList.append((id, name, path, mime_type, content))
+        
+        # unload model(s) here
+
+    # subject classification (2nd stage)
+    # load models for subject classification here
+
+    for id, name, path, mime_type, content in myList:
+        # classify files and save the subject to db
+        pass
+
+    # content summary (final stage)
+    model_loader.del_all_models()
+    llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
+
+    for id, name, path, mime_type, content in myList:
+        summary = llama_cpp_manager.generate_summary(content)
+
+        if content and summary:
+            content_path = os.path.join("/app/file_storage", user.email, "content_" + name)
+            summary_path = os.path.join("/app/file_storage", user.email, "summary_" + name)
+            
+            async with aiofiles.open(content_path, 'w') as content_file:
+                await content_file.write(content)
+            async with aiofiles.open(summary_path, 'w') as summary_file:
+                await summary_file.write(summary)
+
+            await db_update(FileUpload, id, {"content_path": content_path, "summary_path": summary_path})
+
+        return {"Files Uploaded & Processed"}
+
+    
+
+    
+    
+    
+
+            
+
+
+
+
+
+
+
+
+
 
 @app.post("/view-extract/{id}")
 async def view_extract(id: str, token: str = Depends(oauth2_scheme)):

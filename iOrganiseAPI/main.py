@@ -241,7 +241,8 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
         file_upload = FileUpload(name=os.path.basename(path), type=type, size=size, path=path, user=user)
         response = await db_create(file_upload)
 
-        myList.append((response.id, response.name, response.type, response.path))
+        if response:
+            myList.append((response.id, response.name, response.type, response.path))
 
     # bucket sort based on MIME type for later processing
     buckets = {"video": [], "audio": [], "image": [], "document": [], "other": []}

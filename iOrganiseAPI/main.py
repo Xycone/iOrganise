@@ -25,6 +25,7 @@ from modelLoader import ModelLoader
 from dto.RegisterDTO import RegisterDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
+from dto.TextInputDTO import TextInputDTO
 
 app = FastAPI()
 

@@ -9,7 +9,6 @@ import { tokens } from '../themes/MyTheme';
 
 // MUI Icons
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import AudioFileOutlinedIcon from '@mui/icons-material/AudioFileOutlined';
 import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';

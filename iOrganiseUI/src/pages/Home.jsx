@@ -9,6 +9,8 @@ import {
     ListItem,
     ListItemText,
     Dialog,
+    DialogTitle,
+    DialogActions,
     DialogContent,
     DialogContentText,
     IconButton,
@@ -30,6 +32,9 @@ import BrowserUpdatedIcon from '@mui/icons-material/BrowserUpdated';
 import AddToDriveOutlinedIcon from '@mui/icons-material/AddToDriveOutlined';
 import AttachEmailOutlinedIcon from '@mui/icons-material/AttachEmailOutlined';
 import IosShareOutlinedIcon from '@mui/icons-material/IosShareOutlined';
+import SummarizeOutlinedIcon from '@mui/icons-material/SummarizeOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
 // React Components
 import Header from '../components/Header';
@@ -63,8 +68,15 @@ function Home() {
     // File Upload
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
+    const [isSmart, setIsSmart] = useState();
 
     const handleDialogOpen = () => {
+        setIsSmart(false);
+        setDialogOpen(true);
+    };
+    
+    const handleSmartDialogOpen = () => {
+        setIsSmart(true);
         setDialogOpen(true);
     };
 
@@ -110,13 +122,16 @@ function Home() {
         for (const file of selectedFiles) {
             formData.append("files", file);
         }
+        
+        const endpoint = isSmart ? "/smart-upload" : "/upload-files";
 
         // POST Request, /upload-files
-        http.post("/upload-files", formData)
+        http.post(endpoint, formData)
             .then((res) => {
                 console.log("API Response:", res.data);
                 setSelectedFiles([]);
                 handleDialogClose();
+                getFiles();
             })
             .catch((error) => {
                 console.error("API Error:", error);
@@ -158,6 +173,50 @@ function Home() {
             });
     };
 
+    // File Delete
+    // Confirmation dialog state and file to delete
+    const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+    const [fileToDelete, setFileToDelete] = useState();
+
+    const handleDeleteClick = (fileId) => {
+        setFileToDelete(fileId);
+        setDeleteConfirmationOpen(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (fileToDelete) {
+            http.delete(`/delete-file/${fileToDelete}`)
+                .then(response => {
+                    console.log(response.data.msg);
+                    toast.success(response.data.msg);
+                    setDeleteConfirmationOpen(false);
+                    setFileToDelete();
+                    getFiles();
+                })
+                .catch((err) => {
+                    const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
+                    toast.error(errorMessage);
+                });
+        }
+    };
+
+    const handleCancelDelete = () => {
+        setDeleteConfirmationOpen(false);
+        setFileToDelete();
+    };
+
+    // View Extract
+    const viewExtract = async (fileId) => {
+        http.post(`/view-extract/${fileId}`)
+            .then(response => {
+                console.log(response)
+            })
+            .catch(error => {
+                console.error('Error processing extract:', error);
+                toast.error('Error processing extract');
+            });
+    };
+
     return (
         <Box px={5} pb={5}>
             <Box display="flex" flexDirection="column">
@@ -177,7 +236,7 @@ function Home() {
                             icon={<FileUploadOutlinedIcon />}
                             menuItems={[
                                 { icon: <UploadFileOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Upload Files", onClick: handleDialogOpen },
-                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Smart Upload", onClick: () => console.log("Uploading Folder") }
+                                { icon: <AutoAwesomeOutlinedIcon sx={{ color: theme.palette.text.primary }} />, label: "Smart Upload", onClick: handleSmartDialogOpen }
                             ]}
                         />
 
@@ -206,22 +265,28 @@ function Home() {
                             {fileList.map((file, index) => (
                                 <ListItem key={index} divider>
                                     <ListItemText
-                                        primary={file.name}
+                                        primary={
+                                            <Typography>
+                                                {file.name}
+                                            </Typography>
+                                        }
                                         secondary={
-                                            <Typography variant="body2" component="span">
-                                                Id: {file.id}, Type: {file.type}, Size: {file.size} MB
+                                            <Typography color={colours.grey[400]}>
+                                                FileType: {file.type} Size: {file.size} MB
                                             </Typography>
                                         }
                                     />
-                                    {/* Download Button */}
-                                    <Box mt={2}>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={() => downloadFile(file.id, file.name)}
-                                        >
-                                            Download
-                                        </Button>
+                                    {/* Buttons*/}
+                                    <Box>
+                                        <IconButton onClick={() => viewExtract(file.id)}>
+                                            <SummarizeOutlinedIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() => downloadFile(file.id, file.name)}>
+                                            <FileDownloadOutlinedIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() => handleDeleteClick(file.id)}>
+                                            <DeleteForeverOutlinedIcon />
+                                        </IconButton>
                                     </Box>
                                 </ListItem>
                             ))}
@@ -234,6 +299,7 @@ function Home() {
             <Dialog
                 open={dialogOpen}
                 onClose={handleDialogClose}
+                onExited={() => setIsSmart()}
                 fullWidth
                 maxWidth="sm"
             >
@@ -246,12 +312,26 @@ function Home() {
                             justifyContent="space-between"
                         >
                             <Box>
-                                <Typography variant="h5">
-                                    Upload Files
-                                </Typography>
-                                <DialogContentText>
-                                    Upload and attach your files to iOrganise.
-                                </DialogContentText>
+                                {isSmart === true && (
+                                    <>
+                                        <Typography variant="h5">
+                                            Smart Upload
+                                        </Typography>
+                                        <DialogContentText>
+                                            Upload and attach your files to iOrganise for AI processing.
+                                        </DialogContentText>
+                                    </>
+                                )}
+                                {isSmart === false && (
+                                    <>
+                                        <Typography variant="h5">
+                                            Upload Files
+                                        </Typography>
+                                        <DialogContentText>
+                                            Upload and attach your files to iOrganise.
+                                        </DialogContentText>
+                                    </>
+                                )}
                             </Box>
 
                             <IconButton onClick={handleDialogClose}>
@@ -338,6 +418,29 @@ function Home() {
                     </Box>
                 </DialogContent>
             </Dialog>
+
+            {/* Delete Confirmation Dialog */}
+            <Dialog open={deleteConfirmationOpen} onClose={handleCancelDelete}>
+                <DialogTitle>
+                    Delete Files Permanently
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to delete this file? This action cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="contained" color="inherit"
+                        onClick={handleCancelDelete}>
+                        Cancel
+                    </Button>
+                    <Button variant="contained" color="error"
+                        onClick={handleConfirmDelete}>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
 
             <ToastContainer />
         </Box>

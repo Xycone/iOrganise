@@ -16,6 +16,7 @@ RUN apt-get update && \
         ocl-icd-opencl-dev \
         opencl-headers \
         clinfo \
+        libmagic1 \
         libclblast-dev \
         libopenblas-dev && \
     apt-mark hold python3.10 && \

@@ -4,8 +4,10 @@ import os
 import gc
 
 import torch
+import tempfile
 import aiofiles
-import filetype
+import magic
+
 import fitz
 from typing import Optional
 from docx import Document
@@ -15,37 +17,23 @@ from datetime import datetime, timedelta
 import jwt
 
 # filetype check
+def get_file_type(path):
+    try:
+        mime = magic.Magic(mime=True)
+        return mime.from_file(path)
+    except Exception as e:
+        return None
+    
 def is_video(path):
-    mime_types = ["video/mp4", "video/mpeg", "video/webm"]
-
-    file_type = filetype.guess(path)
-    if file_type is None:
-        return False
-
-    return file_type.mime in mime_types
+    file_type = get_file_type(path)
+    return bool(file_type) and file_type.startswith("video/")
 
 def is_audio(path):
-    mime_types = ["audio/mp3", "audio/mpga", "audio/m4a", "audio/wav"]
-
-    file_type = filetype.guess(path)
-    if file_type is None:
-        return False
-
-    return file_type.mime in mime_types
+    file_type = get_file_type(path)
+    return bool(file_type) and file_type.startswith("audio/")
 
 def is_text(path):
-    mime_types = [
-        "text/plain",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "application/pdf"
-    ]
-
-    file_type = filetype.guess(path)
-    if file_type is None:
-        return False
-
-    return file_type.mime in mime_types
-
+    return
 
 def extract_text_from_pdf(pdf_path: str) -> str:
     doc = fitz.open(pdf_path)
@@ -70,8 +58,11 @@ async def save_uploaded_file(email: str, file: UploadFile):
     try:
         file_content = await file.read()
 
-        type = filetype.guess(file_content).mime if filetype.guess(file_content) else 'unknown'
-        size = round(len(file_content) / (1024 * 1024), 2)
+        with tempfile.NamedTemporaryFile(delete=True) as temp_file:
+            temp_file.write(file_content)
+            type = get_file_type(temp_file.name) if get_file_type(temp_file.name) else 'unknown'
+
+        size = round(file.size / (1024 * 1024), 2)
         path = os.path.join("/app/file_storage", email, file.filename)
         
         async with aiofiles.open(path, 'wb') as output_file:

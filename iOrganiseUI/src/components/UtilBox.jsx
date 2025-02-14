@@ -56,12 +56,11 @@ const UtilBox = ({ title, icon, menuItems = [], onClick }) => {
       {/* Dropdown Menu */}
       {menuItems.length > 0 && (
         <Menu
-          sx={{ mt: 2 }}
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
           anchorOrigin={{
-            vertical: "bottom",
+            vertical: "top",
             horizontal: "left",
           }}
           transformOrigin={{

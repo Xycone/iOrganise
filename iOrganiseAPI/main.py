@@ -7,7 +7,6 @@ import os
 import zipfile
 import aiofiles
 from io import BytesIO
-import re
 
 import torch
 
@@ -505,29 +504,21 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
     return response
 
 @app.post("/predict-text")
-<<<<<<< HEAD
-async def predict_text(
-    text: Optional[str] = Form(None),
-    files: List[UploadFile] = File(default=None)
-):
-=======
 async def predict_text(form_data: TextInputDTO = Depends(), files: Optional[List[UploadFile]] = File(None)):
->>>>>>> e530db2db185ae0c7fb5630b3e796f39277f51bc
     # 1. error check
-    if not text and not files:
+    if not form_data.text and not files:
         raise HTTPException(status_code=400, detail="No text or file uploaded")
 
     response = {}
-    
+
     # 2. extract text from files
     extracted_text = ""
     if files:
         for file in files:
             with NamedTemporaryFile(delete=True) as temp:
                 try:
-                    content = await file.read()  # Read file content
                     with open(temp.name, "wb") as temp_file:
-                        temp_file.write(content)
+                        temp_file.write(file.file.read())
 
                     # extract text from the file based on extension
                     if file.filename.endswith(".pdf"):
@@ -538,29 +529,20 @@ async def predict_text(form_data: TextInputDTO = Depends(), files: Optional[List
                         extracted_text += extract_text_from_txt(temp.name)
                     else:
                         raise HTTPException(status_code=400, detail="Unsupported file type")
-                    
-                    await file.seek(0)  # Reset file pointer
 
                 except Exception as e:
                     response[file.filename] = {"error": str(e)}
 
-   # Combine texts
-    combined_text = ""
-    if text:
-        combined_text += text
-    if extracted_text:
-        combined_text += " " + extracted_text
+    text = form_data.text or extracted_text
 
-    cleaned_text = re.sub(r'[^a-zA-Z0-9\s,!?-]', '', combined_text)
-    cleaned_text = ' '.join(cleaned_text.split())
-    
-    # 3. predict subject for combined text
-    if combined_text:
+    # 3. predict subject for file
+    if text:
         try:
             classification_manager = model_loader.load_bert()
-            predicted_label = classification_manager.predict(cleaned_text)
+            predicted_label = classification_manager.predict(text)
 
             response = {
+                "text": text,
                 "predicted_label": int(predicted_label)
             }
 

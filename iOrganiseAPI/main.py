@@ -251,14 +251,14 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
         buckets[category].append((file_id, file_name, file_path, category))
 
     # file processing (1st stage)
-    updatedList = []
+    myList = []
     # extract audio from audio/video files
     if buckets["video"] or buckets["audio"]:
         transcription_manager = model_loader.load_asr(user_setting.asr_model, DEVICE, 16, COMPUTE_TYPE)
 
-        for file_id, file_name, file_path, file_type in buckets["video"] + buckets["audio"]:
+        for file_id, file_name, file_path, category in buckets["video"] + buckets["audio"]:
             try:
-                if file_type == "video":
+                if category == "video":
                     with NamedTemporaryFile(delete=True) as audio_temp:
                         extracted_audio_path = audio_temp.name + ".mp3"
                         subprocess.run(["ffmpeg", "-i", file_path, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -267,64 +267,64 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                             for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                         )
 
-                if file_type == "audio":
+                if category == "audio":
                     content = "\n".join(
                         f"Segment {j + 1}: {segment.get('text')}"
                         for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                     )
 
-                updatedList.append((file_id, file_name, file_path, file_type, content))
+                myList.append((file_id, file_name, file_path, category, content))
 
             except Exception as e:
                 print(f"Error processing file {file_name}: {e}")
 
         model_loader.del_models("ASR")
 
-    # # extract text from image files
-    # if buckets["image"]:
-    #     # load model(s) here
-    #     for file_id, file_name, file_path, file_type in buckets["image"]:
-    #         # processing steps for file here
-    #         pass
+    # extract text from image files
+    if buckets["image"]:
+        # load model(s) here
+        for file_id, file_name, file_path, category in buckets["image"]:
+            # processing steps for file here
+            pass
             
-    #         # make sure to pass in value for "content"
-    #         content = None
-    #         updatedList.append((file_id, file_name, file_path, file_type, content))
+            # make sure to pass in value for "content"
+            content = None
+            myList.append((file_id, file_name, file_path, category, content))
         
-    #     # unload model(s) here
+        # unload model(s) here
 
-    # # extract text from document
-    # if buckets["document"]:
-    #     # load model(s) here
+    # extract text from document
+    if buckets["document"]:
+        # load model(s) here
 
-    #     for file_id, file_name, file_path, file_type in buckets["document"]:
-    #         # processing steps for file here
-    #         pass
+        for file_id, file_name, file_path, category in buckets["document"]:
+            # processing steps for file here
+            pass
 
-    #         # make sure to pass in value for "content"
-    #         content = None
-    #         updatedList.append((file_id, file_name, file_path, file_type, content))
+            # make sure to pass in value for "content"
+            content = None
+            myList.append((file_id, file_name, file_path, category, content))
         
-    #     # unload model(s) here
+        # unload model(s) here
 
-    # if buckets["other"]:
-    #     for file_id, file_name, file_path, file_type in buckets["other"]:
-    #         content = None
-    #         updatedList.append((file_id, file_name, file_path, file_type, content))
+    if buckets["other"]:
+        for file_id, file_name, file_path, category in buckets["other"]:
+            content = None
+            myList.append((file_id, file_name, file_path, category, content))
 
-    # # subject classification (2nd stage)
-    # # load models for subject classification here
+    # subject classification (2nd stage)
+    # load models for subject classification here
 
-    # for file_id, file_name, file_path, file_type, content in updatedList:
-    #     # classify files and save the subject to db
-    #     pass
+    for file_id, file_name, file_path, category, content in myList:
+        # classify files and save the subject to db
+        pass
 
     # content summary (final stage)
-    if updatedList:
+    if myList:
         model_loader.del_all_models()
         llama_cpp_manager = model_loader.load_llm(user_setting.llm, DEVICE)
 
-        for file_id, file_name, file_path, file_type, content in updatedList:
+        for file_id, file_name, file_path, category, content in myList:
             if not content:
                 continue
 

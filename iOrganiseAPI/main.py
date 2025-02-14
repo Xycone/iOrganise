@@ -333,7 +333,9 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
 
             await db_update(FileUpload, id, {"content_path": content_path, "summary_path": summary_path})
 
-        return {"Files Uploaded & Processed"}
+    model_loader.del_models("LLM")
+
+    return {"Files Uploaded & Processed"}
 
 @app.post("/view-extract/{id}")
 async def view_extract(id: str, token: str = Depends(oauth2_scheme)):

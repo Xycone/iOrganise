@@ -12,7 +12,6 @@ import Sidebar from './components/Sidebar.jsx';
 import Home from './pages/Home.jsx';
 import Dashboard from './pages/Dashboard.jsx';
 import TranscribeAudio from './pages/TranscribeAudio.jsx';
-import SetupDocs from './pages/SetupDocs.jsx';
 import ApiDocs from './pages/ApiDocs.jsx';
 import CategoriseText from './pages/CategoriseText.jsx';
 import Login from './pages/Login.jsx';
@@ -31,9 +30,7 @@ function App() {
             <Topbar />
             <Routes>
               <Route path="/home" element={<Home />} />
-              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/transcribeaudio" element={<TranscribeAudio />} />
-              <Route path="/setupdocs" element={<SetupDocs />} />
               <Route path="/apidocs" element={<ApiDocs />} />
               <Route path="/categorisetext" element={<CategoriseText />} />
               <Route path="/login" element={<Login />} />

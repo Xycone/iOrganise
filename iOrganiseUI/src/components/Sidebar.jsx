@@ -38,9 +38,8 @@ function Sidebar() {
     const selected =
         pathname === '/home' ? 'Home' :
             pathname === '/transcribeaudio' ? 'Transcribe Audio' :
-                pathname === '/setupdocs' ? 'Setup Documentation' :
-                    pathname === '/categorisetext' ? 'Categorise Notes' :
-                        pathname === '/apidocs' ? 'API Documentation' : 'Home';
+                pathname === '/categorisetext' ? 'Categorise Notes' :
+                    pathname === '/apidocs' ? 'API Documentation' : 'Home';
 
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);
@@ -142,12 +141,6 @@ function Sidebar() {
                             title="Setup Documentation"
                             to="/setupdocs"
                             icon={<DescriptionOutlinedIcon />}
-                            selected={selected}
-                        />
-                        <Item
-                            title="API Documentation"
-                            to="/apidocs"
-                            icon={<DataObjectOutlinedIcon />}
                             selected={selected}
                         />
                     </Box>

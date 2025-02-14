@@ -248,7 +248,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
 
     for id, name, type, path in myList:
         category = type.split("/")[0] if type and type.split("/")[0] in buckets else "other"
-        buckets[category].append((id, name, path, mime_type))
+        buckets[category].append((id, name, path, type))
 
     # file processing (1st stage)
     myList = []
@@ -272,10 +272,10 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                         for j, segment in enumerate(transcription_manager.transcribe(path).get("segments"))
                     )
 
+                myList.append((id, name, path, type, content))
+
             except Exception as e:
                 print(f"Error processing file {name}: {e}")
-
-            myList.append((id, name, path, type, content))
 
         model_loader.del_models("ASR")
 
@@ -306,8 +306,8 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
         
         # unload model(s) here
 
-    if buckets["others"]:
-        for id, name, path, type in buckets["others"]:
+    if buckets["other"]:
+        for id, name, path, type in buckets["other"]:
             content = None
             myList.append((id, name, path, type, content))
 
@@ -326,10 +326,9 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
         if content:
             summary = llama_cpp_manager.generate_summary(content)
 
-        if content and summary:
             content_path = os.path.join("/app/file_storage", user.email, "content_" + name)
             summary_path = os.path.join("/app/file_storage", user.email, "summary_" + name)
-            
+
             async with aiofiles.open(content_path, 'w') as content_file:
                 await content_file.write(content)
             async with aiofiles.open(summary_path, 'w') as summary_file:

@@ -69,12 +69,14 @@ function Home() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isSmart, setIsSmart] = useState();
+    const [uploading, setUploading] = useState(false);
+    const [uploadToastId, setUploadToastId] = useState(null);
 
     const handleDialogOpen = () => {
         setIsSmart(false);
         setDialogOpen(true);
     };
-    
+
     const handleSmartDialogOpen = () => {
         setIsSmart(true);
         setDialogOpen(true);
@@ -118,23 +120,45 @@ function Home() {
     };
 
     const handleFileUpload = async () => {
+        setUploading(true);
         const formData = new FormData();
         for (const file of selectedFiles) {
             formData.append("files", file);
         }
-        
+
         const endpoint = isSmart ? "/smart-upload" : "/upload-files";
+
+        const toastId = toast.loading('Uploading files...');
+        setUploadToastId(toastId);
+
+        handleDialogClose();
 
         // POST Request, /upload-files
         http.post(endpoint, formData)
             .then((res) => {
                 console.log("API Response:", res.data);
                 setSelectedFiles([]);
-                handleDialogClose();
                 getFiles();
+
+                toast.update(toastId, {
+                    render: 'Upload successful!',
+                    type: 'success',
+                    isLoading: false,
+                    autoClose: 3000,
+                });
             })
             .catch((error) => {
                 console.error("API Error:", error);
+
+                toast.update(toastId, {
+                    render: 'Error uploading files',
+                    type: 'error',
+                    isLoading: false,
+                    autoClose: 3000,
+                });
+            })
+            .finally(() => {
+                setUploading(false);
             });
     };
 
@@ -301,7 +325,7 @@ function Home() {
                 onClose={handleDialogClose}
                 TransitionProps={{
                     onExited: () => setIsSmart(),
-                  }}
+                }}
                 fullWidth
                 maxWidth="sm"
             >
@@ -444,7 +468,17 @@ function Home() {
             </Dialog>
 
 
-            <ToastContainer />
+            <ToastContainer
+                position="bottom-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+            />
         </Box>
     );
 }

@@ -179,7 +179,7 @@ function Home() {
                 const url = window.URL.createObjectURL(response.data);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "files.zip";
+                a.download = "export.zip";
                 document.body.appendChild(a);
                 a.click();
                 a.remove();

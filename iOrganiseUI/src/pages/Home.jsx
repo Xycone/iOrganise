@@ -433,10 +433,10 @@ function Home() {
                                 <Divider />
                             </Box>
                         ))}
-                        <Box mt={5} display="flex" justifyContent="end" gap={1}>
+                        <Box mt={5}>
                             <Button
                                 size="large"
-                                variant="contained"
+                                fullWidth
                                 component="label"
                                 onClick={handleFileUpload}
                             >

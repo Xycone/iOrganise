@@ -440,7 +440,7 @@ function Home() {
                                 component="label"
                                 onClick={handleFileUpload}
                             >
-                                <Typography>Submit</Typography>
+                                <Typography>Upload Files</Typography>
                             </Button>
                         </Box>
                     </Box>

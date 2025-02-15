@@ -160,7 +160,7 @@ function Home() {
         http.get(`/download-file/${fileId}`, { responseType: "blob" })
             .then(response => {
                 const url = window.URL.createObjectURL(response.data);
-                const a = document.createElement('a');
+                const a = document.createElement("a");
                 a.href = url;
                 a.download = fileName;
                 document.body.appendChild(a);
@@ -177,7 +177,7 @@ function Home() {
         http.get("/download-all", { responseType: "blob" })
             .then(response => {
                 const url = window.URL.createObjectURL(response.data);
-                const a = document.createElement('a');
+                const a = document.createElement("a");
                 a.href = url;
                 a.download = "files.zip";
                 document.body.appendChild(a);
@@ -399,7 +399,7 @@ function Home() {
                                         type="file"
                                         multiple
                                         accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm, .pdf, .docx, .txt"
-                                        style={{ display: 'none' }}
+                                        style={{ display: "none" }}
                                         onChange={handleFileSelect}
                                     />
                                 </Button>
@@ -433,14 +433,14 @@ function Home() {
                                 <Divider />
                             </Box>
                         ))}
-                        <Box mt={5}>
+                        <Box mt={5} display="flex" justifyContent="end" gap={1}>
                             <Button
                                 size="large"
-                                fullWidth
+                                variant="contained"
                                 component="label"
                                 onClick={handleFileUpload}
                             >
-                                <Typography>Upload Files</Typography>
+                                <Typography>Submit</Typography>
                             </Button>
                         </Box>
                     </Box>

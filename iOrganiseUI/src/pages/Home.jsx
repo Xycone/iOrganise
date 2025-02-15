@@ -490,6 +490,8 @@ function Home() {
             <Dialog
                 open={deleteConfirmationOpen}
                 onClose={handleCancelDelete}
+                fullWidth
+                maxWidth="sm"
             >
                 <DialogContent>
                     <Box p={1}>

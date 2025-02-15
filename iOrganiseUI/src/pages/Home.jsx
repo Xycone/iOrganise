@@ -69,8 +69,6 @@ function Home() {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
     const [isSmart, setIsSmart] = useState();
-    const [uploading, setUploading] = useState(false);
-    const [uploadToastId, setUploadToastId] = useState(null);
 
     const handleDialogOpen = () => {
         setIsSmart(false);
@@ -120,7 +118,6 @@ function Home() {
     };
 
     const handleFileUpload = async () => {
-        setUploading(true);
         const formData = new FormData();
         for (const file of selectedFiles) {
             formData.append("files", file);
@@ -129,7 +126,6 @@ function Home() {
         const endpoint = isSmart ? "/smart-upload" : "/upload-files";
 
         const toastId = toast.loading('Uploading files...');
-        setUploadToastId(toastId);
 
         handleDialogClose();
 
@@ -157,9 +153,6 @@ function Home() {
                     autoClose: 3000,
                 });
             })
-            .finally(() => {
-                setUploading(false);
-            });
     };
 
     // File Download
@@ -198,7 +191,6 @@ function Home() {
     };
 
     // File Delete
-    // Confirmation dialog state and file to delete
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState();
 
@@ -230,6 +222,7 @@ function Home() {
     };
 
     // View Extract
+
     const viewExtract = async (fileId) => {
         http.post(`/view-extract/${fileId}`)
             .then(response => {

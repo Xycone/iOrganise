@@ -92,7 +92,7 @@ function Home() {
             setSelectedFiles((prevFiles) => [...prevFiles, file]);
         });
 
-        event.target.value = '';
+        event.target.value = "";
     };
 
     const handleDrop = (event) => {
@@ -125,7 +125,7 @@ function Home() {
 
         const endpoint = isSmart ? "/smart-upload" : "/upload-files";
 
-        const toastId = toast.loading('Uploading files...');
+        const toastId = toast.loading("Uploading files...");
 
         handleDialogClose();
 
@@ -137,8 +137,8 @@ function Home() {
                 getFiles();
 
                 toast.update(toastId, {
-                    render: 'Upload successful!',
-                    type: 'success',
+                    render: "Upload successful!",
+                    type: "success",
                     isLoading: false,
                     autoClose: 3000,
                 });
@@ -147,8 +147,8 @@ function Home() {
                 console.error("API Error:", error);
 
                 toast.update(toastId, {
-                    render: 'Error uploading files',
-                    type: 'error',
+                    render: "Error uploading files",
+                    type: "error",
                     isLoading: false,
                     autoClose: 3000,
                 });
@@ -185,8 +185,8 @@ function Home() {
                 a.remove();
             })
             .catch(error => {
-                console.error('Error downloading files:', error);
-                toast.error('Failed to download files');
+                console.error("Error downloading files:", error);
+                toast.error("Failed to download files");
             });
     };
 
@@ -222,15 +222,24 @@ function Home() {
     };
 
     // View Extract
+    const [extractContent, setExtractContent] = useState();
+    const [extractDialogOpen, setExtractDialogOpen] = useState(false);
+
+    const handleCloseExtractDialog = () => {
+        setExtractDialogOpen(false);
+        setExtractContent();
+    };
 
     const viewExtract = async (fileId) => {
+        setExtractDialogOpen(true);
         http.post(`/view-extract/${fileId}`)
             .then(response => {
-                console.log(response)
+                console.log(response);
+                setExtractContent(response.data);
             })
-            .catch(error => {
-                console.error('Error processing extract:', error);
-                toast.error('Error processing extract');
+            .catch((err) => {
+                const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
+                toast.error(errorMessage);
             });
     };
 
@@ -438,26 +447,63 @@ function Home() {
                 </DialogContent>
             </Dialog>
 
+            {/* Extract View Dialog */}
+            <Dialog open={extractDialogOpen} onClose={handleCloseExtractDialog} fullWidth maxWidth="md">
+                <DialogContent>
+                    <Box p={1}>
+                        <Box mb={2}>
+                            {extractContent ? (
+                                <Box>
+                                    <Typography>
+                                        Content:
+                                    </Typography>
+                                    <DialogContentText mb={4}>
+                                        {extractContent.content ? extractContent.content : "No content available"}
+                                    </DialogContentText>
+                                    <Typography>
+                                        Summary:
+                                    </Typography>
+                                    <DialogContentText>
+                                        {extractContent.summary ? extractContent.summary : "No summary available"}
+                                    </DialogContentText>
+                                </Box>
+                            ) : (
+                                <DialogContentText>Loading extract...</DialogContentText>
+                            )}
+                        </Box>
+
+                        <Box display="flex" justifyContent="end" gap={1}>
+                            <Button variant="contained" color="inherit" onClick={handleCloseExtractDialog}>
+                                Close
+                            </Button>
+                        </Box>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+
             {/* Delete Confirmation Dialog */}
             <Dialog open={deleteConfirmationOpen} onClose={handleCancelDelete}>
-                <DialogTitle>
-                    Delete Files Permanently
-                </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
-                        Are you sure you want to delete this file? This action cannot be undone.
-                    </DialogContentText>
+                    <Box p={1}>
+                        <Box mb={2}>
+                            <Typography>Delete Files Permanently</Typography>
+                            <DialogContentText>
+                                Are you sure you want to delete this file? This action cannot be undone.
+                            </DialogContentText>
+                        </Box>
+
+                        <Box display="flex" justifyContent="end" gap={1}>
+                            <Button variant="contained" color="inherit"
+                                onClick={handleCancelDelete}>
+                                Cancel
+                            </Button>
+                            <Button variant="contained" color="error"
+                                onClick={handleConfirmDelete}>
+                                Delete
+                            </Button>
+                        </Box>
+                    </Box>
                 </DialogContent>
-                <DialogActions>
-                    <Button variant="contained" color="inherit"
-                        onClick={handleCancelDelete}>
-                        Cancel
-                    </Button>
-                    <Button variant="contained" color="error"
-                        onClick={handleConfirmDelete}>
-                        Delete
-                    </Button>
-                </DialogActions>
             </Dialog>
 
 

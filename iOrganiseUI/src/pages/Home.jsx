@@ -448,7 +448,12 @@ function Home() {
             </Dialog>
 
             {/* Extract View Dialog */}
-            <Dialog open={extractDialogOpen} onClose={handleCloseExtractDialog} fullWidth maxWidth="md">
+            <Dialog
+                open={extractDialogOpen}
+                onClose={handleCloseExtractDialog}
+                fullWidth
+                maxWidth="md"
+            >
                 <DialogContent>
                     <Box p={1}>
                         <Box mb={2}>
@@ -482,7 +487,10 @@ function Home() {
             </Dialog>
 
             {/* Delete Confirmation Dialog */}
-            <Dialog open={deleteConfirmationOpen} onClose={handleCancelDelete}>
+            <Dialog
+                open={deleteConfirmationOpen}
+                onClose={handleCancelDelete}
+            >
                 <DialogContent>
                     <Box p={1}>
                         <Box mb={2}>

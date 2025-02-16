@@ -531,7 +531,7 @@ function Home() {
                                     <Typography>
                                         Subject:
                                     </Typography>
-                                    <DialogContentText>
+                                    <DialogContentText mb={4}>
                                         {extractContent.subject ? extractContent.subject : "No subject classified"}
                                     </DialogContentText>
                                     <Typography>

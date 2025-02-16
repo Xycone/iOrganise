@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import FileResponse, Response
@@ -163,9 +163,15 @@ async def upload_files(files: List[UploadFile] = File(...), token: str = Depends
     return {"msg": "Files uploaded successfully"}
 
 @app.get("/get-files")
-async def get_files(token: str = Depends(oauth2_scheme)):
+async def get_files(token: str = Depends(oauth2_scheme), name: Optional[str] = Query(None), subject: Optional[str] = Query(None)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+
+    file_upload_list = filter(
+        lambda file: (not name or name.lower() in file.name.lower()) and 
+                    (not subject or subject.lower() in file.subject.lower()),
+        file_upload_list
+    )
 
     files = [file for file in file_upload_list if os.path.exists(file.path)]
 

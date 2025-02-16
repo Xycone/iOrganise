@@ -53,7 +53,7 @@ function Home() {
     const [search, setSearch] = useState("");
 
     const getFiles = () => {
-        http.get('/get-files')
+        http.get("/get-files")
             .then((res) => {
                 setFileList(res.data.files);
             })
@@ -301,7 +301,7 @@ function Home() {
                                 endAdornment={
                                     search && (
                                         <CloseIcon
-                                            sx={{ mx: 1, color: theme.palette.text.disabled }}
+                                            sx={{ mx: 1, color: theme.palette.text.disabled, cursor: "pointer" }}
                                             onClick={onClickClear}
                                         />
                                     )

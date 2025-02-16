@@ -69,6 +69,11 @@ function Topbar() {
         handleMenuClose();
     };
 
+    const handleSettingsRedirect = () => {
+        navigate('/settings'); // Link to the Account Management Settings page
+        handleMenuClose();
+    };
+
     return (
         <Box display="flex" justifyContent="space-between" p={5}>
             <Box />
@@ -108,7 +113,7 @@ function Topbar() {
                                 <ListItemText>Profile</ListItemText>
                             </MenuItem>
 
-                            <MenuItem sx={{ py: 2 }}>
+                            <MenuItem sx={{ py: 2 }}  onClick={() => navigate("/settings")}>
                                 <ListItemIcon><SettingsOutlinedIcon /></ListItemIcon>
                                 <ListItemText>Settings</ListItemText>
                             </MenuItem >

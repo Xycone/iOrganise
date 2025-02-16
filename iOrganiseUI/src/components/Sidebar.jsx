@@ -14,6 +14,7 @@ import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import NoteAltOutlinedIcon from '@mui/icons-material/NoteAltOutlined';
+import CameraAlt from '@mui/icons-material/CameraAlt';
 
 
 const Item = ({ title, to, icon, selected }) => {
@@ -122,7 +123,12 @@ function Sidebar() {
                             icon={<AudioFileOutlinedIcon />}
                             selected={selected}
                         />
-
+                        <Item
+                            title="Image To Text (OCR)"
+                            to="/OCR"
+                            icon={<CameraAlt />}
+                            selected={selected}
+                        />
                         <Item
                             title="Categorise Notes"
                             to="/categorisetext"

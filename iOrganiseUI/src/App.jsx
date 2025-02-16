@@ -16,6 +16,10 @@ import ApiDocs from './pages/ApiDocs.jsx';
 import CategoriseText from './pages/CategoriseText.jsx';
 import Login from './pages/Login.jsx';
 import Register from './pages/Register.jsx';
+import Settings from './pages/Settings.jsx';
+import ChangePassword from './pages/ChangePassword';
+import OCR from './pages/OCR';
+
 
 function App() {
   const [theme, colourMode] = useMode();
@@ -35,6 +39,9 @@ function App() {
               <Route path="/categorisetext" element={<CategoriseText />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/changepassword" element={<ChangePassword />} />
+              <Route path="/ocr" element={<OCR />} />
             </Routes>
           </main>
         </div>

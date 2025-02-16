@@ -288,6 +288,9 @@ function Home() {
                             background="invisible"
                             border="1px solid"
                             borderColor={theme.palette.divider}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
                             borderRadius="5px"
                         >
                             <InputBase
@@ -295,10 +298,15 @@ function Home() {
                                 startAdornment={
                                     <SearchIcon sx={{ mx: 1, color: theme.palette.text.disabled }} />
                                 }
-                                placeholder="Search by file name"
-                                value={search}
-                                onChange={onSearchChange}
-                                onKeyDown={onSearchKeyDown}
+                                endAdornment={
+                                    <CloseIcon
+                                        sx={{ mx: 1, color: theme.palette.text.disabled, cursor: 'pointer' }}
+                                        onClick={onClickClear} />
+                                }
+                            placeholder="Search by file name"
+                            value={search}
+                            onChange={onSearchChange}
+                            onKeyDown={onSearchKeyDown}
                             />
                         </Box>
                     </Box>

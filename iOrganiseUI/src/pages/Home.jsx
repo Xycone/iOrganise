@@ -523,16 +523,16 @@ function Home() {
                             {extractContent ? (
                                 <Box>
                                     <Typography>
-                                        Content:
-                                    </Typography>
-                                    <DialogContentText mb={4}>
-                                        {extractContent.content ? extractContent.content : "No content available"}
-                                    </DialogContentText>
-                                    <Typography>
                                         Subject:
                                     </Typography>
                                     <DialogContentText mb={4}>
                                         {extractContent.subject ? extractContent.subject : "No subject classified"}
+                                    </DialogContentText>
+                                    <Typography>
+                                        Content:
+                                    </Typography>
+                                    <DialogContentText mb={4}>
+                                        {extractContent.content ? extractContent.content : "No content available"}
                                     </DialogContentText>
                                     <Typography>
                                         Summary:

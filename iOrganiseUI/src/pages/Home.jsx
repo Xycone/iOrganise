@@ -5,12 +5,11 @@ import {
     Typography,
     Divider,
     Button,
+    InputBase,
     List,
     ListItem,
     ListItemText,
     Dialog,
-    DialogTitle,
-    DialogActions,
     DialogContent,
     DialogContentText,
     IconButton,
@@ -22,6 +21,7 @@ import { tokens } from '../themes/MyTheme';
 import http from '../http';
 
 // MUI Icons
+import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import FileUploadOutlinedIcon from '@mui/icons-material/FileUploadOutlined';
@@ -50,15 +50,45 @@ function Home() {
 
     // Retrieve uploaded files
     const [fileList, setFileList] = useState([]);
+    const [search, setSearch] = useState("");
 
     const getFiles = () => {
-        http.get('/get-files')
+        http.get("/get-files")
             .then((res) => {
                 setFileList(res.data.files);
             })
             .catch((err) => {
                 console.error("Error fetching files:", err.response?.data?.detail || err.message);
             });
+    };
+
+    const onSearchChange = (e) => {
+        setSearch(e.target.value);
+    };
+
+    const searchFiles = () => {
+        http.get(`/get-files?name=${search}`)
+            .then((res) => {
+                setFileList(res.data.files);
+            })
+            .catch((err) => {
+                console.error("Error fetching files:", err.response?.data?.detail || err.message);
+            });
+    };
+
+    const onSearchKeyDown = (e) => {
+        if (e.key === "Enter") {
+            searchFiles();
+        }
+    };
+
+    const onClickSearch = () => {
+        searchFiles();
+    };
+
+    const onClickClear = () => {
+        setSearch("");
+        getFiles();
     };
 
     useEffect(() => {
@@ -251,6 +281,39 @@ function Home() {
                     subtitle="Welcome to iOrganise"
                 />
                 <Box mt={4}>
+                    <Box mb={4} display="flex">
+                        <Box
+                            p={1}
+                            flexGrow={1}
+                            background="invisible"
+                            border="1px solid"
+                            borderColor={theme.palette.divider}
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            borderRadius="5px"
+                        >
+                            <InputBase
+                                sx={{ flex: 1 }}
+                                startAdornment={
+                                    <SearchIcon sx={{ mx: 1, color: theme.palette.text.disabled }} />
+                                }
+                                endAdornment={
+                                    search && (
+                                        <CloseIcon
+                                            sx={{ mx: 1, color: theme.palette.text.disabled, cursor: "pointer" }}
+                                            onClick={onClickClear}
+                                        />
+                                    )
+                                }
+                            placeholder="Search by file name"
+                            value={search}
+                            onChange={onSearchChange}
+                            onKeyDown={onSearchKeyDown}
+                            />
+                        </Box>
+                    </Box>
+
                     <Box
                         mb={10}
                         display="flex"
@@ -285,7 +348,7 @@ function Home() {
 
 
                     {fileList.length === 0 ? (
-                        <Typography>No files uploaded yet.</Typography>
+                        <Typography>No matching files found</Typography>
                     ) : (
                         <List>
                             {fileList.map((file, index) => (
@@ -297,7 +360,7 @@ function Home() {
                                             </Typography>
                                         }
                                         secondary={
-                                            <Typography color={colours.grey[400]}>
+                                            <Typography color={theme.palette.text.disabled}>
                                                 FileType: {file.type} Size: {file.size} MB
                                             </Typography>
                                         }
@@ -477,7 +540,7 @@ function Home() {
                             )}
                         </Box>
 
-                        <Box display="flex" justifyContent="end" gap={1}>
+                        <Box display="flex" justifyContent="end">
                             <Button variant="contained" color="inherit" onClick={handleCloseExtractDialog}>
                                 Close
                             </Button>
@@ -502,7 +565,7 @@ function Home() {
                             </DialogContentText>
                         </Box>
 
-                        <Box display="flex" justifyContent="end" gap={1}>
+                        <Box display="flex" justifyContent="end" gap={2}>
                             <Button variant="contained" color="inherit"
                                 onClick={handleCancelDelete}>
                                 Cancel

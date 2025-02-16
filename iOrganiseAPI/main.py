@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Form
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Form, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.responses import FileResponse, Response
@@ -163,9 +163,15 @@ async def upload_files(files: List[UploadFile] = File(...), token: str = Depends
     return {"msg": "Files uploaded successfully"}
 
 @app.get("/get-files")
-async def get_files(token: str = Depends(oauth2_scheme)):
+async def get_files(token: str = Depends(oauth2_scheme), name: Optional[str] = Query(None), subject: Optional[str] = Query(None)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+
+    file_upload_list = filter(
+        lambda file: (not name or name.lower() in file.name.lower()) and 
+                    (not subject or subject.lower() in file.subject.lower()),
+        file_upload_list
+    )
 
     files = [file for file in file_upload_list if os.path.exists(file.path)]
 
@@ -212,7 +218,7 @@ async def download_all(token: str = Depends(oauth2_scheme)):
     # create an in-memory zip file
     zip_buffer = BytesIO()
 
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for file_upload in files:
             file_path = file_upload.path
             file_name = os.path.basename(file_path)
@@ -356,9 +362,9 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
             content_path = os.path.join("/app/file_storage", user.email, "content_" + file_name)
             summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file_name)
 
-            async with aiofiles.open(content_path, 'w') as content_file:
+            async with aiofiles.open(content_path, "w") as content_file:
                 await content_file.write(content)
-            async with aiofiles.open(summary_path, 'w') as summary_file:
+            async with aiofiles.open(summary_path, "w") as summary_file:
                 await summary_file.write(summary)
 
             await db_update(FileUpload, file_id, {"content_path": content_path, "summary_path": summary_path})
@@ -386,9 +392,9 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     
     # retrieve content and summary if information has been extracted before
     if file.content_path and file.summary_path and file.content_path.strip() and file.summary_path.strip():
-        async with aiofiles.open(file.content_path, 'r') as content_file:
+        async with aiofiles.open(file.content_path, "r") as content_file:
             content = await content_file.read()
-        async with aiofiles.open(file.summary_path, 'r') as summary_file:
+        async with aiofiles.open(file.summary_path, "r") as summary_file:
             summary = await summary_file.read()
 
         return {"content": content, "summary": summary}
@@ -437,9 +443,9 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
                 content_path = os.path.join("/app/file_storage", user.email, "content_" + file.name)
                 summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.name)
                 
-                async with aiofiles.open(content_path, 'w') as content_file:
+                async with aiofiles.open(content_path, "w") as content_file:
                     await content_file.write(content)
-                async with aiofiles.open(summary_path, 'w') as summary_file:
+                async with aiofiles.open(summary_path, "w") as summary_file:
                     await summary_file.write(summary)
 
                 await db_update(FileUpload, id, {"content_path": content_path, "summary_path": summary_path})
@@ -574,8 +580,8 @@ async def predict_text(
     if extracted_text:
         combined_text += " " + extracted_text
 
-    cleaned_text = re.sub(r'[^a-zA-Z0-9\s,!?-]', '', combined_text)
-    cleaned_text = ' '.join(cleaned_text.split())
+    cleaned_text = re.sub(r"[^a-zA-Z0-9\s,!?-]", "", combined_text)
+    cleaned_text = " ".join(cleaned_text.split())
 
     # 3. predict subject for combined text
     if cleaned_text:

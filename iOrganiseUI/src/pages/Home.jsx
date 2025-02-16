@@ -299,9 +299,12 @@ function Home() {
                                     <SearchIcon sx={{ mx: 1, color: theme.palette.text.disabled }} />
                                 }
                                 endAdornment={
-                                    <CloseIcon
-                                        sx={{ mx: 1, color: theme.palette.text.disabled, cursor: 'pointer' }}
-                                        onClick={onClickClear} />
+                                    search && (
+                                        <CloseIcon
+                                            sx={{ mx: 1, color: theme.palette.text.disabled }}
+                                            onClick={onClickClear}
+                                        />
+                                    )
                                 }
                             placeholder="Search by file name"
                             value={search}

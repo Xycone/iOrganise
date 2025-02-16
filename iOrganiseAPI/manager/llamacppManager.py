@@ -24,7 +24,7 @@ class LlamaCppManager:
             }
 
             if device == "cuda":
-                llm_params["n_gpu_layers"] = 49
+                llm_params["n_gpu_layers"] = 45
                 llm_params["n_batch"] = 512
             
             self.__llm = LlamaCpp(**llm_params)

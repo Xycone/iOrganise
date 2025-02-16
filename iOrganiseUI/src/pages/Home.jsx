@@ -529,6 +529,12 @@ function Home() {
                                         {extractContent.content ? extractContent.content : "No content available"}
                                     </DialogContentText>
                                     <Typography>
+                                        Subject:
+                                    </Typography>
+                                    <DialogContentText>
+                                        {extractContent.subject ? extractContent.subject : "No subject classified"}
+                                    </DialogContentText>
+                                    <Typography>
                                         Summary:
                                     </Typography>
                                     <DialogContentText>

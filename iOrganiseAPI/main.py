@@ -21,6 +21,8 @@ import subprocess
 from typing import List, Optional
 from tempfile import NamedTemporaryFile
 
+from enums.SubjectTypes import SubjectTypes
+
 from utils import *
 from modelLoader import ModelLoader
 from dto.RegisterDTO import RegisterDTO
@@ -317,10 +319,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
             elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                 extracted_text = extract_text_from_docx(file_path)
 
-            print("Extracted text:", extracted_text)
-            
             content = extracted_text if extracted_text else None
-            print("Content:", content)
             myList.append((file_id, file_name, file_path, category, content))
         
         # unload model(s) here
@@ -331,22 +330,44 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
             myList.append((file_id, file_name, file_path, category, content))
 
     # subject classification (2nd stage)
-    # load models for subject classification here
     classification_manager = model_loader.load_bert()
+
+    subject_mapping = {
+        0: SubjectTypes.math,
+        1: SubjectTypes.english,
+        2: SubjectTypes.science
+    }
 
     for file_id, file_name, file_path, category, content in myList:
         # classify files and save the subject to db
         try:
-            predicted_label = classification_manager.predict(content)
-
-            print(predicted_label)
+            if content:  # Only try to classify if there's content
+                print(content)
+                predicted_label = classification_manager.predict(content)  # This returns 0, 1, or 2
+                
+                # Get the corresponding enum value using the mapping
+                try:
+                    
+                    subject_enum = subject_mapping[predicted_label]
+                    
+                    # Update the file record with the predicted subject
+                    await db_update(FileUpload, file_id, {"subject": subject_enum})
+                    
+                    print(f"Classified {file_name} as: {subject_enum}")
+                except KeyError:
+                    # Handle case where prediction doesn't match any mapping
+                    print(f"Warning: Predicted label '{predicted_label}' doesn't match any known subject mapping")
+            else:
+                print(f"Skipping classification for {file_name}: No content available")
 
         except Exception as e:
-            raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+            print(f"Classification error for file {file_name}: {str(e)}")
+            # Continue processing other files instead of failing completely
+            continue
 
-        # 4. unload the model
-        model_loader.del_models("BERT")
-        pass
+    # Unload BERT model after processing all files
+    model_loader.del_models("BERT")
+    print("END------------------")
 
     # content summary (final stage)
     if myList:
@@ -388,7 +409,9 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     if user_id != file.user_id:
         raise HTTPException(status_code=403, detail="You are not authorized to view this file")
     
-    content, summary = None, None
+    content, summary, subject = None, None, None
+    
+    subject = file.subject.value if file.subject else "Unknown"
     
     # retrieve content and summary if information has been extracted before
     if file.content_path and file.summary_path and file.content_path.strip() and file.summary_path.strip():
@@ -397,7 +420,7 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
         async with aiofiles.open(file.summary_path, "r") as summary_file:
             summary = await summary_file.read()
 
-        return {"content": content, "summary": summary}
+        return {"content": content, "summary": summary, "subject": subject}
       
     # process file if not viewed before
     with NamedTemporaryFile(delete=True) as temp:

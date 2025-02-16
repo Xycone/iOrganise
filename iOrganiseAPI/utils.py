@@ -143,5 +143,7 @@ def free_memory():
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
 
-    if tf.config.list_physical_devices("GPU"):
+    if tf.config.list_physical_devices('GPU'):
         tf.keras.backend.clear_session()
+        for device in tf.config.list_physical_devices('GPU'):
+            tf.config.experimental.reset_memory_stats(device)

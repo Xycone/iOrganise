@@ -218,7 +218,7 @@ async def download_all(token: str = Depends(oauth2_scheme)):
     # create an in-memory zip file
     zip_buffer = BytesIO()
 
-    with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+    with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
         for file_upload in files:
             file_path = file_upload.path
             file_name = os.path.basename(file_path)
@@ -270,13 +270,13 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                         extracted_audio_path = audio_temp.name + ".mp3"
                         subprocess.run(["ffmpeg", "-i", file_path, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         content = "\n".join(
-                            f"Segment {j + 1}: {segment.get('text')}"
+                            f"Segment {j + 1}: {segment.get("text")}"
                             for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                         )
 
                 if category == "audio":
                     content = "\n".join(
-                        f"Segment {j + 1}: {segment.get('text')}"
+                        f"Segment {j + 1}: {segment.get("text")}"
                         for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                     )
 
@@ -340,9 +340,9 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
             content_path = os.path.join("/app/file_storage", user.email, "content_" + file_name)
             summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file_name)
 
-            async with aiofiles.open(content_path, 'w') as content_file:
+            async with aiofiles.open(content_path, "w") as content_file:
                 await content_file.write(content)
-            async with aiofiles.open(summary_path, 'w') as summary_file:
+            async with aiofiles.open(summary_path, "w") as summary_file:
                 await summary_file.write(summary)
 
             await db_update(FileUpload, file_id, {"content_path": content_path, "summary_path": summary_path})
@@ -370,9 +370,9 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
     
     # retrieve content and summary if information has been extracted before
     if file.content_path and file.summary_path and file.content_path.strip() and file.summary_path.strip():
-        async with aiofiles.open(file.content_path, 'r') as content_file:
+        async with aiofiles.open(file.content_path, "r") as content_file:
             content = await content_file.read()
-        async with aiofiles.open(file.summary_path, 'r') as summary_file:
+        async with aiofiles.open(file.summary_path, "r") as summary_file:
             summary = await summary_file.read()
 
         return {"content": content, "summary": summary}
@@ -392,13 +392,13 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
                         extracted_audio_path = audio_temp.name + ".mp3"
                         subprocess.run(["ffmpeg", "-i", temp.name, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         content = "\n".join(
-                            f"Segment {j + 1}: {segment.get('text')}"
+                            f"Segment {j + 1}: {segment.get("text")}"
                             for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
                         )
 
                 elif is_audio(temp.name):
                     content = "\n".join(
-                        f"Segment {j + 1}: {segment.get('text')}"
+                        f"Segment {j + 1}: {segment.get("text")}"
                         for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
                     )
 
@@ -421,9 +421,9 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
                 content_path = os.path.join("/app/file_storage", user.email, "content_" + file.name)
                 summary_path = os.path.join("/app/file_storage", user.email, "summary_" + file.name)
                 
-                async with aiofiles.open(content_path, 'w') as content_file:
+                async with aiofiles.open(content_path, "w") as content_file:
                     await content_file.write(content)
-                async with aiofiles.open(summary_path, 'w') as summary_file:
+                async with aiofiles.open(summary_path, "w") as summary_file:
                     await summary_file.write(summary)
 
                 await db_update(FileUpload, id, {"content_path": content_path, "summary_path": summary_path})
@@ -494,7 +494,7 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
         for i, file_data in response.items():
             try:
                 formatted_transcript = "\n".join(
-                    f"Segment {j + 1}: {segment.get('text')}"
+                    f"Segment {j + 1}: {segment.get("text")}"
                     for j, segment in enumerate(file_data["segments"])
                 )
                 
@@ -553,8 +553,8 @@ async def predict_text(
     if extracted_text:
         combined_text += " " + extracted_text
 
-    cleaned_text = re.sub(r'[^a-zA-Z0-9\s,!?-]', '', combined_text)
-    cleaned_text = ' '.join(cleaned_text.split())
+    cleaned_text = re.sub(r"[^a-zA-Z0-9\s,!?-]", "", combined_text)
+    cleaned_text = " ".join(cleaned_text.split())
 
     # 3. predict subject for combined text
     if cleaned_text:

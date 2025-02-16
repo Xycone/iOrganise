@@ -570,7 +570,7 @@ function Home() {
                                 onClick={handleCancelDelete}>
                                 Cancel
                             </Button>
-                            <Button variant="contained" sx={{ backgroundColor: theme.palette.error.main, color: theme.palette.text.primary }} onClick={handleConfirmDelete}>
+                            <Button variant="contained" sx={{ backgroundColor: theme.palette.error.main, color: "white" }} onClick={handleConfirmDelete}>
                                 Delete
                             </Button>
                         </Box>

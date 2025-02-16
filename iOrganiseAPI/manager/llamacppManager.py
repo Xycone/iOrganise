@@ -42,8 +42,6 @@ class LlamaCppManager:
 
         Transcript: 
         {transcript}
-
-        Summary:
         """
 
         # generate the content summary

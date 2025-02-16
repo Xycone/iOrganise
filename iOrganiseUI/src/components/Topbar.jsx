@@ -57,39 +57,6 @@ function Topbar() {
     const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
     const handleMenuClose = () => setAnchorEl(null);
 
-    useEffect(() => {
-        const fetchUser = async () => {
-            const token = localStorage.getItem("accessToken");
-
-            if (!token) {
-                setUser(null);
-                return;
-            }
-
-            try {
-                const response = await fetch("http://localhost:8000/get-user", {
-                    headers: { Authorization: 'Bearer ${token}' },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.user) {
-                        setUser(data.user);
-                    } else {
-                        setUser(null);
-                    }
-                } else {
-                    setUser(null);
-                    console.error('Failed to fetch user data');
-                }
-            } catch (error) {
-                console.error("Error Fetching User:", error);
-            }
-        };
-
-        fetchUser();
-    }, [localStorage.getItem("accessToken")]);
-
     const handleLoginRedirect = () => {
         navigate("/login");
         handleMenuClose();

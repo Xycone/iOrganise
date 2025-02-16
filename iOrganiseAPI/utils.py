@@ -145,5 +145,3 @@ def free_memory():
 
     if tf.config.list_physical_devices('GPU'):
         tf.keras.backend.clear_session()
-        for device in tf.config.list_physical_devices('GPU'):
-            tf.config.experimental.reset_memory_stats(device)

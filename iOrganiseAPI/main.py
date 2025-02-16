@@ -270,13 +270,13 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                         extracted_audio_path = audio_temp.name + ".mp3"
                         subprocess.run(["ffmpeg", "-i", file_path, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         content = "\n".join(
-                            f"Segment {j + 1}: {segment.get("text")}"
+                            f"Segment {j + 1}: {segment.get('text')}"
                             for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                         )
 
                 if category == "audio":
                     content = "\n".join(
-                        f"Segment {j + 1}: {segment.get("text")}"
+                        f"Segment {j + 1}: {segment.get('text')}"
                         for j, segment in enumerate(transcription_manager.transcribe(file_path).get("segments"))
                     )
 
@@ -392,13 +392,13 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
                         extracted_audio_path = audio_temp.name + ".mp3"
                         subprocess.run(["ffmpeg", "-i", temp.name, extracted_audio_path], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         content = "\n".join(
-                            f"Segment {j + 1}: {segment.get("text")}"
+                            f"Segment {j + 1}: {segment.get('text')}"
                             for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
                         )
 
                 elif is_audio(temp.name):
                     content = "\n".join(
-                        f"Segment {j + 1}: {segment.get("text")}"
+                        f"Segment {j + 1}: {segment.get('text')}"
                         for j, segment in enumerate(transcription_manager.transcribe(temp.name).get("segments"))
                     )
 
@@ -494,7 +494,7 @@ async def transcribe_audio(form_data: TranscribeAudioDTO = Depends(), files: Lis
         for i, file_data in response.items():
             try:
                 formatted_transcript = "\n".join(
-                    f"Segment {j + 1}: {segment.get("text")}"
+                    f"Segment {j + 1}: {segment.get('text')}"
                     for j, segment in enumerate(file_data["segments"])
                 )
                 

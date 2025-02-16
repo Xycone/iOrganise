@@ -537,7 +537,7 @@ function Home() {
                             )}
                         </Box>
 
-                        <Box display="flex" justifyContent="end" gap={1}>
+                        <Box display="flex" justifyContent="end">
                             <Button variant="contained" color="inherit" onClick={handleCloseExtractDialog}>
                                 Close
                             </Button>
@@ -562,7 +562,7 @@ function Home() {
                             </DialogContentText>
                         </Box>
 
-                        <Box display="flex" justifyContent="end" gap={1}>
+                        <Box display="flex" justifyContent="end" gap={2}>
                             <Button variant="contained" color="inherit"
                                 onClick={handleCancelDelete}>
                                 Cancel

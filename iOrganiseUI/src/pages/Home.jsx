@@ -274,7 +274,7 @@ function Home() {
     };
 
     return (
-        <Box px={5} pb={5}>
+        <Box px={5} pb={20}>
             <Box display="flex" flexDirection="column">
                 <Header
                     title="Home"
@@ -306,10 +306,10 @@ function Home() {
                                         />
                                     )
                                 }
-                            placeholder="Search by file name"
-                            value={search}
-                            onChange={onSearchChange}
-                            onKeyDown={onSearchKeyDown}
+                                placeholder="Search by file name"
+                                value={search}
+                                onChange={onSearchChange}
+                                onKeyDown={onSearchKeyDown}
                             />
                         </Box>
                     </Box>
@@ -570,8 +570,7 @@ function Home() {
                                 onClick={handleCancelDelete}>
                                 Cancel
                             </Button>
-                            <Button variant="contained" color="error"
-                                onClick={handleConfirmDelete}>
+                            <Button variant="contained" sx={{ backgroundColor: theme.palette.error.main, color: theme.palette.text.primary }} onClick={handleConfirmDelete}>
                                 Delete
                             </Button>
                         </Box>

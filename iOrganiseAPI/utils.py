@@ -16,13 +16,21 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 import jwt
 
-# filetype check
+import magic
+
 def get_file_type(path):
     try:
+        print(f"Checking file type for: {path}")  # Print the path of the file being checked
+        
         mime = magic.Magic(mime=True)
-        return mime.from_file(path)
+        file_type = mime.from_file(path)
+        
+        print(f"File type detected: {file_type}")  # Print the detected mime type
+        return file_type
     except Exception as e:
+        print(f"Error occurred while checking file type for {path}: {str(e)}")  # Print the error if one occurs
         return None
+
     
 def is_video(path):
     file_type = get_file_type(path)
@@ -44,10 +52,33 @@ def extract_text_from_pdf(pdf_path: str) -> str:
 
 def extract_text_from_docx(docx_path: str) -> str:
     doc = Document(docx_path)
-    text = ""
+    text = []
+
+    # Extract text from headers FIRST (they appear at the top)
+    for section in doc.sections:
+        if section.header:
+            for para in section.header.paragraphs:
+                text.append(para.text)
+
+    # Extract main document text (paragraphs and tables in order)
     for para in doc.paragraphs:
-        text += para.text
-    return text
+        text.append(para.text)  # Extracting paragraph text
+
+    # Extract table rows in order
+    for table in doc.tables:
+        for row in table.rows:
+            row_text = [cell.text.strip() for cell in row.cells]
+            if any(row_text):  # Ensure there's text in the row
+                text.append(" | ".join(row_text))
+
+    # Extract footers LAST (they appear at the bottom)
+    for section in doc.sections:
+        if section.footer:
+            for para in section.footer.paragraphs:
+                text.append(para.text)
+
+    return "\n".join(filter(None, text))  # Remove empty lines and join
+
 
 def extract_text_from_txt(txt_path: str) -> str:
     with open(txt_path, 'r', encoding='utf-8') as file:

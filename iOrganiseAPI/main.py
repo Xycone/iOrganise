@@ -245,7 +245,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
             myList.append((response.id, response.name, response.type, response.path))
 
     # bucket sort based on MIME type for later processing
-    buckets = {"video": [], "audio": [], "image": [], "document": [], "other": []}
+    buckets = {"video": [], "audio": [], "image": [], "application": [], "other": []}
 
     for file_id, file_name, file_type, file_path in myList:
         category = file_type.split("/")[0] if file_type and file_type.split("/")[0] in buckets else "other"
@@ -295,15 +295,26 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
         # unload model(s) here
 
     # extract text from document
-    if buckets["document"]:
+    if buckets["application"]:
         # load model(s) here
 
-        for file_id, file_name, file_path, category in buckets["document"]:
+        for file_id, file_name, file_path, category in buckets["application"]:
             # processing steps for file here
-            pass
+            print(f"Processing document: {file_name}")
 
-            # make sure to pass in value for "content"
-            content = None
+            # Check file type and extract text accordingly
+            file_type = get_file_type(file_path)
+            extracted_text = ""
+
+            if file_type == "application/pdf":
+                extracted_text = extract_text_from_pdf(file_path)
+            elif file_type == "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+                extracted_text = extract_text_from_docx(file_path)
+
+            print("Extracted text:", extracted_text)
+            
+            content = extracted_text if extracted_text else None
+            print("Content:", content)
             myList.append((file_id, file_name, file_path, category, content))
         
         # unload model(s) here
@@ -315,9 +326,20 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
 
     # subject classification (2nd stage)
     # load models for subject classification here
+    classification_manager = model_loader.load_bert()
 
     for file_id, file_name, file_path, category, content in myList:
         # classify files and save the subject to db
+        try:
+            predicted_label = classification_manager.predict(content)
+
+            print(predicted_label)
+
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+
+        # 4. unload the model
+        model_loader.del_models("BERT")
         pass
 
     # content summary (final stage)
@@ -515,6 +537,9 @@ async def predict_text(
 
     response = {}
     
+    # Print received files
+    print("Received files:", [file.filename for file in files] if files else "No files")
+
     # 2. extract text from files
     extracted_text = ""
     if files:
@@ -529,7 +554,9 @@ async def predict_text(
                     if file.filename.endswith(".pdf"):
                         extracted_text += extract_text_from_pdf(temp.name)
                     elif file.filename.endswith(".docx"):
+                        print(f"Before DOCX extraction: {temp.name}")
                         extracted_text += extract_text_from_docx(temp.name)
+                        print(f"After DOCX extraction: {extracted_text}")
                     elif file.filename.endswith(".txt"):
                         extracted_text += extract_text_from_txt(temp.name)
                     else:
@@ -540,7 +567,7 @@ async def predict_text(
                 except Exception as e:
                     response[file.filename] = {"error": str(e)}
 
-   # Combine texts
+    # Combine texts
     combined_text = ""
     if text:
         combined_text += text
@@ -567,6 +594,7 @@ async def predict_text(
         model_loader.del_models("BERT")
 
     return response
+
 
 
 @app.get("/get-device")

@@ -38,7 +38,7 @@ class LlamaCppManager:
     def generate_summary(self, transcript):
         prompt = f"""
         Instructions:
-        Provide me with a short summary of what is in Transcript with as little words as possible in bullet point form without adding your own information or repeating any of the Instructions.
+        Provide me with a short summary in english of what is in Transcript with as little words as possible in bullet point form without adding your own information or repeating any of the Instructions.
 
         Transcript: 
         {transcript}

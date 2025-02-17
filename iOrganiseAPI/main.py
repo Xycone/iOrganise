@@ -11,6 +11,9 @@ import re
 
 import torch
 
+import io
+import requests
+
 from database import create_tables, db_create, db_get, db_get_by_id, db_get_by_attribute, db_update, db_delete
 
 from model.User import User
@@ -47,6 +50,8 @@ app.add_middleware(
 
 model_loader = ModelLoader()
 DEVICE, COMPUTE_TYPE = ("cuda", "float16") if torch.cuda.is_available() else ("cpu", "int8")
+# Hugging Face API endpoint for OCR
+HUGGING_FACE_URL = "https://fiamenova-aap.hf.space/predict/"
 
 @app.on_event("startup")
 async def on_startup():
@@ -287,20 +292,28 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
 
         model_loader.del_models("ASR")
 
-    # extract text from image files
+    # Extract text from image files
     if buckets["image"]:
-        # load model(s) here
         for file_id, file_name, file_path, category in buckets["image"]:
-            # processing steps for file here
-            pass
-            
-            # make sure to pass in value for "content"
-            content = None
-            myList.append((file_id, file_name, file_path, category, content))
-        
-        # unload model(s) here
+            try:
+                # Open the image file in binary mode
+                with open(file_path, "rb") as image_file:
+                    image_bytes = image_file.read()  # Read the image as bytes
 
-    # extract text from document
+                    # Send the image to Hugging Face API
+                    response = requests.post(HUGGING_FACE_URL, files={"image": image_bytes})
+
+                    if response.status_code == 200:
+                        content = response.json()["prediction"]  # Extract the prediction from the response
+                    else:
+                        print(f"Error: {response.status_code} - {response.text}")
+                        content = None
+
+                myList.append((file_id, file_name, file_path, category, content))
+            except Exception as e:
+                print(f"Error processing image {file_name}: {e}")
+                myList.append((file_id, file_name, file_path, category, None))
+
     if buckets["document"]:
         # load model(s) here
 
@@ -404,9 +417,25 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
 
                 model_loader.del_models("ASR")
                             
-            # image to text
+            # Image to text
+            if is_image(temp.name):
+                try:
+                    # Open the image file in binary mode
+                    with open(temp.name, "rb") as image_file:
+                        image_bytes = image_file.read()  # Read the image as bytes
 
-            # document text extraction
+                        # Send the image to Hugging Face API
+                        response = requests.post(HUGGING_FACE_URL, files={"image": image_bytes})
+
+                        if response.status_code == 200:
+                            content = response.json()["prediction"]  # Extract the prediction from the response
+                        else:
+                            print(f"Error: {response.status_code} - {response.text}")
+                            content = None
+                except Exception as e:
+                    print(f"Error processing image: {e}")
+                    content = None
+                        # document text extraction
 
             # subject classification
 

@@ -32,6 +32,10 @@ def is_audio(path):
     file_type = get_file_type(path)
     return bool(file_type) and file_type.startswith("audio/")
 
+def is_image(path):
+    file_type = get_file_type(path)
+    return bool(file_type) and file_type.startswith("image/")
+
 def is_text(path):
     return
 

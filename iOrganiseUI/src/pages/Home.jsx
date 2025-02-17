@@ -288,7 +288,7 @@ function Home() {
                     subtitle="Welcome to iOrganise"
                 />
                 <Box mt={4}>
-                    <Box mb={4} display="flex">
+                    <Box mb={4} display="flex" gap={2}>
                         <Box
                             p={1}
                             flexGrow={1}

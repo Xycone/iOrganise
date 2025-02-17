@@ -118,7 +118,7 @@ function OCR() {
                             </Box>
                         </Grid>
                         <Grid item xs={12} md={8} lg={9.5}>
-                            <Typography>png, img, jpeg</Typography>
+                            <Typography>png</Typography>
                         </Grid>
                     </Grid>
                     <Divider />
@@ -216,7 +216,7 @@ function OCR() {
                         ) : response ? (
                             <Box>
                                 <Typography>
-                                    Prediction: {response.prediction}
+                                    {JSON.stringify(response)}
                                 </Typography>
                             </Box>
                         ) : null}

@@ -8,6 +8,14 @@ from utils import *
 # Define your model path here
 MODEL_PATH = "/app/models/DistilBERTSubjectClassification"
 
+gpus = tf.config.experimental.list_physical_devices("GPU")
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(f"GPU Memory Limiting Error: {e}")
+
 class DistilBertManager:
     def __init__(self, model_path: str = MODEL_PATH):
         # Load the DistilBertTokenizer with the default pre-trained model

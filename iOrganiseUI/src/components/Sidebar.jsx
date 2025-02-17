@@ -40,7 +40,8 @@ function Sidebar() {
         pathname === '/home' ? 'Home' :
             pathname === '/transcribeaudio' ? 'Transcribe Audio' :
                 pathname === '/categorisetext' ? 'Categorise Notes' :
-                    pathname === '/apidocs' ? 'API Documentation' : 'Home';
+                    pathname === '/OCR' ? 'Image To Text (OCR)' :
+                        pathname === '/apidocs' ? 'API Documentation' : 'Home';
 
     const theme = useTheme();
     const colours = tokens(theme.palette.mode);

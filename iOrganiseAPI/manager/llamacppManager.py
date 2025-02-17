@@ -18,7 +18,7 @@ class LlamaCppManager:
             model_path, context_length = LLM_MODELS.get(self.__name)
             llm_params = {
                 "model_path": model_path,
-                "temperature": 0.2,
+                "temperature": 0.4,
                 "max_tokens": 2048,
                 "n_ctx": context_length
             }
@@ -42,8 +42,6 @@ class LlamaCppManager:
 
         Transcript: 
         {transcript}
-
-        Summary:
         """
 
         # generate the content summary

@@ -316,7 +316,7 @@ async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends
                 print(f"Error processing image {file_name}: {e}")
                 myList.append((file_id, file_name, file_path, category, None))
 
-    if buckets["document"]:
+    if buckets["application"]:
         # load model(s) here
 
         for file_id, file_name, file_path, category in buckets["application"]:

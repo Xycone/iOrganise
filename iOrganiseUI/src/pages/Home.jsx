@@ -5,6 +5,8 @@ import {
     Typography,
     Divider,
     Button,
+    Select,
+    MenuItem,
     InputBase,
     List,
     ListItem,
@@ -51,6 +53,7 @@ function Home() {
     // Retrieve uploaded files
     const [fileList, setFileList] = useState([]);
     const [search, setSearch] = useState("");
+    const [filter, setFilter] = useState("");
 
     const getFiles = () => {
         http.get("/get-files")
@@ -66,8 +69,12 @@ function Home() {
         setSearch(e.target.value);
     };
 
+    const onFilterChange = (e) => {
+        setFilter(e.target.value);
+    };
+
     const searchFiles = () => {
-        http.get(`/get-files?name=${search}`)
+        http.get(`/get-files?name=${search}&subject=${filter}`)
             .then((res) => {
                 setFileList(res.data.files);
             })
@@ -312,6 +319,21 @@ function Home() {
                                 onKeyDown={onSearchKeyDown}
                             />
                         </Box>
+
+                        <Select
+                            value={filter}
+                            onChange={onFilterChange}
+                            displayEmpty
+                            inputProps={{ "aria-label": "Filter by Subject" }}
+                            sx={{ minWidth: 150 }}
+                        >
+                            <MenuItem value="">
+                                <Typography color={theme.palette.text.disabled}>Select Subject</Typography>
+                            </MenuItem>
+                            <MenuItem value="math">Math</MenuItem>
+                            <MenuItem value="science">Science</MenuItem>
+                            <MenuItem value="english">English</MenuItem>
+                        </Select>
                     </Box>
 
                     <Box

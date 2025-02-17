@@ -176,7 +176,7 @@ async def get_files(token: str = Depends(oauth2_scheme), name: Optional[str] = Q
 
     file_upload_list = filter(
         lambda file: (not name or name.lower() in file.name.lower()) and 
-                    (not subject or subject.lower() in file.subject.lower()),
+                    (not subject or subject.lower() in str(file.subject).lower()),
         file_upload_list
     )
 

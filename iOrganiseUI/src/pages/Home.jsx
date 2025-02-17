@@ -461,7 +461,7 @@ function Home() {
                                     <input
                                         type="file"
                                         multiple
-                                        accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm, .pdf, .docx, .txt"
+                                        accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm, .pdf, .docx, .txt, .png"
                                         style={{ display: "none" }}
                                         onChange={handleFileSelect}
                                     />

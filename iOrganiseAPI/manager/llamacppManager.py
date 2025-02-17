@@ -19,7 +19,7 @@ class LlamaCppManager:
             llm_params = {
                 "model_path": model_path,
                 "temperature": 0.4,
-                "max_tokens": 2048,
+                "max_tokens": 1024,
                 "n_ctx": context_length
             }
 

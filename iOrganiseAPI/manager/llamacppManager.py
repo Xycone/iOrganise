@@ -18,7 +18,7 @@ class LlamaCppManager:
             model_path, context_length = LLM_MODELS.get(self.__name)
             llm_params = {
                 "model_path": model_path,
-                "temperature": 0.3,
+                "temperature": 0.4,
                 "max_tokens": 2048,
                 "n_ctx": context_length
             }
@@ -38,7 +38,7 @@ class LlamaCppManager:
     def generate_summary(self, transcript):
         prompt = f"""
         Instructions:
-        Provide me with a short summary in english of what is in Transcript with as little words as possible in bullet point form without adding your own information or repeating any of the Instructions.
+        Provide me with a short english summary of what is in Transcript using as little words as possible and in bullet point form without adding your own information or repeating Instructions.
 
         Transcript: 
         {transcript}

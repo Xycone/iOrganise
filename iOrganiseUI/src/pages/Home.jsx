@@ -100,7 +100,7 @@ function Home() {
 
     useEffect(() => {
         getFiles();
-    }, [filter]);
+    }, []);
 
     // File Upload
     const [dialogOpen, setDialogOpen] = useState(false);

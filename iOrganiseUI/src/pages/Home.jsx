@@ -324,9 +324,10 @@ function Home() {
                             value={filter}
                             onChange={onFilterChange}
                             displayEmpty
+                            inputProps={{ "aria-label": "Filter by Subject" }}
                             sx={{ minWidth: 150 }}
                         >
-                            <MenuItem color={theme.palette.text.disabled} value="">Select Subject</MenuItem>
+                            <MenuItem sx={{ color: theme.palette.text.disabled }} value="">Select Subject</MenuItem>
                             <MenuItem value="math">Math</MenuItem>
                             <MenuItem value="science">Science</MenuItem>
                             <MenuItem value="english">English</MenuItem>

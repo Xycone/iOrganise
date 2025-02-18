@@ -1,5 +1,5 @@
 # iOrganise
-This application is designed to help students streamline the process of organising study materials and encourages better study habits.
+This application is designed to help students streamline the process of organising study materials and encourage better study habits.
 
 ## Key Features 🛠️
 - **Audio Processing**: Generate text transcripts for uploaded audio and video files.

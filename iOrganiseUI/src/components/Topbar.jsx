@@ -109,8 +109,8 @@ function Topbar() {
                             }}
                         >
                             <MenuItem sx={{ py: 2 }}  onClick={() => navigate("/settings")}>
-                                <ListItemIcon><SettingsOutlinedIcon /></ListItemIcon>
-                                <ListItemText>Settings</ListItemText>
+                                <ListItemIcon><PersonOutlineOutlinedIcon /></ListItemIcon>
+                                <ListItemText>Profile</ListItemText>
                             </MenuItem >
                             <MenuItem sx={{ py: 2 }} onClick={handleLogout}>
                                 <ListItemIcon><LogoutOutlinedIcon /></ListItemIcon>

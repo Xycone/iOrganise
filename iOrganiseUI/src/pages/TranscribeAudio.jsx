@@ -60,6 +60,7 @@ function TranscribeFiles() {
 
     const handleDialogClose = () => {
         setDialogOpen(false);
+        setSelectedFiles([]);
     };
 
     const handleFileAttach = () => {

@@ -193,7 +193,11 @@ export const themeSettings = (mode) => {
             MuiMenu: {
                 styleOverrides: {
                     list: {
-                        backgroundColor: colours.primary[400]
+                        backgroundColor: colours.primary[400],
+                        "& .MuiMenuItem-root": {
+                            paddingTop: "8px",
+                            paddingBottom: "8px"
+                        }
                     }
                 }
             },

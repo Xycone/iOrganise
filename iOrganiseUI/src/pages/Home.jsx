@@ -65,15 +65,17 @@ function Home() {
             });
     };
 
-    const onSearchChange = (e) => {
-        setSearch(e.target.value);
-    };
-
     const onFilterChange = (e) => {
         setFilter(e.target.value);
+        searchFiles(e.target.value, search);
+    };
+    
+    const onSearchChange = (e) => {
+        setSearch(e.target.value);
+        searchFiles(filter, e.target.value);
     };
 
-    const searchFiles = () => {
+    const searchFiles = (filter, search) => {
         http.get(`/get-files?name=${search}&subject=${filter}`)
             .then((res) => {
                 setFileList(res.data.files);
@@ -81,16 +83,6 @@ function Home() {
             .catch((err) => {
                 console.error("Error fetching files:", err.response?.data?.detail || err.message);
             });
-    };
-
-    const onSearchKeyDown = (e) => {
-        if (e.key === "Enter") {
-            searchFiles();
-        }
-    };
-
-    const onClickSearch = () => {
-        searchFiles();
     };
 
     const onClickClear = () => {
@@ -316,7 +308,6 @@ function Home() {
                                 placeholder="Search by file name"
                                 value={search}
                                 onChange={onSearchChange}
-                                onKeyDown={onSearchKeyDown}
                             />
                         </Box>
 

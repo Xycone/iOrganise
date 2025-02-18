@@ -20,7 +20,6 @@ import {
 import { tokens } from '../themes/MyTheme';
 
 // MUI Icons
-import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
@@ -58,9 +57,9 @@ function TranscribeFiles() {
         setDialogOpen(true);
     };
 
-    const handleFileAttach = () => {
+    const handleDialogClose = () => {
         setDialogOpen(false);
-    }
+    };
 
     const handleFileSelect = (event) => {
         const files = Array.from(event.target.files);
@@ -582,7 +581,7 @@ function TranscribeFiles() {
                                 size="large"
                                 fullWidth
                                 component="label"
-                                onClick={handleFileAttach}
+                                onClick={handleDialogClose}
                             >
                                 <Typography>Attach Files</Typography>
                             </Button>

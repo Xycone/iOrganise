@@ -58,11 +58,6 @@ function TranscribeFiles() {
         setDialogOpen(true);
     };
 
-    const handleDialogClose = () => {
-        setDialogOpen(false);
-        setSelectedFiles([]);
-    };
-
     const handleFileAttach = () => {
         setDialogOpen(false);
     }
@@ -503,10 +498,6 @@ function TranscribeFiles() {
                                     Attach your audio/video files to the API request.
                                 </DialogContentText>
                             </Box>
-
-                            <IconButton onClick={handleDialogClose}>
-                                <CloseIcon />
-                            </IconButton>
                         </Box>
 
                         <Box>

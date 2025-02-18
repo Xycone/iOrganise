@@ -108,11 +108,6 @@ function Topbar() {
                                 horizontal: "right",
                             }}
                         >
-                            <MenuItem sx={{ py: 2 }} onClick={() => navigate("/profile")}>
-                                <ListItemIcon><PersonOutlineOutlinedIcon /></ListItemIcon>
-                                <ListItemText>Profile</ListItemText>
-                            </MenuItem>
-
                             <MenuItem sx={{ py: 2 }}  onClick={() => navigate("/settings")}>
                                 <ListItemIcon><SettingsOutlinedIcon /></ListItemIcon>
                                 <ListItemText>Settings</ListItemText>

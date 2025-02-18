@@ -15,6 +15,7 @@ import {
     DialogContent,
     DialogContentText,
     IconButton,
+    Tooltip,
     useTheme
 } from '@mui/material';
 import { tokens } from '../themes/MyTheme';
@@ -483,31 +484,43 @@ function Home() {
 
 
                         {/* Uploaded File Viewer */}
-                        {selectedFiles.map((file, index) => (
-                            <Box mt={5} key={index}>
-                                <Box
-                                    my={1}
-                                    display="flex"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                >
-                                    <Box>
-                                        <Typography>{file.name}</Typography>
-                                        <DialogContentText>
-                                            {file.size < 1024 * 1024
-                                                ? `${(file.size / 1024).toFixed(0)} KB`
-                                                : `${(file.size / (1024 * 1024)).toFixed(2)} MB`}
-                                        </DialogContentText>
+                        <Box mt={5}> {/* This Box wraps the whole list of files */}
+                            {selectedFiles.map((file, index) => (
+                                <Box key={index} my={2}>
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                    >
+                                        <Box>
+                                            <Tooltip title={file.name} arrow>
+                                                <Typography
+                                                    maxWidth="300px"
+                                                    overflow="hidden"
+                                                    textOverflow="ellipsis"
+                                                    whiteSpace="nowrap"
+                                                >
+                                                    {file.name}
+                                                </Typography>
+                                            </Tooltip>
+                                            <DialogContentText>
+                                                {file.size < 1024 * 1024
+                                                    ? `${(file.size / 1024).toFixed(0)} KB`
+                                                    : `${(file.size / (1024 * 1024)).toFixed(2)} MB`}
+                                            </DialogContentText>
+                                        </Box>
+
+                                        <IconButton onClick={() => handleDeleteFile(index)}>
+                                            <DeleteOutlinedIcon />
+                                        </IconButton>
                                     </Box>
 
-                                    <IconButton onClick={() => handleRemoveFile(index)}>
-                                        <DeleteOutlinedIcon />
-                                    </IconButton>
+                                    <Divider />
                                 </Box>
+                            ))}
+                        </Box>
 
-                                <Divider />
-                            </Box>
-                        ))}
+                        {/* Upload Files Button */}
                         <Box mt={5}>
                             <Button
                                 size="large"

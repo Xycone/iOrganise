@@ -98,7 +98,7 @@ async def save_uploaded_file(email: str, file: UploadFile):
             temp_file.write(file_content)
             type = get_file_type(temp_file.name) if get_file_type(temp_file.name) else 'unknown'
 
-        size = round(file.size / (1024 * 1024), 2)
+        size = file.size
         path = os.path.join("/app/file_storage", email, file.filename)
         
         async with aiofiles.open(path, 'wb') as output_file:

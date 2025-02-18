@@ -444,12 +444,11 @@ function TranscribeFiles() {
 
                         <Divider />
 
-                        <Box
-                            my={2}
-                        >
+                        <Box my={2}>
                             <Box
                                 p={5}
                                 mb={4}
+                                maxWidth="100vw"
                                 minHeight="60vh"
                                 maxHeight="60vh"
                                 backgroundColor={colours.primary[400]}

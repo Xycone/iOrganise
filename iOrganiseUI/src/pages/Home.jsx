@@ -317,7 +317,6 @@ function Home() {
                             value={filter}
                             onChange={onFilterChange}
                             displayEmpty
-                            inputProps={{ "aria-label": "Filter by Subject" }}
                             sx={{ minWidth: 150 }}
                         >
                             <MenuItem value="">All</MenuItem>

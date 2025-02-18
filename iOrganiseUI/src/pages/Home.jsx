@@ -374,7 +374,14 @@ function Home() {
                                         }
                                         secondary={
                                             <Typography color={theme.palette.text.disabled}>
-                                                FileType: {file.type} Size: {file.size} MB
+                                                FileType: {file.type} Size:{" "}
+                                                {file.size < 1024
+                                                    ? `${file.size} Bytes`
+                                                    : file.size < 1024 * 1024
+                                                        ? `${(file.size / 1024).toFixed(1)} KB`
+                                                        : file.size < 1024 * 1024 * 1024
+                                                            ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                                                            : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
                                             </Typography>
                                         }
                                     />

@@ -283,7 +283,6 @@ function Home() {
                 <Box mt={4}>
                     <Box mb={4} display="flex" gap={2}>
                         <Box
-                            p={1}
                             flexGrow={1}
                             background="invisible"
                             border="1px solid"

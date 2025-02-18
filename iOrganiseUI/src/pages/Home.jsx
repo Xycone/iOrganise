@@ -69,7 +69,7 @@ function Home() {
         setFilter(e.target.value);
         searchFiles(e.target.value, search);
     };
-    
+
     const onSearchChange = (e) => {
         setSearch(e.target.value);
         searchFiles(filter, e.target.value);
@@ -312,13 +312,14 @@ function Home() {
                         </Box>
 
                         <Select
+                            size="small"
                             value={filter}
                             onChange={onFilterChange}
                             displayEmpty
                             inputProps={{ "aria-label": "Filter by Subject" }}
                             sx={{ minWidth: 150 }}
                         >
-                            <MenuItem sx={{ color: theme.palette.text.disabled }} value="">Select Subject</MenuItem>
+                            <MenuItem value="">All</MenuItem>
                             <MenuItem value="math">Math</MenuItem>
                             <MenuItem value="science">Science</MenuItem>
                             <MenuItem value="english">English</MenuItem>

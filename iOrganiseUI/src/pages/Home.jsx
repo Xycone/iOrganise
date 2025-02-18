@@ -421,7 +421,7 @@ function Home() {
                                             Smart Upload
                                         </Typography>
                                         <DialogContentText>
-                                            Upload and attach your files to iOrganise for AI processing.
+                                            Upload your files to iOrganise for AI processing.
                                         </DialogContentText>
                                     </>
                                 )}
@@ -431,7 +431,7 @@ function Home() {
                                             Upload Files
                                         </Typography>
                                         <DialogContentText>
-                                            Upload and attach your files to iOrganise.
+                                            Upload your files to iOrganise.
                                         </DialogContentText>
                                     </>
                                 )}

@@ -59,7 +59,12 @@ function TranscribeFiles() {
 
     const handleDialogClose = () => {
         setDialogOpen(false);
+        setSelectedFiles([]);
     };
+
+    const handleFileAttach = () => {
+        setDialogOpen(false);
+    }
 
     const handleFileSelect = (event) => {
         const files = Array.from(event.target.files);
@@ -492,10 +497,10 @@ function TranscribeFiles() {
                         >
                             <Box>
                                 <Typography variant="h5">
-                                    Upload Files
+                                    Attach Files
                                 </Typography>
                                 <DialogContentText>
-                                    Upload & attach audio/video files to the API request.
+                                    Attach your audio/video files to the API request.
                                 </DialogContentText>
                             </Box>
 
@@ -525,7 +530,7 @@ function TranscribeFiles() {
                                     Choose a file or drag & drop it here
                                 </Typography>
                                 <DialogContentText mb={2}>
-                                    mp3, mp4, mpeg, mpga, m4a, wav & webm formats, up to 25MB
+                                    mp3, mp4, mpeg, mpga, m4a, wav & webm formats
                                 </DialogContentText>
                                 <Button
                                     variant="contained"
@@ -570,6 +575,16 @@ function TranscribeFiles() {
                                 <Divider />
                             </Box>
                         ))}
+                        <Box mt={5}>
+                            <Button
+                                size="large"
+                                fullWidth
+                                component="label"
+                                onClick={handleFileAttach}
+                            >
+                                <Typography>Attach Files</Typography>
+                            </Button>
+                        </Box>
                     </Box>
                 </DialogContent>
             </Dialog>

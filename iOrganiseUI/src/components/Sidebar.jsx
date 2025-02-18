@@ -116,7 +116,7 @@ function Sidebar() {
                             color={theme.palette.text.primary}
                             sx={{ p: "25px 0 5px 20px" }}
                         >
-                            APIs
+                            Demo
                         </Typography>
                         <Item
                             title="Transcribe Audio"

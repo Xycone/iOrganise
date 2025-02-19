@@ -276,14 +276,13 @@ async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends
     ]
     user_list = [await db_get_by_id(User, userId) for userId in form_data.userId_list]
     
-    shared_file_list = []
-    for file_upload in file_upload_list:
-        for user in user_list:
-            existing_shared_file = await db_get_by_attribute(SharedFile, "file_id", file_upload.id)
-            if any(shared_file.user_id == user.id for shared_file in existing_shared_file):
-                continue
-            else:
-                shared_file_list.append(SharedFile(file_upload=file_upload, user=user))
+    shared_file_list = [
+        SharedFile(file_upload=file_upload, user=user) 
+        for file_upload in file_upload_list 
+        for user in user_list
+    ]
+
+    print("Shared File List:", shared_file_list)
     
     for shared_file in shared_file_list:
         await db_create(shared_file)

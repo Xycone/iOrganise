@@ -254,8 +254,8 @@ async def download_all(token: str = Depends(oauth2_scheme)):
 
     return Response(zip_buffer.read(), headers=headers)
 
-@app.get("/view-share")
-async def view_share(token: str = Depends(oauth2_scheme)):
+@app.get("/view-shared")
+async def view_shared(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     shared_file_list = await db_get_by_attribute(SharedFile, "user_id", user_id)
 

@@ -271,7 +271,7 @@ async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends
     user_list = [await db_get_by_id(User, userId) for userId in form_data.userId_list if userId != user_id]
 
     if not file_upload_list or not user_list:
-        return {"msg": "No files or users found or unauthorized to share."}
+        raise HTTPException(status_code=400, detail="No files or users found or unauthorized to share.")
     
     shared_file_list = [
         SharedFile(file_upload=file_upload, user=user) 

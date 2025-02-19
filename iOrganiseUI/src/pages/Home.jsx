@@ -209,7 +209,7 @@ function Home() {
                 const url = window.URL.createObjectURL(response.data);
                 const a = document.createElement("a");
                 a.href = url;
-                a.download = "export.zip";
+                a.download = "iOrganise_export.zip";
                 document.body.appendChild(a);
                 a.click();
                 a.remove();

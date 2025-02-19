@@ -32,7 +32,6 @@ from modelLoader import ModelLoader
 from dto.RegisterDTO import RegisterDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
 from dto.ShareFilesDTO import ShareFilesDTO
-from dto.UnshareFilesDTO import UnshareFilesDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
 
 app = FastAPI()

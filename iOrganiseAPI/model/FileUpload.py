@@ -15,7 +15,7 @@ class FileUpload(Base):
     subject = Column(SqlEnum(SubjectTypes), nullable=True)
     content_path = Column(String(255), unique=True, index=True, nullable=True)
     summary_path = Column(String(255), unique=True, index=True, nullable=True)
-    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
     user = relationship("User", back_populates="file_uploads")
     shared_files = relationship("SharedFile", back_populates="file_upload")

@@ -31,6 +31,8 @@ from utils import *
 from modelLoader import ModelLoader
 from dto.RegisterDTO import RegisterDTO
 from dto.UpdateSettingDTO import UpdateSettingDTO
+from dto.ShareFilesDTO import ShareFilesDTO
+from dto.UnshareFilesDTO import UnshareFilesDTO
 from dto.TranscribeAudioDTO import TranscribeAudioDTO
 
 app = FastAPI()
@@ -174,7 +176,10 @@ async def upload_files(files: List[UploadFile] = File(...), token: str = Depends
 async def get_files(token: str = Depends(oauth2_scheme), name: Optional[str] = Query(None), subject: Optional[str] = Query(None)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
-    shared_file_list = [await db_get_by_id(FileUpload, shared.file_id) for shared in await db_get_by_attribute(SharedFile, "user_id", user_id)]
+    shared_file_list = [
+        await db_get_by_id(FileUpload, shared.file_id)
+        for shared in await db_get_by_attribute(SharedFile, "user_id", user_id)
+    ]
 
     file_upload_list = filter(
         lambda file: (not name or name.lower() in file.name.lower()) and 
@@ -185,7 +190,7 @@ async def get_files(token: str = Depends(oauth2_scheme), name: Optional[str] = Q
     shared_file_list = filter(
         lambda file: (not name or name.lower() in file.name.lower()) and 
                     (not subject or subject.lower() in str(file.subject).lower()),
-        file_upload_list
+        shared_file_list
     )
 
     files = [file for file in file_upload_list if os.path.exists(file.path)]
@@ -250,17 +255,57 @@ async def download_all(token: str = Depends(oauth2_scheme)):
 
     return Response(zip_buffer.read(), headers=headers)
 
-@app.post("/share-files")
-async def share_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
+@app.get("/view-share")
+async def view_share(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
-    user = await db_get_by_id(User, user_id)
-    file_upload_list = [await db_get_by_id(FileUpload, id) for id in id_list]
+    shared_file_list = await db_get_by_attribute(SharedFile, "user_id", user_id)
 
-    for file_upload in (file for file in file_upload_list if os.path.exists(file.path)):
-        shared_file = SharedFile(file_upload=file_upload, user=user)
+    return {"shared_files": shared_file_list}
+
+@app.get("/view-users")
+async def view_users():
+    users = await db_get(User)
+
+    return {"users": users}
+
+@app.post("/share-files")
+async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    file_upload_list = [
+        file for file in await db_get_by_attribute(FileUpload, "user_id", user_id) 
+        if file.id in form_data.fileId_list and os.path.exists(file.path)
+    ]
+    user_list = [await db_get_by_id(User, userId) for userId in form_data.userId_list]
+    
+    shared_file_list = [
+        SharedFile(file_upload=file_upload, user=user) 
+        for file_upload in file_upload_list 
+        for user in user_list
+    ]
+
+    print("Shared File List:", shared_file_list)
+    
+    for shared_file in shared_file_list:
         await db_create(shared_file)
 
     return {"msg": "Files shared successfully"}
+
+@app.delete("/unshare-files")
+async def unshare_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+    shared_file_list = [await db_get_by_id(SharedFile, id) for id in id_list]
+
+    file_upload_ids = [file_upload.id for file_upload in file_upload_list]
+    shared_files_to_delete = [
+        shared_file for shared_file in shared_file_list 
+        if shared_file.file_id in file_upload_ids
+    ]
+
+    for shared_file in shared_files_to_delete:
+        await db_delete(SharedFile, shared_file.id)
+
+    return {"msg": "Files unshared successfully"}
 
 @app.post("/smart-upload")
 async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends(oauth2_scheme)):
@@ -439,9 +484,10 @@ async def view_extract(id: str, token: str = Depends(oauth2_scheme)):
 
     # retrieve file
     file = await db_get_by_id(FileUpload, id)
+    shared_file_list = await db_get_by_attribute(SharedFile, "file_id", id)
     if not file:
         raise HTTPException(status_code=404, detail="File not found")
-    if user_id != file.user_id:
+    if user_id != file.user_id and not any(user_id == shared_file.user_id for shared_file in shared_file_list):
         raise HTTPException(status_code=403, detail="You are not authorized to view this file")
     
     content, summary, subject = None, None, None

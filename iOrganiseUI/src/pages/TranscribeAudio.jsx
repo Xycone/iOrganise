@@ -20,6 +20,7 @@ import {
 import { tokens } from '../themes/MyTheme';
 
 // MUI Icons
+import CloseIcon from '@mui/icons-material/Close';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
@@ -58,6 +59,11 @@ function TranscribeFiles() {
     };
 
     const handleDialogClose = () => {
+        setDialogOpen(false);
+        setSelectedFiles([]);
+    };
+
+    const handleConfirmAttachment = () => {
         setDialogOpen(false);
     };
 
@@ -497,6 +503,10 @@ function TranscribeFiles() {
                                     Attach your audio/video files to the API request.
                                 </DialogContentText>
                             </Box>
+
+                            <IconButton onClick={handleDialogClose}>
+                                <CloseIcon />
+                            </IconButton>
                         </Box>
 
                         <Box>
@@ -581,9 +591,9 @@ function TranscribeFiles() {
                                 size="large"
                                 fullWidth
                                 component="label"
-                                onClick={handleDialogClose}
+                                onClick={handleConfirmAttachment}
                             >
-                                <Typography>Attach Files</Typography>
+                                <Typography>Confirm Attachment</Typography>
                             </Button>
                         </Box>
                     </Box>

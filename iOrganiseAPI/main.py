@@ -271,13 +271,18 @@ async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends
     user_list = [await db_get_by_id(User, userId) for userId in form_data.userId_list if userId != user_id]
 
     if not file_upload_list or not user_list:
-        raise HTTPException(status_code=400, detail="No files or users found or unauthorized to share.")
+        raise HTTPException(status_code=400, detail="No files or users found or unauthorized to share")
     
-    shared_file_list = [
-        SharedFile(file_upload=file_upload, user=user) 
-        for file_upload in file_upload_list 
-        for user in user_list
-    ]
+    shared_file_list = []
+    for file_upload in file_upload_list:
+        for user in user_list:
+            existing_shared_file = await db_get_by_attribute(SharedFile, "file_id", file_upload.id)
+            if any(shared_file.user_id == user.id for shared_file in existing_shared_file):
+                continue
+            shared_file_list.append(SharedFile(file_upload=file_upload, user=user))
+
+    if not shared_file_list:
+        raise HTTPException(status_code=400, detail="Files have already been shared with the specified users")
 
     print("Shared File List:", shared_file_list)
     
@@ -290,10 +295,13 @@ async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends
 async def unshare_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
-    shared_file_list = [await db_get_by_id(SharedFile, id) for id in id_list]
+    shared_file_list = [
+        shared_file for id in id_list 
+        if (shared_file := await db_get_by_id(SharedFile, id)) is not None
+    ]
 
     if not file_upload_list or not shared_file_list:
-        raise HTTPException(status_code=400, detail="No files found or unauthorized to unshare.")
+        raise HTTPException(status_code=400, detail="No files found or unauthorized to unshare")
 
     file_upload_ids = [file_upload.id for file_upload in file_upload_list]
     shared_files_to_delete = [

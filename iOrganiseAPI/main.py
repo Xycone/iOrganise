@@ -261,12 +261,6 @@ async def view_shared(token: str = Depends(oauth2_scheme)):
 
     return {"shared_files": shared_file_list}
 
-@app.get("/view-users")
-async def view_users():
-    users = await db_get(User)
-
-    return {"users": users}
-
 @app.post("/share-files")
 async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)

@@ -39,7 +39,7 @@ async def db_create(model_instance):
 async def db_get(model):
     async with async_session() as db:
         try:
-            result = await db.execute(model)
+            result = await db.execute(select(model))
             return result.scalars().all()
         except Exception as e:
             print(f"Error during db_get: {e}")

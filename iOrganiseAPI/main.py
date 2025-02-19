@@ -292,6 +292,9 @@ async def unshare_files(id_list: List[int], token: str = Depends(oauth2_scheme))
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
     shared_file_list = [await db_get_by_id(SharedFile, id) for id in id_list]
 
+    if not file_upload_list or not shared_file_list:
+        raise HTTPException(status_code=400, detail="No files found or unauthorized to unshare.")
+
     file_upload_ids = [file_upload.id for file_upload in file_upload_list]
     shared_files_to_delete = [
         shared_file for shared_file in shared_file_list 

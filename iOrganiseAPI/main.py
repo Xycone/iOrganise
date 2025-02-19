@@ -229,7 +229,8 @@ async def download_all(token: str = Depends(oauth2_scheme)):
         for file_upload in files:
             file_path = file_upload.path
             file_name = os.path.basename(file_path)
-            zip_file.write(file_path, arcname=f"{file_upload.subject}/{file_name}")
+            subject_folder = file_upload.subject if file_upload.subject else "uncategorised"
+            zip_file.write(file_path, arcname=f"{subject_folder}/{file_name}")
 
     zip_buffer.seek(0) 
 

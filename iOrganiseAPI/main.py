@@ -212,7 +212,7 @@ async def delete_file(id: int, token: str = Depends(oauth2_scheme)):
         raise HTTPException(status_code=500, detail=f"Error removing file from storage: {e}")
     
     await db_delete(FileUpload, id)
-    shared_file_list = db_get_by_attribute(SharedFile, "file_id", id)
+    shared_file_list = await db_get_by_attribute(SharedFile, "file_id", id)
     for shared_file in shared_file_list:
         await db_delete(SharedFile, shared_file.id)
     

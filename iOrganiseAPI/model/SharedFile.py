@@ -9,5 +9,5 @@ class SharedFile(Base):
     file_id = Column(Integer, ForeignKey("file_uploads.id", ondelete="CASCADE"))
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
 
-    user = relationship("User", back_populates="shared_files")
     file_upload = relationship("FileUpload", back_populates="shared_files")
+    user = relationship("User", back_populates="shared_files")

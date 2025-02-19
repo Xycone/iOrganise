@@ -250,6 +250,18 @@ async def download_all(token: str = Depends(oauth2_scheme)):
 
     return Response(zip_buffer.read(), headers=headers)
 
+@app.post("/share-files")
+async def share_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
+    user_id = verify_jwt_token(token)
+    user = await db_get_by_id(User, user_id)
+    file_upload_list = [await db_get_by_id(FileUpload, id) for id in id_list]
+
+    for file_upload in (file for file in file_upload_list if os.path.exists(file.path)):
+        shared_file = SharedFile(file_upload=file_upload, user=user)
+        await db_create(shared_file)
+
+    return {"msg": "Files shared successfully"}
+
 @app.post("/smart-upload")
 async def smart_upload(files: List[UploadFile] = File(...), token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)

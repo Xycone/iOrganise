@@ -229,7 +229,7 @@ async def download_all(token: str = Depends(oauth2_scheme)):
         for file_upload in files:
             file_path = file_upload.path
             file_name = os.path.basename(file_path)
-            zip_file.write(file_path, arcname=file_name)
+            zip_file.write(file_path, arcname=f"{file_upload.subject}/{file_name}")
 
     zip_buffer.seek(0) 
 
@@ -652,8 +652,6 @@ async def predict_text(
         model_loader.del_models("BERT")
 
     return response
-
-
 
 @app.get("/get-device")
 async def get_device():

@@ -274,7 +274,7 @@ async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends
         file for file in await db_get_by_attribute(FileUpload, "user_id", user_id) 
         if file.id in form_data.fileId_list and os.path.exists(file.path)
     ]
-    user_list = [await db_get_by_id(User, userId) for userId in form_data.userId_list]
+    user_list = [await db_get_by_id(User, userId) for userId in form_data.userId_list if userId != user_id]
     
     shared_file_list = [
         SharedFile(file_upload=file_upload, user=user) 

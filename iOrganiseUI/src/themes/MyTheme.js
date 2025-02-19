@@ -195,8 +195,8 @@ export const themeSettings = (mode) => {
                     list: {
                         backgroundColor: colours.primary[400],
                         "& .MuiMenuItem-root": {
-                            paddingTop: "8px",
-                            paddingBottom: "8px"
+                            paddingTop: "12px",
+                            paddingBottom: "12px"
                         }
                     }
                 }

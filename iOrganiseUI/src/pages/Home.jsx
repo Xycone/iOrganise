@@ -53,6 +53,7 @@ function Home() {
 
     // Retrieve uploaded files
     const [fileList, setFileList] = useState([]);
+    const [sharedFileList, setSharedFileList] = useState([]);
     const [search, setSearch] = useState("");
     const [filter, setFilter] = useState("");
 
@@ -60,6 +61,7 @@ function Home() {
         http.get("/get-files")
             .then((res) => {
                 setFileList(res.data.files);
+                setSharedFileList(res.data.shared_files)
             })
             .catch((err) => {
                 console.error("Error fetching files:", err.response?.data?.detail || err.message);
@@ -80,6 +82,7 @@ function Home() {
         http.get(`/get-files?name=${search}&subject=${filter}`)
             .then((res) => {
                 setFileList(res.data.files);
+                setSharedFileList(res.data.shared_files)
             })
             .catch((err) => {
                 console.error("Error fetching files:", err.response?.data?.detail || err.message);

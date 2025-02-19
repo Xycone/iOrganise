@@ -12,3 +12,4 @@ class User(Base):
 
     file_uploads = relationship("FileUpload", back_populates="user")
     user_settings = relationship("UserSetting", back_populates="user", uselist=False)
+    shared_files = relationship("SharedFile", back_populates="user")

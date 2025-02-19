@@ -19,6 +19,7 @@ from database import create_tables, db_create, db_get, db_get_by_id, db_get_by_a
 from model.User import User
 from model.FileUpload import FileUpload
 from model.UserSetting import UserSetting
+from model.SharedFile import SharedFile
 
 import subprocess
 from typing import List, Optional
@@ -173,6 +174,7 @@ async def upload_files(files: List[UploadFile] = File(...), token: str = Depends
 async def get_files(token: str = Depends(oauth2_scheme), name: Optional[str] = Query(None), subject: Optional[str] = Query(None)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
+    shared_file_list = [await db_get_by_id(FileUpload, shared.file_id) for shared in await db_get_by_attribute(SharedFile, "user_id", user_id)]
 
     file_upload_list = filter(
         lambda file: (not name or name.lower() in file.name.lower()) and 
@@ -180,9 +182,16 @@ async def get_files(token: str = Depends(oauth2_scheme), name: Optional[str] = Q
         file_upload_list
     )
 
-    files = [file for file in file_upload_list if os.path.exists(file.path)]
+    shared_file_list = filter(
+        lambda file: (not name or name.lower() in file.name.lower()) and 
+                    (not subject or subject.lower() in str(file.subject).lower()),
+        file_upload_list
+    )
 
-    return {"files": files}
+    files = [file for file in file_upload_list if os.path.exists(file.path)]
+    shared_files = [file for file in shared_file_list if os.path.exists(file.path)]
+
+    return {"files": files, "shared_files": shared_files}
 
 @app.delete("/delete-file/{id}")
 async def delete_file(id: int, token: str = Depends(oauth2_scheme)):

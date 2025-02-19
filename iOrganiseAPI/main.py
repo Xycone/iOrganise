@@ -214,7 +214,7 @@ async def delete_file(id: int, token: str = Depends(oauth2_scheme)):
     await db_delete(FileUpload, id)
     shared_file_list = db_get_by_attribute(SharedFile, "file_id", id)
     for shared_file in shared_file_list:
-        db_delete(SharedFile, shared_file.id)
+        await db_delete(SharedFile, shared_file.id)
     
     return {"msg": "File deleted successfully"}
 

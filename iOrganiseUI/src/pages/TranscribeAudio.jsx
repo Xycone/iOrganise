@@ -594,7 +594,6 @@ function TranscribeFiles() {
                         <Box mt={5}>
                             <Box display="flex" justifyContent="end" gap={2}>
                                 <Button
-                                    size="large"
                                     variant="contained"
                                     component="label"
                                     onClick={handleConfirmAttachment}

@@ -225,6 +225,13 @@ async def download_file(id: int, token: str = Depends(oauth2_scheme)):
     file = next((file_upload for file_upload in file_upload_list if file_upload.id == id and os.path.exists(file_upload.path)), None)
 
     if file is None:
+        shared_file = await db_get_by_attribute(SharedFile, "user_id", user_id)
+        shared_file_ids = {shared.file_id for shared in shared_file}
+
+        if id in shared_file_ids:
+            file = await db_get_by_id(FileUpload, id)
+
+    if file is None:
         raise HTTPException(status_code=404, detail="Requested file not found or authorised for download")
     
     return FileResponse(file.path, filename=file.name, headers={"Content-Disposition": f"attachment; filename={os.path.basename(file.path)}"})
@@ -233,22 +240,36 @@ async def download_file(id: int, token: str = Depends(oauth2_scheme)):
 async def download_all(token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
-    files = [file_upload for file_upload in file_upload_list if os.path.exists(file_upload.path)]
+    user_files = [file_upload for file_upload in file_upload_list if os.path.exists(file_upload.path)]
 
-    if files is None:
-        raise HTTPException(status_code=404, detail="No files found or authorised for download")
+    shared_file_list = [
+        await db_get_by_id(FileUpload, shared.file_id)
+        for shared in await db_get_by_attribute(SharedFile, "user_id", user_id)
+    ]
+    shared_files = [file for file in shared_file_list if os.path.exists(file.path)]
+
+    if not user_files and not shared_files:
+        raise HTTPException(status_code=404, detail="No files found or authorized for download")
     
     # create an in-memory zip file
     zip_buffer = BytesIO()
 
     with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
-        for file_upload in files:
-            file_path = file_upload.path
+        # Add user files under "Your Files"
+        for file in user_files:
+            file_path = file.path
             file_name = os.path.basename(file_path)
-            subject_folder = file_upload.subject if file_upload.subject else "uncategorised"
-            zip_file.write(file_path, arcname=f"{subject_folder}/{file_name}")
+            subject_folder = file.subject if file.subject else "Uncategorized"
+            zip_file.write(file_path, arcname=f"Your Files/{subject_folder}/{file_name}")
 
-    zip_buffer.seek(0) 
+        # Add shared files under "Shared Files"
+        for file in shared_files:
+            file_path = file.path
+            file_name = os.path.basename(file_path)
+            subject_folder = file.subject if file.subject else "Uncategorized"
+            zip_file.write(file_path, arcname=f"Shared Files/{subject_folder}/{file_name}")
+
+    zip_buffer.seek(0)
 
     headers = {
         "Content-Disposition": "attachment; filename=files.zip",

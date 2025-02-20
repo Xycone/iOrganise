@@ -336,7 +336,7 @@ function Home() {
                                 endAdornment={
                                     search && (
                                         <CloseIcon
-                                            sx={{ mx: 1, color: theme.palette.text.disabled, cursor: "pointer" }}
+                                            sx={{ mx: 1, cursor: "pointer" }}
                                             onClick={onClickClear}
                                         />
                                     )

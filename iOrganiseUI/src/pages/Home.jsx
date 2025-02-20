@@ -569,6 +569,7 @@ function Home() {
                         <Box mt={5}>
                             <Box display="flex" justifyContent="end" gap={2}>
                                 <Button
+                                    size="large"
                                     variant="contained"
                                     type="submit"
                                     component="label"
@@ -748,11 +749,15 @@ function Home() {
 
                         <Box mt={5}>
                             <Box display="flex" justifyContent="end" gap={2}>
-                                <Button variant="contained"
-                                    onClick={handleCheckboxReset}>
+                                <Button
+                                    size="large"
+                                    variant="contained"
+                                    onClick={handleCheckboxReset}
+                                >
                                     Cancel
                                 </Button>
                                 <Button
+                                    size="large"
                                     variant="contained"
                                     onClick={handleShareFiles}
                                 >

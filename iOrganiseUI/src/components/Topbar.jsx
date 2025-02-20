@@ -31,21 +31,17 @@ function Topbar() {
             }
 
             try {
-                const response = await fetch("http://localhost:8000/get-user", {
+                http.get("/get-user", {
                     headers: { Authorization: `Bearer ${token}` },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.user) {
-                        setUser(data.user);
-                    } else {
+                })
+                    .then((res) => {
+                        setUser(res.data.user || null);
+                    })
+                    .catch((err) => {
                         setUser(null);
-                    }
-                } else {
-                    setUser(null);
-                    console.error('Failed to fetch user data');
-                }
+                        console.error("Error fetching user:", err.response?.data?.detail || err.message);
+                    });
+                
             } catch (error) {
                 console.error("Error Fetching User:", error);
             }

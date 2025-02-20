@@ -603,7 +603,7 @@ function Home() {
                             <Box display="flex" justifyContent="end" gap={2}>
                                 <Button
                                     size="large"
-                                    variant="contained"
+                                    variant="outlined"
                                     onClick={handleCancelDelete}
                                 >
                                     <Typography>
@@ -764,7 +764,7 @@ function Home() {
                             <Box display="flex" justifyContent="end" gap={2}>
                                 <Button
                                     size="large"
-                                    variant="contained"
+                                    variant="outlined"
                                     onClick={handleCheckboxReset}
                                 >
                                     <Typography>Cancel</Typography>

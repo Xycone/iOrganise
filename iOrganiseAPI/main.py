@@ -322,27 +322,17 @@ async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends
 
     return {"msg": "Files shared successfully"}
 
-@app.delete("/unshare-files")
-async def unshare_files(id_list: List[int], token: str = Depends(oauth2_scheme)):
+@app.delete("/unshare-files/{id}")
+async def unshare_files(id: int, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
-    file_upload_list = await db_get_by_attribute(FileUpload, "user_id", user_id)
-    shared_file_list = [
-        shared_file for id in id_list 
-        if (shared_file := await db_get_by_id(SharedFile, id)) is not None
-    ]
+    shared_file_list = db_get_by_attribute(SharedFile, "user_id", user_id)
+    shared_file = next((shared for shared in shared_file_list if shared.file_id == id), None)
 
-    if not file_upload_list or not shared_file_list:
-        raise HTTPException(status_code=400, detail="No files found or unauthorized to unshare")
+    if not shared_file:
+        raise HTTPException(status_code=400, detail="File not found or unauthorized to unshare")
 
-    file_upload_ids = [file_upload.id for file_upload in file_upload_list]
-    shared_files_to_delete = [
-        shared_file for shared_file in shared_file_list 
-        if shared_file.file_id in file_upload_ids
-    ]
-
-    for shared_file in shared_files_to_delete:
-        await db_delete(SharedFile, shared_file.id)
-
+    await db_delete(SharedFile, shared_file.id)
+    
     return {"msg": "Files unshared successfully"}
 
 @app.post("/smart-upload")

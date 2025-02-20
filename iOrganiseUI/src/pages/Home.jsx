@@ -134,6 +134,10 @@ function Home() {
         event.target.value = "";
     };
 
+    const handleFileReset = () => {
+        setSelectedFiles([]);
+    };
+
     const handleDrop = (event) => {
         event.preventDefault();
 
@@ -716,6 +720,16 @@ function Home() {
                             <Box display="flex" justifyContent="end" gap={2}>
                                 <Button
                                     size="large"
+                                    variant="outlined"
+                                    onClick={handleFileReset}
+                                >
+                                    <Typography>
+                                        Cancel
+                                    </Typography>
+                                </Button>
+
+                                <Button
+                                    size="large"
                                     variant="contained"
                                     type="submit"
                                     component="label"
@@ -999,7 +1013,7 @@ function Home() {
                                             variant="outlined"
                                             onClick={handleUsersReset}
                                         >
-                                            <Typography>Reset</Typography>
+                                            <Typography>Cancel</Typography>
                                         </Button>
                                         <Button
                                             size="large"
@@ -1019,7 +1033,7 @@ function Home() {
                                             variant="outlined"
                                             onClick={handleCheckboxReset}
                                         >
-                                            <Typography>Reset</Typography>
+                                            <Typography>Cancel</Typography>
                                         </Button>
                                         <Button
                                             size="large"

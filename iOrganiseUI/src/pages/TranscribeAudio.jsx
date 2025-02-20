@@ -84,7 +84,11 @@ function TranscribeFiles() {
         //     toast.error(`Files exceeding the 25MB size limit: ${exceededFiles.join(', ')}`);
         // }
 
-        event.target.value = '';
+        event.target.value = "";
+    };
+
+    const handleFileReset = () => {
+        setSelectedFiles([]);
     };
 
     const handleDrop = (event) => {
@@ -188,9 +192,9 @@ function TranscribeFiles() {
         if (response) {
             const blob = new Blob([JSON.stringify(response, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
+            const a = document.createElement("a");
             a.href = url;
-            a.download = 'response.json';
+            a.download = "response.json";
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -596,6 +600,16 @@ function TranscribeFiles() {
                         {/* Upload Files Button */}
                         <Box mt={5}>
                             <Box display="flex" justifyContent="end" gap={2}>
+                                <Button
+                                    size="large"
+                                    variant="outlined"
+                                    onClick={handleFileReset}
+                                >
+                                    <Typography>
+                                        Cancel
+                                    </Typography>
+                                </Button>
+
                                 <Button
                                     size="large"
                                     variant="contained"

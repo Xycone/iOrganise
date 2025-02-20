@@ -588,7 +588,7 @@ function Home() {
                 open={deleteConfirmationOpen}
                 onClose={handleCancelDelete}
                 fullWidth
-                maxWidth="sm"
+                maxWidth="md"
             >
                 <DialogContent>
                     <Box p={1}>
@@ -599,14 +599,27 @@ function Home() {
                             </DialogContentText>
                         </Box>
 
-                        <Box display="flex" justifyContent="end" gap={2}>
-                            <Button variant="contained"
-                                onClick={handleCancelDelete}>
-                                Cancel
-                            </Button>
-                            <Button variant="contained" sx={{ backgroundColor: theme.palette.error.main, color: "white" }} onClick={handleConfirmDelete}>
-                                Delete
-                            </Button>
+                        <Box mt={5}>
+                            <Box display="flex" justifyContent="end" gap={2}>
+                                <Button
+                                    size="large"
+                                    variant="contained"
+                                    onClick={handleCancelDelete}
+                                >
+                                    <Typography>
+                                        Cancel
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    size="large"
+                                    variant="contained"
+                                    onClick={handleConfirmDelete}
+                                >
+                                    <Typography>
+                                        Remove
+                                    </Typography>
+                                </Button>
+                            </Box>
                         </Box>
                     </Box>
                 </DialogContent>
@@ -754,7 +767,7 @@ function Home() {
                                     variant="contained"
                                     onClick={handleCheckboxReset}
                                 >
-                                    Cancel
+                                    <Typography>Cancel</Typography>
                                 </Button>
                                 <Button
                                     size="large"

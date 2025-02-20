@@ -418,7 +418,9 @@ function TranscribeFiles() {
                                 onClick={formik.handleSubmit}
                                 disabled={!selectedFiles.length}
                             >
-                                Submit
+                                <Typography>
+                                    Submit
+                                </Typography>
                             </Button>
                         </Box>
                     </Box>

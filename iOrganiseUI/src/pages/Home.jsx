@@ -402,7 +402,7 @@ function Home() {
                                 <ListItem>
                                     <ListItemText
                                         primary={
-                                            <Typography>No matching files found</Typography>
+                                            <Typography color={theme.palette.text.disabled}>No matching files found</Typography>
                                         }
                                     />
                                 </ListItem>
@@ -457,7 +457,7 @@ function Home() {
                                 <ListItem>
                                     <ListItemText
                                         primary={
-                                            <Typography>No matching files found</Typography>
+                                            <Typography color={theme.palette.text.disabled}>No matching files found</Typography>
                                         }
                                     />
                                 </ListItem>

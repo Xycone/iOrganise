@@ -510,7 +510,7 @@ function Home() {
                             >
                                 <Box textAlign="center">
                                     <Typography mb={2}>
-                                        Choose a file or drag & drop it here
+                                        Click to choose a file or drag & drop it here
                                     </Typography>
                                     <DialogContentText mb={2}>
                                         mp3, mp4, mpeg, mpga, m4a, wav, webm, pdf, docx, txt and png formats

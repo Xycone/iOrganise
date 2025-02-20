@@ -4,6 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Box, IconButton, useTheme, Menu, MenuItem, Button, Typography, ListItemIcon, ListItemText } from "@mui/material";
 import { ColourModeContext, tokens } from "../themes/MyTheme";
 
+// Used for backend API call
+import http from '../http';
+
 // MUI Icons
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
@@ -24,29 +27,29 @@ function Topbar() {
     useEffect(() => {
         const fetchUser = async () => {
             const token = localStorage.getItem("accessToken");
-
+    
             if (!token) {
                 setUser(null);
                 return;
             }
-
+    
             try {
-                http.get("/get-user", {
+                // Fetch user data using Axios
+                const response = await http.get("/get-user", {
                     headers: { Authorization: `Bearer ${token}` },
-                })
-                    .then((res) => {
-                        setUser(res.data.user || null);
-                    })
-                    .catch((err) => {
-                        setUser(null);
-                        console.error("Error fetching user:", err.response?.data?.detail || err.message);
-                    });
-                
+                });
+    
+                if (response.data.user) {
+                    setUser(response.data.user);
+                } else {
+                    setUser(null);
+                }
             } catch (error) {
-                console.error("Error Fetching User:", error);
+                console.error("Error Fetching User:", error.response?.data?.detail || error.message);
+                setUser(null);
             }
         };
-
+    
         fetchUser();
     }, [localStorage.getItem("accessToken")]);
 

@@ -369,10 +369,8 @@ function Home() {
         console.log("shareContent:", shareContent, "\nshareUsers:", shareUsers);
 
         http.post("/share-files", {
-            params: {
-                fileId_list: shareContent,
-                userEmail_list: shareUsers
-            }
+            fileId_list: shareContent,
+            userEmail_list: shareUsers
         })
             .then(response => {
                 console.log(response.data.msg);

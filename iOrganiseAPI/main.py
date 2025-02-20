@@ -267,11 +267,18 @@ async def view_shared(token: str = Depends(oauth2_scheme)):
 @app.post("/share-files")
 async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
+    user = await db_get_by_id(User, user_id)
+
     file_upload_list = [
         file for file in await db_get_by_attribute(FileUpload, "user_id", user_id) 
         if file.id in form_data.fileId_list and os.path.exists(file.path)
     ]
-    user_list = [await db_get_by_id(User, userId) for userId in form_data.userId_list if userId != user_id]
+    user_list = [
+        db_user
+        for userEmail in form_data.userEmail_list
+        if userEmail != user.email
+        for db_user in await db_get_by_attribute(User, "email", userEmail)
+    ]
 
     if not file_upload_list or not user_list:
         raise HTTPException(status_code=400, detail="No files or users found or unauthorized to share")

@@ -398,7 +398,15 @@ function Home() {
                             My Files:
                         </Typography>
                         {fileList.length === 0 ? (
-                            <Typography>No matching files found</Typography>
+                            <List>
+                                <ListItem>
+                                    <ListItemText
+                                        primary={
+                                            <Typography>No matching files found</Typography>
+                                        }
+                                    />
+                                </ListItem>
+                            </List>
                         ) : (
                             <List>
                                 {fileList.map((file, index) => (
@@ -445,7 +453,15 @@ function Home() {
                             Shared With You:
                         </Typography>
                         {sharedFileList.length === 0 ? (
-                            <Typography>No matching files found</Typography>
+                            <List>
+                                <ListItem>
+                                    <ListItemText
+                                        primary={
+                                            <Typography>No matching files found</Typography>
+                                        }
+                                    />
+                                </ListItem>
+                            </List>
                         ) : (
                             <List>
                                 {sharedFileList.map((file, index) => (

@@ -551,8 +551,9 @@ function TranscribeFiles() {
                         {/* Uploaded File Viewer */}
                         <Box mt={5}> {/* This Box wraps the whole list of files */}
                             {selectedFiles.map((file, index) => (
-                                <Box key={index} my={2}>
+                                <Box key={index}>
                                     <Box
+                                        my={1}
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="space-between"

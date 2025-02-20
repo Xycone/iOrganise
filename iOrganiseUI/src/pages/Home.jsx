@@ -6,6 +6,7 @@ import {
     Divider,
     Button,
     Select,
+    Checkbox,
     MenuItem,
     InputBase,
     List,
@@ -277,7 +278,7 @@ function Home() {
     };
 
     // Share File
-    const [shareContent, setShareContent] = useState();
+    const [shareContent, setShareContent] = useState([]);
     const [shareDialogOpen, setShareDialogOpen] = useState(false);
 
     const handleShareDialogOpen = () => {
@@ -286,9 +287,26 @@ function Home() {
 
     const handleShareDialogClose = () => {
         setShareDialogOpen(false);
-        setShareContent();
+        setShareContent([]);
     };
 
+    const handleCheckboxChange = (fileId) => {
+        setShareContent((prevShareContent) => {
+            if (prevShareContent.includes(fileId)) {
+                return prevShareContent.filter(id => id !== fileId);
+            } else {
+                return [...prevShareContent, fileId];
+            }
+        });
+    };
+
+    const handleCheckboxReset = () => {
+        setShareContent([]);
+    };
+
+    const handleShareFiles = () => {
+        console.log(shareContent);
+    };
 
     return (
         <Box px={5} pb={20}>
@@ -509,8 +527,9 @@ function Home() {
                         {/* Uploaded File Viewer */}
                         <Box mt={5}> {/* This Box wraps the whole list of files */}
                             {selectedFiles.map((file, index) => (
-                                <Box key={index} my={2}>
+                                <Box key={index}>
                                     <Box
+                                        my={1}
                                         display="flex"
                                         alignItems="center"
                                         justifyContent="space-between"
@@ -568,7 +587,7 @@ function Home() {
                 <DialogContent>
                     <Box p={1}>
                         <Box mb={2}>
-                            <Typography>Delete Files Permanently</Typography>
+                            <Typography variant="h5">Delete Files Permanently</Typography>
                             <DialogContentText>
                                 Are you sure you want to delete this file? This action cannot be undone.
                             </DialogContentText>
@@ -596,9 +615,27 @@ function Home() {
             >
                 <DialogContent>
                     <Box p={1}>
-                        <Box mb={2}>
+                        <Box
+                            mb={2}
+                            display="flex"
+                            alignItems="start"
+                            justifyContent="space-between"
+                        >
+                            <Box>
+                                <Typography variant="h5">View Extract</Typography>
+                                <DialogContentText>
+                                    File Content and Summary.
+                                </DialogContentText>
+                            </Box>
+
+                            <IconButton onClick={handleExtractDialogClose}>
+                                <CloseIcon />
+                            </IconButton>
+                        </Box>
+
+                        <Box mt={5}>
                             {extractContent ? (
-                                <Box>
+                                <>
                                     <Typography>
                                         Subject:
                                     </Typography>
@@ -617,16 +654,10 @@ function Home() {
                                     <DialogContentText>
                                         {extractContent.summary ? extractContent.summary : "No summary available"}
                                     </DialogContentText>
-                                </Box>
+                                </>
                             ) : (
                                 <DialogContentText>Loading extract...</DialogContentText>
                             )}
-                        </Box>
-
-                        <Box display="flex" justifyContent="end">
-                            <Button variant="contained" color="inherit" onClick={handleExtractDialogClose}>
-                                Close
-                            </Button>
                         </Box>
                     </Box>
                 </DialogContent>
@@ -641,21 +672,39 @@ function Home() {
             >
                 <DialogContent>
                     <Box p={1}>
-                        <Box mb={2}>
-                            <Typography>Share Files</Typography>
-                            <DialogContentText>
-                                Choose a file to share.
-                            </DialogContentText>
+                        <Box
+                            mb={2}
+                            display="flex"
+                            alignItems="start"
+                            justifyContent="space-between"
+                        >
+                            <Box>
+                                <Typography variant="h5">Share Files</Typography>
+                                <DialogContentText>
+                                    Choose your files to share.
+                                </DialogContentText>
+                            </Box>
+
+                            <IconButton onClick={handleShareDialogClose}>
+                                <CloseIcon />
+                            </IconButton>
                         </Box>
 
                         <Box mt={5}>
                             {fileList.map((file, index) => (
-                                <Box key={index} my={2}>
+                                <Box key={index}>
                                     <Box
+                                        my={1}
                                         display="flex"
                                         alignItems="center"
-                                        justifyContent="space-between"
+                                        gap={2}
                                     >
+                                        <Box>
+                                            <Checkbox
+                                                checked={shareContent.includes(file.id)}
+                                                onChange={() => handleCheckboxChange(file.id)}
+                                            />
+                                        </Box>
                                         <Box>
                                             <Typography
                                                 maxWidth="300px"
@@ -682,6 +731,21 @@ function Home() {
                                     <Divider />
                                 </Box>
                             ))}
+                        </Box>
+
+                        <Box mt={5}>
+                            <Box display="flex" justifyContent="end" gap={2}>
+                                <Button variant="contained" color="inherit"
+                                    onClick={handleCheckboxReset}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleShareFiles}
+                                >
+                                    <Typography>Select</Typography>
+                                </Button>
+                            </Box>
                         </Box>
                     </Box>
                 </DialogContent>

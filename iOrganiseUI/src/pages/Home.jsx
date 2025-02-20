@@ -1000,14 +1000,14 @@ function Home() {
                                             variant="outlined"
                                             onClick={handleUsersReset}
                                         >
-                                            <Typography>Cancel</Typography>
+                                            <Typography>Reset</Typography>
                                         </Button>
                                         <Button
                                             size="large"
                                             variant="contained"
                                             onClick={shareFiles}
                                         >
-                                            <Typography>Select</Typography>
+                                            <Typography>Share</Typography>
                                         </Button>
                                     </Box>
                                 </>
@@ -1020,7 +1020,7 @@ function Home() {
                                             variant="outlined"
                                             onClick={handleCheckboxReset}
                                         >
-                                            <Typography>Cancel</Typography>
+                                            <Typography>Reset</Typography>
                                         </Button>
                                         <Button
                                             size="large"

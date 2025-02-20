@@ -473,7 +473,7 @@ function Home() {
 
                     <Box mb={10}>
                         <Typography mb={1}>
-                            My Files:
+                            Your Files:
                         </Typography>
                         {fileList.length === 0 ? (
                             <List>

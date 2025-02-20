@@ -258,23 +258,24 @@ function Home() {
     const [extractContent, setExtractContent] = useState();
     const [extractDialogOpen, setExtractDialogOpen] = useState(false);
 
-    const handleCloseExtractDialog = () => {
+    const handleExtractDialogClose = () => {
         setExtractDialogOpen(false);
         setExtractContent();
     };
 
-    const viewExtract = async (fileId) => {
-        setExtractDialogOpen(true);
-        http.post(`/view-extract/${fileId}`)
-            .then(response => {
-                console.log(response);
-                setExtractContent(response.data);
-            })
-            .catch((err) => {
-                const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
-                toast.error(errorMessage);
-            });
+    // Share File
+    const [shareContent, setShareContent] = useState();
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
+
+    const handleShareDialogOpen = () => {
+        setShareDialogOpen(true);
     };
+
+    const handleShareDialogClose = () => {
+        setShareDialogOpen(false);
+        setShareContent();
+    };
+
 
     return (
         <Box px={5} pb={20}>
@@ -357,7 +358,7 @@ function Home() {
                         <UtilBox
                             title="Share items"
                             icon={<IosShareOutlinedIcon />}
-                            onClick={() => console.log("Sharing Items")}
+                            onClick={handleShareDialogOpen}
                         />
                     </Box>
 
@@ -519,7 +520,7 @@ function Home() {
                                             </DialogContentText>
                                         </Box>
 
-                                        <IconButton onClick={() => handleDeleteFile(index)}>
+                                        <IconButton onClick={() => handleRemoveFile(index)}>
                                             <DeleteOutlinedIcon />
                                         </IconButton>
                                     </Box>
@@ -538,51 +539,6 @@ function Home() {
                                 onClick={handleFileUpload}
                             >
                                 <Typography>Upload Files</Typography>
-                            </Button>
-                        </Box>
-                    </Box>
-                </DialogContent>
-            </Dialog>
-
-            {/* Extract View Dialog */}
-            <Dialog
-                open={extractDialogOpen}
-                onClose={handleCloseExtractDialog}
-                fullWidth
-                maxWidth="md"
-            >
-                <DialogContent>
-                    <Box p={1}>
-                        <Box mb={2}>
-                            {extractContent ? (
-                                <Box>
-                                    <Typography>
-                                        Subject:
-                                    </Typography>
-                                    <DialogContentText mb={4}>
-                                        {extractContent.subject ? extractContent.subject : "No subject classified"}
-                                    </DialogContentText>
-                                    <Typography>
-                                        Content:
-                                    </Typography>
-                                    <DialogContentText mb={4}>
-                                        {extractContent.content ? extractContent.content : "No content available"}
-                                    </DialogContentText>
-                                    <Typography>
-                                        Summary:
-                                    </Typography>
-                                    <DialogContentText>
-                                        {extractContent.summary ? extractContent.summary : "No summary available"}
-                                    </DialogContentText>
-                                </Box>
-                            ) : (
-                                <DialogContentText>Loading extract...</DialogContentText>
-                            )}
-                        </Box>
-
-                        <Box display="flex" justifyContent="end">
-                            <Button variant="contained" color="inherit" onClick={handleCloseExtractDialog}>
-                                Close
                             </Button>
                         </Box>
                     </Box>
@@ -618,6 +574,105 @@ function Home() {
                 </DialogContent>
             </Dialog>
 
+            {/* Extract View Dialog */}
+            <Dialog
+                open={extractDialogOpen}
+                onClose={handleExtractDialogClose}
+                fullWidth
+                maxWidth="md"
+            >
+                <DialogContent>
+                    <Box p={1}>
+                        <Box mb={2}>
+                            {extractContent ? (
+                                <Box>
+                                    <Typography>
+                                        Subject:
+                                    </Typography>
+                                    <DialogContentText mb={4}>
+                                        {extractContent.subject ? extractContent.subject : "No subject classified"}
+                                    </DialogContentText>
+                                    <Typography>
+                                        Content:
+                                    </Typography>
+                                    <DialogContentText mb={4}>
+                                        {extractContent.content ? extractContent.content : "No content available"}
+                                    </DialogContentText>
+                                    <Typography>
+                                        Summary:
+                                    </Typography>
+                                    <DialogContentText>
+                                        {extractContent.summary ? extractContent.summary : "No summary available"}
+                                    </DialogContentText>
+                                </Box>
+                            ) : (
+                                <DialogContentText>Loading extract...</DialogContentText>
+                            )}
+                        </Box>
+
+                        <Box display="flex" justifyContent="end">
+                            <Button variant="contained" color="inherit" onClick={handleExtractDialogClose}>
+                                Close
+                            </Button>
+                        </Box>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+
+            {/* Share File Dialog */}
+            <Dialog
+                open={shareDialogOpen}
+                onClose={handleShareDialogClose}
+                fullWidth
+                maxWidth="md"
+            >
+                <DialogContent>
+                    <Box p={1}>
+                        <Box mb={2}>
+                            <Typography>Share Files</Typography>
+                            <DialogContentText>
+                                Choose a file to share.
+                            </DialogContentText>
+                        </Box>
+
+                        <Box mt={5}>
+                            {fileList.map((file, index) => (
+                                <Box key={index} my={2}>
+                                    <Box
+                                        display="flex"
+                                        alignItems="center"
+                                        justifyContent="space-between"
+                                    >
+                                        <Box>
+                                            <Typography
+                                                maxWidth="300px"
+                                                overflow="hidden"
+                                                textOverflow="ellipsis"
+                                                whiteSpace="nowrap"
+                                            >
+                                                {file.name}
+                                            </Typography>
+
+                                            <DialogContentText>
+                                                FileType: {file.type} Size:{" "}
+                                                {file.size < 1024
+                                                    ? `${file.size} Bytes`
+                                                    : file.size < 1024 * 1024
+                                                        ? `${(file.size / 1024).toFixed(1)} KB`
+                                                        : file.size < 1024 * 1024 * 1024
+                                                            ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                                                            : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
+                                            </DialogContentText>
+                                        </Box>
+                                    </Box>
+
+                                    <Divider />
+                                </Box>
+                            ))}
+                        </Box>
+                    </Box>
+                </DialogContent>
+            </Dialog>
 
             <ToastContainer
                 position="bottom-right"

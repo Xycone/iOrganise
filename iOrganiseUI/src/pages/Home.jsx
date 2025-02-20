@@ -233,13 +233,20 @@ function Home() {
             });
     };
 
-    // File Delete
+    // File Delete/Unshare
     const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
     const [fileToDelete, setFileToDelete] = useState();
+    const [unshareConfirmationOpen, setUnshareConfirmationOpen] = useState(false);
+    const [fileToUnshare, setFileToUnshare] = useState();
 
     const handleDeleteClick = (fileId) => {
         setFileToDelete(fileId);
         setDeleteConfirmationOpen(true);
+    };
+
+    const handleUnshareClick = (fileId) => {
+        setFileToUnshare(fileId);
+        setUnshareConfirmationOpen(true);
     };
 
     const handleConfirmDelete = async () => {
@@ -259,9 +266,31 @@ function Home() {
         }
     };
 
+    const handleConfirmUnshare = async () => {
+        if (fileToUnshare) {
+            http.delete(`/unshare-file/${fileToUnshare}`)
+                .then(response => {
+                    console.log(response.data.msg);
+                    toast.success(response.data.msg);
+                    setUnshareConfirmationOpen(false);
+                    setFileToUnshare();
+                    getFiles();
+                })
+                .catch((err) => {
+                    const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
+                    toast.error(errorMessage);
+                });
+        }
+    };
+
     const handleCancelDelete = () => {
         setDeleteConfirmationOpen(false);
         setFileToDelete();
+    };
+
+    const handleCancelUnshare = () => {
+        setUnshareConfirmationOpen(false);
+        setFileToUnshare();
     };
 
     // View Extract
@@ -575,7 +604,7 @@ function Home() {
                                             <IconButton onClick={() => downloadFile(file.id, file.name)}>
                                                 <FileDownloadOutlinedIcon />
                                             </IconButton>
-                                            <IconButton onClick={() => handleDeleteClick(file.id)}>
+                                            <IconButton onClick={() => handleUnshareClick(file.id)}>
                                                 <DeleteForeverOutlinedIcon />
                                             </IconButton>
                                         </Box>
@@ -777,6 +806,48 @@ function Home() {
                                 >
                                     <Typography>
                                         Remove
+                                    </Typography>
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+
+             {/* Unshare Confirmation Dialog */}
+             <Dialog
+                open={unshareConfirmationOpen}
+                onClose={handleCancelUnshare}
+                fullWidth
+                maxWidth="md"
+            >
+                <DialogContent>
+                    <Box p={1}>
+                        <Box mb={2}>
+                            <Typography variant="h5">Unshare Files</Typography>
+                            <DialogContentText>
+                                Are you sure you want to unshare this file? This action cannot be undone.
+                            </DialogContentText>
+                        </Box>
+
+                        <Box mt={5}>
+                            <Box display="flex" justifyContent="end" gap={2}>
+                                <Button
+                                    size="large"
+                                    variant="outlined"
+                                    onClick={handleCancelUnshare}
+                                >
+                                    <Typography>
+                                        Cancel
+                                    </Typography>
+                                </Button>
+                                <Button
+                                    size="large"
+                                    variant="contained"
+                                    onClick={handleConfirmUnshare}
+                                >
+                                    <Typography>
+                                        Unshare
                                     </Typography>
                                 </Button>
                             </Box>

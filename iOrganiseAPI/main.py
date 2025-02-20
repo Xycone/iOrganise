@@ -322,8 +322,8 @@ async def share_files(form_data: ShareFilesDTO = Depends(), token: str = Depends
 
     return {"msg": "Files shared successfully"}
 
-@app.delete("/unshare-files/{id}")
-async def unshare_files(id: int, token: str = Depends(oauth2_scheme)):
+@app.delete("/unshare-file/{id}")
+async def unshare_file(id: int, token: str = Depends(oauth2_scheme)):
     user_id = verify_jwt_token(token)
     shared_file_list = await db_get_by_attribute(SharedFile, "user_id", user_id)
     shared_file = next((shared for shared in shared_file_list if shared.file_id == id), None)

@@ -5,6 +5,7 @@ import {
     Typography,
     Divider,
     Button,
+    TextField,
     Select,
     Checkbox,
     MenuItem,
@@ -23,6 +24,10 @@ import { tokens } from '../themes/MyTheme';
 
 // Used for backend API call
 import http from '../http';
+
+// Form & Form Validation
+import * as yup from 'yup';
+import { useFormik } from 'formik';
 
 // MUI Icons
 import SearchIcon from '@mui/icons-material/Search';
@@ -102,7 +107,7 @@ function Home() {
     // File Upload
     const [dialogOpen, setDialogOpen] = useState(false);
     const [selectedFiles, setSelectedFiles] = useState([]);
-    const [isSmart, setIsSmart] = useState();
+    const [isSmart, setIsSmart] = useState(false);
 
     const handleDialogOpen = () => {
         setIsSmart(false);
@@ -278,8 +283,10 @@ function Home() {
     };
 
     // Share File
-    const [shareContent, setShareContent] = useState([]);
     const [shareDialogOpen, setShareDialogOpen] = useState(false);
+    const [shareContent, setShareContent] = useState([]);
+    const [shareUsers, setShareUsers] = useState([]);
+    const [isSelectUsers, setIsSelectUsers] = useState(false);
 
     const handleShareDialogOpen = () => {
         setShareDialogOpen(true);
@@ -288,6 +295,8 @@ function Home() {
     const handleShareDialogClose = () => {
         setShareDialogOpen(false);
         setShareContent([]);
+        setShareUsers([]);
+        formik.resetForm();
     };
 
     const handleCheckboxChange = (fileId) => {
@@ -304,8 +313,79 @@ function Home() {
         setShareContent([]);
     };
 
-    const handleShareFiles = () => {
-        console.log(shareContent);
+    const handleSelectUsers = () => {
+        setIsSelectUsers(true);
+    };
+
+
+    const handleUsersReset = () => {
+        formik.resetForm();
+        setShareUsers([]);
+    };
+
+    const formik = useFormik({
+        // Default Form Values
+        initialValues: {
+            email: ""
+        },
+
+        // Validation Schema
+        validationSchema: yup.object({
+            email: yup.string().trim()
+                .email("Enter a valid email")
+                .min(1, "Email must be at least 1 character")
+                .max(255, "Email must be at most 255 characters")
+                .required("Email is required")
+        }),
+
+        onSubmit: (data) => {
+            data.email = data.email.trim().toLowerCase();
+
+            setShareUsers((prevShareUsers) => {
+                if (prevShareUsers.includes(data.email)) {
+                    return [...prevShareUsers];
+                } else {
+                    return [...prevShareUsers, data.email];
+                }
+            });
+
+            formik.resetForm();
+        }
+    });
+
+    const handleRemoveUsers = (email) => {
+        setShareUsers((prevShareUsers) => {
+            if (prevShareUsers.includes(email)) {
+                return prevShareUsers.filter(prev_email => prev_email !== email);
+            } else {
+                return [...prevShareUsers];
+            }
+        });
+    };
+
+    const shareFiles = async () => {
+        setShareDialogOpen(false);
+
+        console.log("shareContent:", shareContent, "\nshareUsers:", shareUsers);
+
+        http.post("/share-files", {
+            params: {
+                fileId_list: shareContent,
+                userEmail_list: shareUsers
+            }
+        })
+            .then(response => {
+                console.log(response.data.msg);
+                toast.success(response.data.msg);
+                getFiles();
+            })
+            .catch((err) => {
+                const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
+                toast.error(errorMessage);
+            });
+
+        setShareContent([]);
+        setShareUsers([]);
     };
 
     return (
@@ -761,6 +841,9 @@ function Home() {
             <Dialog
                 open={shareDialogOpen}
                 onClose={handleShareDialogClose}
+                TransitionProps={{
+                    onExited: () => setIsSelectUsers(false),
+                }}
                 fullWidth
                 maxWidth="md"
             >
@@ -773,10 +856,22 @@ function Home() {
                             justifyContent="space-between"
                         >
                             <Box>
-                                <Typography variant="h5">Share Files</Typography>
-                                <DialogContentText>
-                                    Choose your files to share.
-                                </DialogContentText>
+                                {isSelectUsers === true && (
+                                    <>
+                                        <Typography variant="h5">Select Users</Typography>
+                                        <DialogContentText>
+                                            Share the previously selected files with the following users.
+                                        </DialogContentText>
+                                    </>
+                                )}
+                                {isSelectUsers === false && (
+                                    <>
+                                        <Typography variant="h5">Share Files</Typography>
+                                        <DialogContentText>
+                                            Choose your files to share.
+                                        </DialogContentText>
+                                    </>
+                                )}
                             </Box>
 
                             <IconButton onClick={handleShareDialogClose}>
@@ -785,65 +880,158 @@ function Home() {
                         </Box>
 
                         <Box mt={5}>
-                            {fileList.map((file, index) => (
-                                <Box key={index}>
-                                    <Box
-                                        my={1}
-                                        display="flex"
-                                        alignItems="center"
-                                        gap={2}
-                                    >
-                                        <Box>
-                                            <Checkbox
-                                                checked={shareContent.includes(file.id)}
-                                                onChange={() => handleCheckboxChange(file.id)}
-                                            />
-                                        </Box>
-                                        <Box>
-                                            <Typography
-                                                maxWidth="300px"
-                                                overflow="hidden"
-                                                textOverflow="ellipsis"
-                                                whiteSpace="nowrap"
-                                            >
-                                                {file.name}
+                            {isSelectUsers === true && (
+                                <>
+                                    <Box component="form" display="flex" alignItems="flex-start" gap={2}>
+                                        <TextField
+                                            size="small"
+                                            label="Email"
+                                            name="email"
+                                            value={formik.values.email}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            error={formik.touched.email && Boolean(formik.errors.email)}
+                                            helperText={formik.touched.email && formik.errors.email}
+                                        >
+
+                                        </TextField>
+
+                                        <Button
+                                            type="submit"
+                                            component="label"
+                                            size="large"
+                                            variant="contained"
+                                            onClick={formik.handleSubmit}
+                                        >
+                                            <Typography>
+                                                Add
                                             </Typography>
-
-                                            <DialogContentText>
-                                                FileType: {file.type} Size:{" "}
-                                                {file.size < 1024
-                                                    ? `${file.size} Bytes`
-                                                    : file.size < 1024 * 1024
-                                                        ? `${(file.size / 1024).toFixed(1)} KB`
-                                                        : file.size < 1024 * 1024 * 1024
-                                                            ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
-                                                            : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
-                                            </DialogContentText>
-                                        </Box>
+                                        </Button>
                                     </Box>
-
-                                    <Divider />
-                                </Box>
-                            ))}
+                                </>
+                            )}
                         </Box>
 
                         <Box mt={5}>
-                            <Box display="flex" justifyContent="end" gap={2}>
-                                <Button
-                                    size="large"
-                                    variant="outlined"
-                                    onClick={handleCheckboxReset}
-                                >
-                                    <Typography>Cancel</Typography>
-                                </Button>
-                                <Button
-                                    size="large"
-                                    variant="contained"
-                                    onClick={handleShareFiles}
-                                >
-                                    <Typography>Select</Typography>
-                                </Button>
-                            </Box>
+                            {isSelectUsers === true && (
+                                <>
+                                    {shareUsers.map((email, index) => (
+                                        <Box key={index}>
+                                            <Box
+                                                my={1}
+                                                display="flex"
+                                                alignItems="center"
+                                                justifyContent="space-between"
+                                                gap={2}
+                                            >
+                                                <Box>
+                                                    <Typography
+                                                        maxWidth="300px"
+                                                        overflow="hidden"
+                                                        textOverflow="ellipsis"
+                                                        whiteSpace="nowrap"
+                                                    >
+                                                        {email}
+                                                    </Typography>
+                                                </Box>
+
+                                                <IconButton onClick={() => handleRemoveUsers(email)}>
+                                                    <DeleteOutlinedIcon />
+                                                </IconButton>
+                                            </Box>
+
+                                            <Divider />
+                                        </Box>
+                                    ))}
+                                </>
+                            )}
+                            {isSelectUsers === false && (
+                                <>
+                                    {fileList.map((file, index) => (
+                                        <Box key={index}>
+                                            <Box
+                                                my={1}
+                                                display="flex"
+                                                alignItems="center"
+                                                gap={2}
+                                            >
+                                                <Box>
+                                                    <Checkbox
+                                                        checked={shareContent.includes(file.id)}
+                                                        onChange={() => handleCheckboxChange(file.id)}
+                                                    />
+                                                </Box>
+                                                <Box>
+                                                    <Typography
+                                                        maxWidth="300px"
+                                                        overflow="hidden"
+                                                        textOverflow="ellipsis"
+                                                        whiteSpace="nowrap"
+                                                    >
+                                                        {file.name}
+                                                    </Typography>
+
+                                                    <DialogContentText>
+                                                        FileType: {file.type} Size:{" "}
+                                                        {file.size < 1024
+                                                            ? `${file.size} Bytes`
+                                                            : file.size < 1024 * 1024
+                                                                ? `${(file.size / 1024).toFixed(1)} KB`
+                                                                : file.size < 1024 * 1024 * 1024
+                                                                    ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                                                                    : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
+                                                    </DialogContentText>
+                                                </Box>
+                                            </Box>
+
+                                            <Divider />
+                                        </Box>
+                                    ))}
+                                </>
+                            )}
+                        </Box>
+
+                        <Box mt={5}>
+                            {isSelectUsers === true && (
+                                <>
+                                    <Box display="flex" justifyContent="end" gap={2}>
+                                        <Button
+                                            size="large"
+                                            variant="outlined"
+                                            onClick={handleUsersReset}
+                                        >
+                                            <Typography>Cancel</Typography>
+                                        </Button>
+                                        <Button
+                                            size="large"
+                                            variant="contained"
+                                            onClick={shareFiles}
+                                        >
+                                            <Typography>Select</Typography>
+                                        </Button>
+                                    </Box>
+                                </>
+                            )}
+                            {isSelectUsers === false && (
+                                <>
+                                    <Box display="flex" justifyContent="end" gap={2}>
+                                        <Button
+                                            size="large"
+                                            variant="outlined"
+                                            onClick={handleCheckboxReset}
+                                        >
+                                            <Typography>Cancel</Typography>
+                                        </Button>
+                                        <Button
+                                            size="large"
+                                            variant="contained"
+                                            onClick={handleSelectUsers}
+                                        >
+                                            <Typography>Select</Typography>
+                                        </Button>
+                                    </Box>
+                                </>
+                            )}
                         </Box>
                     </Box>
                 </DialogContent>

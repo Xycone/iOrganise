@@ -393,48 +393,99 @@ function Home() {
                         />
                     </Box>
 
+                    <Box mb={10}>
+                        <Typography mb={1}>
+                            My Files:
+                        </Typography>
+                        {fileList.length === 0 ? (
+                            <Typography>No matching files found</Typography>
+                        ) : (
+                            <List>
+                                {fileList.map((file, index) => (
+                                    <ListItem key={index} divider>
+                                        <ListItemText
+                                            primary={
+                                                <Typography>
+                                                    {file.name}
+                                                </Typography>
+                                            }
+                                            secondary={
+                                                <Typography color={theme.palette.text.disabled}>
+                                                    FileType: {file.type} Size:{" "}
+                                                    {file.size < 1024
+                                                        ? `${file.size} Bytes`
+                                                        : file.size < 1024 * 1024
+                                                            ? `${(file.size / 1024).toFixed(1)} KB`
+                                                            : file.size < 1024 * 1024 * 1024
+                                                                ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                                                                : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
+                                                </Typography>
+                                            }
+                                        />
+                                        {/* Buttons*/}
+                                        <Box>
+                                            <IconButton onClick={() => viewExtract(file.id)}>
+                                                <SummarizeOutlinedIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => downloadFile(file.id, file.name)}>
+                                                <FileDownloadOutlinedIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => handleDeleteClick(file.id)}>
+                                                <DeleteForeverOutlinedIcon />
+                                            </IconButton>
+                                        </Box>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        )}
+                    </Box>
 
-                    {fileList.length === 0 ? (
-                        <Typography>No matching files found</Typography>
-                    ) : (
-                        <List>
-                            {fileList.map((file, index) => (
-                                <ListItem key={index} divider>
-                                    <ListItemText
-                                        primary={
-                                            <Typography>
-                                                {file.name}
-                                            </Typography>
-                                        }
-                                        secondary={
-                                            <Typography color={theme.palette.text.disabled}>
-                                                FileType: {file.type} Size:{" "}
-                                                {file.size < 1024
-                                                    ? `${file.size} Bytes`
-                                                    : file.size < 1024 * 1024
-                                                        ? `${(file.size / 1024).toFixed(1)} KB`
-                                                        : file.size < 1024 * 1024 * 1024
-                                                            ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
-                                                            : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
-                                            </Typography>
-                                        }
-                                    />
-                                    {/* Buttons*/}
-                                    <Box>
-                                        <IconButton onClick={() => viewExtract(file.id)}>
-                                            <SummarizeOutlinedIcon />
-                                        </IconButton>
-                                        <IconButton onClick={() => downloadFile(file.id, file.name)}>
-                                            <FileDownloadOutlinedIcon />
-                                        </IconButton>
-                                        <IconButton onClick={() => handleDeleteClick(file.id)}>
-                                            <DeleteForeverOutlinedIcon />
-                                        </IconButton>
-                                    </Box>
-                                </ListItem>
-                            ))}
-                        </List>
-                    )}
+                    <Box>
+                        <Typography mb={1}>
+                            Shared With You:
+                        </Typography>
+                        {sharedFileList.length === 0 ? (
+                            <Typography>No matching files found</Typography>
+                        ) : (
+                            <List>
+                                {sharedFileList.map((file, index) => (
+                                    <ListItem key={index} divider>
+                                        <ListItemText
+                                            primary={
+                                                <Typography>
+                                                    {file.name}
+                                                </Typography>
+                                            }
+                                            secondary={
+                                                <Typography color={theme.palette.text.disabled}>
+                                                    FileType: {file.type} Size:{" "}
+                                                    {file.size < 1024
+                                                        ? `${file.size} Bytes`
+                                                        : file.size < 1024 * 1024
+                                                            ? `${(file.size / 1024).toFixed(1)} KB`
+                                                            : file.size < 1024 * 1024 * 1024
+                                                                ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                                                                : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
+                                                </Typography>
+                                            }
+                                        />
+                                        {/* Buttons*/}
+                                        <Box>
+                                            <IconButton onClick={() => viewExtract(file.id)}>
+                                                <SummarizeOutlinedIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => downloadFile(file.id, file.name)}>
+                                                <FileDownloadOutlinedIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => handleDeleteClick(file.id)}>
+                                                <DeleteForeverOutlinedIcon />
+                                            </IconButton>
+                                        </Box>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        )}
+                    </Box>
                 </Box>
             </Box>
 

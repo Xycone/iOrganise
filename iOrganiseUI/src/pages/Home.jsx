@@ -263,6 +263,19 @@ function Home() {
         setExtractContent();
     };
 
+    const viewExtract = async (fileId) => {
+        setExtractDialogOpen(true);
+        http.post(`/view-extract/${fileId}`)
+            .then(response => {
+                console.log(response);
+                setExtractContent(response.data);
+            })
+            .catch((err) => {
+                const errorMessage = err.response?.data?.detail || err.message || "An error occurred";
+                toast.error(errorMessage);
+            });
+    };
+
     // Share File
     const [shareContent, setShareContent] = useState();
     const [shareDialogOpen, setShareDialogOpen] = useState(false);

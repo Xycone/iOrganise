@@ -207,9 +207,6 @@ export const themeSettings = (mode) => {
                         "&.Mui-checked": {
                             color: colours.greenAccent[300]
                         },
-                        "&:hover": {
-                            backgroundColor: colours.primary[400]
-                        }
                     }
                 }
             },

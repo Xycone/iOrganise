@@ -634,6 +634,7 @@ function Home() {
 
                             {/* File Dropzone */}
                             <Box
+                                m={1}
                                 p={5}
                                 component="label"
                                 minWidth="fit-content"

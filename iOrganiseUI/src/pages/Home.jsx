@@ -814,8 +814,8 @@ function Home() {
                 </DialogContent>
             </Dialog>
 
-             {/* Unshare Confirmation Dialog */}
-             <Dialog
+            {/* Unshare Confirmation Dialog */}
+            <Dialog
                 open={unshareConfirmationOpen}
                 onClose={handleCancelUnshare}
                 fullWidth
@@ -999,78 +999,106 @@ function Home() {
                         <Box mt={5}>
                             {isSelectUsers === true && (
                                 <>
-                                    {shareUsers.map((email, index) => (
-                                        <Box key={index}>
-                                            <Box
-                                                my={1}
-                                                display="flex"
-                                                alignItems="center"
-                                                justifyContent="space-between"
-                                                gap={2}
-                                            >
-                                                <Box>
-                                                    <Typography
-                                                        maxWidth="300px"
-                                                        overflow="hidden"
-                                                        textOverflow="ellipsis"
-                                                        whiteSpace="nowrap"
-                                                    >
-                                                        {email}
-                                                    </Typography>
+                                    {shareUsers.length === 0 ? (
+                                        <Box
+                                            my={1}
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            gap={2}
+                                        >
+                                            <Typography color={theme.palette.text.disabled}>
+                                                No users selected.
+                                            </Typography>
+                                        </Box>
+                                    ) : (
+                                        shareUsers.map((email, index) => (
+                                            <Box key={index}>
+                                                <Box
+                                                    my={1}
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    justifyContent="space-between"
+                                                    gap={2}
+                                                >
+                                                    <Box>
+                                                        <Typography
+                                                            maxWidth="300px"
+                                                            overflow="hidden"
+                                                            textOverflow="ellipsis"
+                                                            whiteSpace="nowrap"
+                                                        >
+                                                            {email}
+                                                        </Typography>
+                                                    </Box>
+
+                                                    <IconButton onClick={() => handleRemoveUsers(email)}>
+                                                        <DeleteOutlinedIcon />
+                                                    </IconButton>
                                                 </Box>
 
-                                                <IconButton onClick={() => handleRemoveUsers(email)}>
-                                                    <DeleteOutlinedIcon />
-                                                </IconButton>
+                                                <Divider />
                                             </Box>
-
-                                            <Divider />
-                                        </Box>
-                                    ))}
+                                        ))
+                                    )}
                                 </>
                             )}
                             {isSelectUsers === false && (
                                 <>
-                                    {fileList.map((file, index) => (
-                                        <Box key={index}>
-                                            <Box
-                                                my={1}
-                                                display="flex"
-                                                alignItems="center"
-                                                gap={2}
-                                            >
-                                                <Box>
-                                                    <Checkbox
-                                                        checked={shareContent.includes(file.id)}
-                                                        onChange={() => handleCheckboxChange(file.id)}
-                                                    />
-                                                </Box>
-                                                <Box>
-                                                    <Typography
-                                                        maxWidth="300px"
-                                                        overflow="hidden"
-                                                        textOverflow="ellipsis"
-                                                        whiteSpace="nowrap"
-                                                    >
-                                                        {file.name}
-                                                    </Typography>
-
-                                                    <DialogContentText>
-                                                        FileType: {file.type} Size:{" "}
-                                                        {file.size < 1024
-                                                            ? `${file.size} Bytes`
-                                                            : file.size < 1024 * 1024
-                                                                ? `${(file.size / 1024).toFixed(1)} KB`
-                                                                : file.size < 1024 * 1024 * 1024
-                                                                    ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
-                                                                    : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
-                                                    </DialogContentText>
-                                                </Box>
-                                            </Box>
-
-                                            <Divider />
+                                    {fileList.length === 0 ? (
+                                        <Box
+                                            my={1}
+                                            display="flex"
+                                            alignItems="center"
+                                            justifyContent="space-between"
+                                            gap={2}
+                                        >
+                                            <Typography color={theme.palette.text.disabled}>
+                                                No matching files found.
+                                            </Typography>
                                         </Box>
-                                    ))}
+                                    ) : (
+                                        fileList.map((file, index) => (
+                                            <Box key={index}>
+                                                <Box
+                                                    my={1}
+                                                    display="flex"
+                                                    alignItems="center"
+                                                    gap={2}
+                                                >
+                                                    <Box>
+                                                        <Checkbox
+                                                            checked={shareContent.includes(file.id)}
+                                                            onChange={() => handleCheckboxChange(file.id)}
+                                                        />
+                                                    </Box>
+                                                    <Box>
+                                                        <Typography
+                                                            maxWidth="300px"
+                                                            overflow="hidden"
+                                                            textOverflow="ellipsis"
+                                                            whiteSpace="nowrap"
+                                                        >
+                                                            {file.name}
+                                                        </Typography>
+
+                                                        <DialogContentText>
+                                                            FileType: {file.type} Size:{" "}
+                                                            {file.size < 1024
+                                                                ? `${file.size} Bytes`
+                                                                : file.size < 1024 * 1024
+                                                                    ? `${(file.size / 1024).toFixed(1)} KB`
+                                                                    : file.size < 1024 * 1024 * 1024
+                                                                        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+                                                                        : `${(file.size / (1024 * 1024 * 1024)).toFixed(1)} GB`}
+                                                        </DialogContentText>
+                                                    </Box>
+                                                </Box>
+
+                                                <Divider />
+                                            </Box>
+                                        ))
+                                    )}
                                 </>
                             )}
                         </Box>

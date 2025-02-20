@@ -446,7 +446,7 @@ function Home() {
                     onExited: () => setIsSmart(),
                 }}
                 fullWidth
-                maxWidth="sm"
+                maxWidth="md"
             >
                 <DialogContent>
                     <Box p={1}>
@@ -490,28 +490,31 @@ function Home() {
                             {/* File Dropzone */}
                             <Box
                                 p={5}
+                                component="label"
                                 minWidth="fit-content"
+                                minHeight="300px"
                                 border="2px dashed"
                                 borderRadius="5px"
-                                textAlign="center"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
                                 onDrop={handleDrop}
                                 onDragOver={handleDragOver}
+                                sx={{
+                                    cursor: "pointer",
+                                }}
                                 style={{
                                     backgroundColor: "inherit",
                                     background: "repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 20px, rgba(255, 255, 255, 0.05) 20px, rgba(255, 255, 255, 0.05) 40px)"
                                 }}
                             >
-                                <Typography mb={2}>
-                                    Choose a file or drag & drop it here
-                                </Typography>
-                                <DialogContentText mb={2}>
-                                    common audio, video, image & document formats accepted
-                                </DialogContentText>
-                                <Button
-                                    variant="contained"
-                                    component="label"
-                                >
-                                    <Typography>Browse</Typography>
+                                <Box textAlign="center">
+                                    <Typography mb={2}>
+                                        Choose a file or drag & drop it here
+                                    </Typography>
+                                    <DialogContentText mb={2}>
+                                        mp3, mp4, mpeg, mpga, m4a, wav, webm, pdf, docx, txt and png formats
+                                    </DialogContentText>
                                     <input
                                         type="file"
                                         multiple
@@ -519,13 +522,13 @@ function Home() {
                                         style={{ display: "none" }}
                                         onChange={handleFileSelect}
                                     />
-                                </Button>
+                                </Box>
                             </Box>
                         </Box>
 
 
                         {/* Uploaded File Viewer */}
-                        <Box mt={5}> {/* This Box wraps the whole list of files */}
+                        <Box mt={5}>
                             {selectedFiles.map((file, index) => (
                                 <Box key={index}>
                                     <Box
@@ -564,14 +567,16 @@ function Home() {
 
                         {/* Upload Files Button */}
                         <Box mt={5}>
-                            <Button
-                                size="large"
-                                fullWidth
-                                component="label"
-                                onClick={handleFileUpload}
-                            >
-                                <Typography>Upload Files</Typography>
-                            </Button>
+                            <Box display="flex" justifyContent="end" gap={2}>
+                                <Button
+                                    size="large"
+                                    variant="contained"
+                                    component="label"
+                                    onClick={handleFileUpload}
+                                >
+                                    <Typography>Upload</Typography>
+                                </Button>
+                            </Box>
                         </Box>
                     </Box>
                 </DialogContent>
@@ -594,7 +599,7 @@ function Home() {
                         </Box>
 
                         <Box display="flex" justifyContent="end" gap={2}>
-                            <Button variant="contained" color="inherit"
+                            <Button variant="contained"
                                 onClick={handleCancelDelete}>
                                 Cancel
                             </Button>
@@ -636,27 +641,35 @@ function Home() {
                         <Box mt={5}>
                             {extractContent ? (
                                 <>
-                                    <Typography>
-                                        Subject:
-                                    </Typography>
-                                    <DialogContentText mb={4}>
-                                        {extractContent.subject ? extractContent.subject : "No subject classified"}
-                                    </DialogContentText>
-                                    <Typography>
-                                        Content:
-                                    </Typography>
-                                    <DialogContentText mb={4}>
-                                        {extractContent.content ? extractContent.content : "No content available"}
-                                    </DialogContentText>
-                                    <Typography>
-                                        Summary:
-                                    </Typography>
-                                    <DialogContentText>
-                                        {extractContent.summary ? extractContent.summary : "No summary available"}
-                                    </DialogContentText>
+                                    <Box mb={2}>
+                                        <Typography>
+                                            Subject:
+                                        </Typography>
+                                        <DialogContentText>
+                                            {extractContent.subject ? extractContent.subject : "No subject classified"}
+                                        </DialogContentText>
+                                    </Box>
+                                    <Box mb={2}>
+                                        <Typography>
+                                            Content:
+                                        </Typography>
+                                        <DialogContentText>
+                                            {extractContent.content ? extractContent.content : "No content available"}
+                                        </DialogContentText>
+                                    </Box>
+                                    <Box>
+                                        <Typography>
+                                            Summary:
+                                        </Typography>
+                                        <DialogContentText>
+                                            {extractContent.summary ? extractContent.summary : "No summary available"}
+                                        </DialogContentText>
+                                    </Box>
                                 </>
                             ) : (
-                                <DialogContentText>Loading extract...</DialogContentText>
+                                <Box>
+                                    <DialogContentText>Loading extract...</DialogContentText>
+                                </Box>
                             )}
                         </Box>
                     </Box>
@@ -735,7 +748,7 @@ function Home() {
 
                         <Box mt={5}>
                             <Box display="flex" justifyContent="end" gap={2}>
-                                <Button variant="contained" color="inherit"
+                                <Button variant="contained"
                                     onClick={handleCheckboxReset}>
                                     Cancel
                                 </Button>

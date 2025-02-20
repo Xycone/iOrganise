@@ -485,7 +485,7 @@ function TranscribeFiles() {
                 open={dialogOpen}
                 onClose={handleDialogClose}
                 fullWidth
-                maxWidth="sm"
+                maxWidth="md"
             >
                 <DialogContent>
                     <Box p={1}>
@@ -515,41 +515,45 @@ function TranscribeFiles() {
                             {/* File Dropzone */}
                             <Box
                                 p={5}
+                                component="label"
                                 minWidth="fit-content"
+                                minHeight="300px"
                                 border="2px dashed"
                                 borderRadius="5px"
-                                textAlign="center"
+                                display="flex"
+                                alignItems="center"
+                                justifyContent="center"
                                 onDrop={handleDrop}
                                 onDragOver={handleDragOver}
+                                sx={{
+                                    cursor: "pointer",
+                                }}
                                 style={{
                                     backgroundColor: "inherit",
                                     background: "repeating-linear-gradient(-45deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.05) 20px, rgba(255, 255, 255, 0.05) 20px, rgba(255, 255, 255, 0.05) 40px)"
                                 }}
                             >
-                                <Typography mb={2}>
-                                    Choose a file or drag & drop it here
-                                </Typography>
-                                <DialogContentText mb={2}>
-                                    mp3, mp4, mpeg, mpga, m4a, wav & webm formats
-                                </DialogContentText>
-                                <Button
-                                    variant="contained"
-                                    component="label"
-                                >
-                                    <Typography>Browse</Typography>
+                                <Box textAlign="center">
+                                    <Typography mb={2}>
+                                        Choose a file or drag & drop it here
+                                    </Typography>
+                                    <DialogContentText mb={2}>
+                                        mp3, mp4, mpeg, mpga, m4a, wav & webm formats
+                                    </DialogContentText>
                                     <input
                                         type="file"
                                         multiple
                                         accept=".mp3, .mp4, .mpeg, .mpga, .m4a, .wav, .webm"
-                                        style={{ display: 'none' }}
+                                        style={{ display: "none" }}
                                         onChange={handleFileSelect}
                                     />
-                                </Button>
+                                </Box>
                             </Box>
                         </Box>
 
+
                         {/* Uploaded File Viewer */}
-                        <Box mt={5}> {/* This Box wraps the whole list of files */}
+                        <Box mt={5}>
                             {selectedFiles.map((file, index) => (
                                 <Box key={index}>
                                     <Box
@@ -586,16 +590,18 @@ function TranscribeFiles() {
                             ))}
                         </Box>
 
-                        {/* Attach Files Button */}
+                        {/* Upload Files Button */}
                         <Box mt={5}>
-                            <Button
-                                size="large"
-                                fullWidth
-                                component="label"
-                                onClick={handleConfirmAttachment}
-                            >
-                                <Typography>Confirm Attachment</Typography>
-                            </Button>
+                            <Box display="flex" justifyContent="end" gap={2}>
+                                <Button
+                                    size="large"
+                                    variant="contained"
+                                    component="label"
+                                    onClick={handleConfirmAttachment}
+                                >
+                                    <Typography>Attach</Typography>
+                                </Button>
+                            </Box>
                         </Box>
                     </Box>
                 </DialogContent>
